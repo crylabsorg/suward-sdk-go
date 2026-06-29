@@ -1,0 +1,491 @@
+{
+  "mappings": [
+    {
+      "id": "d38c5ee0-373f-4807-af8e-aa16a40d27a4",
+      "name": "List payments - default",
+      "request": {
+        "urlPathTemplate": "/v1/payments",
+        "method": "GET",
+        "headers": {
+          "X-Api-Key": {
+            "matches": ".+"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"hasMore\": true,\n  \"items\": [\n    {\n      \"acceptedAt\": 1,\n      \"activatedAt\": 1,\n      \"activationFlowSeconds\": 1,\n      \"address\": \"address\",\n      \"amount\": \"amount\",\n      \"amountConfirmed\": \"amountConfirmed\",\n      \"amountReceived\": \"amountReceived\",\n      \"asset\": \"USDT_ETHEREUM\",\n      \"createdAt\": 1,\n      \"expiresAt\": 1,\n      \"externalId\": \"externalId\",\n      \"fee\": \"fee\",\n      \"id\": \"id\",\n      \"isTest\": true,\n      \"metadata\": {\n        \"key\": \"value\"\n      },\n      \"networkFee\": \"networkFee\",\n      \"paymentWindowSeconds\": 1,\n      \"projectId\": \"projectId\",\n      \"status\": \"pending\",\n      \"subStatus\": \"created\",\n      \"transactions\": [\n        {}\n      ],\n      \"underpaymentTolerance\": \"underpaymentTolerance\",\n      \"updatedAt\": 1,\n      \"webhookUrl\": \"webhookUrl\"\n    }\n  ],\n  \"lastId\": \"lastId\"\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "d38c5ee0-373f-4807-af8e-aa16a40d27a4",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      },
+      "postServeActions": []
+    },
+    {
+      "id": "fda6a90c-161c-4752-b02e-5286c61d9bd9",
+      "name": "Create payment - default",
+      "request": {
+        "urlPathTemplate": "/v1/payments",
+        "method": "POST",
+        "headers": {
+          "X-Api-Key": {
+            "matches": ".+"
+          }
+        }
+      },
+      "response": {
+        "status": 201,
+        "body": "{\n  \"acceptedAt\": 1,\n  \"activatedAt\": 1,\n  \"activationFlowSeconds\": 1,\n  \"address\": \"address\",\n  \"amount\": \"amount\",\n  \"amountConfirmed\": \"amountConfirmed\",\n  \"amountReceived\": \"amountReceived\",\n  \"asset\": \"USDT_ETHEREUM\",\n  \"createdAt\": 1,\n  \"expiresAt\": 1,\n  \"externalId\": \"externalId\",\n  \"fee\": \"fee\",\n  \"id\": \"id\",\n  \"isTest\": true,\n  \"metadata\": {\n    \"key\": \"value\"\n  },\n  \"networkFee\": \"networkFee\",\n  \"paymentWindowSeconds\": 1,\n  \"projectId\": \"projectId\",\n  \"redirectConfig\": {\n    \"data\": \"data\",\n    \"params\": [\n      \"id\"\n    ],\n    \"url\": \"url\"\n  },\n  \"status\": \"pending\",\n  \"subStatus\": \"created\",\n  \"transactions\": [\n    {\n      \"acceptedAt\": 1,\n      \"amount\": \"amount\",\n      \"detectedAt\": 1,\n      \"txHash\": \"txHash\"\n    }\n  ],\n  \"underpaymentTolerance\": \"underpaymentTolerance\",\n  \"updatedAt\": 1,\n  \"webhookUrl\": \"webhookUrl\"\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "fda6a90c-161c-4752-b02e-5286c61d9bd9",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "81709c88-47ef-4e9f-999d-507d90d5f7af",
+      "name": "Get payment - default",
+      "request": {
+        "urlPathTemplate": "/v1/payments/{paymentId}",
+        "method": "GET",
+        "headers": {
+          "X-Api-Key": {
+            "matches": ".+"
+          }
+        },
+        "pathParameters": {
+          "paymentId": {
+            "equalTo": "paymentId"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"acceptedAt\": 1,\n  \"activatedAt\": 1,\n  \"activationFlowSeconds\": 1,\n  \"address\": \"address\",\n  \"amount\": \"amount\",\n  \"amountConfirmed\": \"amountConfirmed\",\n  \"amountReceived\": \"amountReceived\",\n  \"asset\": \"USDT_ETHEREUM\",\n  \"createdAt\": 1,\n  \"expiresAt\": 1,\n  \"externalId\": \"externalId\",\n  \"fee\": \"fee\",\n  \"id\": \"id\",\n  \"isTest\": true,\n  \"metadata\": {\n    \"key\": \"value\"\n  },\n  \"networkFee\": \"networkFee\",\n  \"paymentWindowSeconds\": 1,\n  \"projectId\": \"projectId\",\n  \"redirectConfig\": {\n    \"data\": \"data\",\n    \"params\": [\n      \"id\"\n    ],\n    \"url\": \"url\"\n  },\n  \"status\": \"pending\",\n  \"subStatus\": \"created\",\n  \"transactions\": [\n    {\n      \"acceptedAt\": 1,\n      \"amount\": \"amount\",\n      \"detectedAt\": 1,\n      \"txHash\": \"txHash\"\n    }\n  ],\n  \"underpaymentTolerance\": \"underpaymentTolerance\",\n  \"updatedAt\": 1,\n  \"webhookUrl\": \"webhookUrl\"\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "81709c88-47ef-4e9f-999d-507d90d5f7af",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "0c3f7c53-c4e7-4639-9034-0fcbd07369ac",
+      "name": "Activate payment - default",
+      "request": {
+        "urlPathTemplate": "/v1/payments/{paymentId}/activate",
+        "method": "POST",
+        "pathParameters": {
+          "paymentId": {
+            "equalTo": "paymentId"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"activatedAt\": 1,\n  \"activationFlowSeconds\": 1,\n  \"address\": \"address\",\n  \"amount\": \"amount\",\n  \"amountReceived\": \"amountReceived\",\n  \"asset\": \"USDT_ETHEREUM\",\n  \"createdAt\": 1,\n  \"expiresAt\": 1,\n  \"id\": \"id\",\n  \"paymentWindowSeconds\": 1,\n  \"redirect\": {\n    \"query\": {\n      \"key\": \"value\"\n    },\n    \"url\": \"url\"\n  },\n  \"status\": \"pending\",\n  \"subStatus\": \"created\",\n  \"underpaymentTolerance\": \"underpaymentTolerance\",\n  \"updatedAt\": 1\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "0c3f7c53-c4e7-4639-9034-0fcbd07369ac",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "e9969183-bdd5-4fed-ac41-ed188c3986d6",
+      "name": "Cancel payment - default",
+      "request": {
+        "urlPathTemplate": "/v1/payments/{paymentId}/cancel",
+        "method": "POST",
+        "headers": {
+          "X-Api-Key": {
+            "matches": ".+"
+          }
+        },
+        "pathParameters": {
+          "paymentId": {
+            "equalTo": "paymentId"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"acceptedAt\": 1,\n  \"activatedAt\": 1,\n  \"activationFlowSeconds\": 1,\n  \"address\": \"address\",\n  \"amount\": \"amount\",\n  \"amountConfirmed\": \"amountConfirmed\",\n  \"amountReceived\": \"amountReceived\",\n  \"asset\": \"USDT_ETHEREUM\",\n  \"createdAt\": 1,\n  \"expiresAt\": 1,\n  \"externalId\": \"externalId\",\n  \"fee\": \"fee\",\n  \"id\": \"id\",\n  \"isTest\": true,\n  \"metadata\": {\n    \"key\": \"value\"\n  },\n  \"networkFee\": \"networkFee\",\n  \"paymentWindowSeconds\": 1,\n  \"projectId\": \"projectId\",\n  \"redirectConfig\": {\n    \"data\": \"data\",\n    \"params\": [\n      \"id\"\n    ],\n    \"url\": \"url\"\n  },\n  \"status\": \"pending\",\n  \"subStatus\": \"created\",\n  \"transactions\": [\n    {\n      \"acceptedAt\": 1,\n      \"amount\": \"amount\",\n      \"detectedAt\": 1,\n      \"txHash\": \"txHash\"\n    }\n  ],\n  \"underpaymentTolerance\": \"underpaymentTolerance\",\n  \"updatedAt\": 1,\n  \"webhookUrl\": \"webhookUrl\"\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "e9969183-bdd5-4fed-ac41-ed188c3986d6",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "5193c5f7-2afe-4718-b1f4-67d83eccdb20",
+      "name": "Simulate payment - default",
+      "request": {
+        "urlPathTemplate": "/v1/payments/{paymentId}/simulate",
+        "method": "POST",
+        "headers": {
+          "X-Api-Key": {
+            "matches": ".+"
+          }
+        },
+        "pathParameters": {
+          "paymentId": {
+            "equalTo": "paymentId"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"acceptedAt\": 1,\n  \"activatedAt\": 1,\n  \"activationFlowSeconds\": 1,\n  \"address\": \"address\",\n  \"amount\": \"amount\",\n  \"amountConfirmed\": \"amountConfirmed\",\n  \"amountReceived\": \"amountReceived\",\n  \"asset\": \"USDT_ETHEREUM\",\n  \"createdAt\": 1,\n  \"expiresAt\": 1,\n  \"externalId\": \"externalId\",\n  \"fee\": \"fee\",\n  \"id\": \"id\",\n  \"isTest\": true,\n  \"metadata\": {\n    \"key\": \"value\"\n  },\n  \"networkFee\": \"networkFee\",\n  \"paymentWindowSeconds\": 1,\n  \"projectId\": \"projectId\",\n  \"redirectConfig\": {\n    \"data\": \"data\",\n    \"params\": [\n      \"id\"\n    ],\n    \"url\": \"url\"\n  },\n  \"status\": \"pending\",\n  \"subStatus\": \"created\",\n  \"transactions\": [\n    {\n      \"acceptedAt\": 1,\n      \"amount\": \"amount\",\n      \"detectedAt\": 1,\n      \"txHash\": \"txHash\"\n    }\n  ],\n  \"underpaymentTolerance\": \"underpaymentTolerance\",\n  \"updatedAt\": 1,\n  \"webhookUrl\": \"webhookUrl\"\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "5193c5f7-2afe-4718-b1f4-67d83eccdb20",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "bd028ab2-8ef1-43c0-8f87-dc3b4ad4a3cb",
+      "name": "List static wallets - default",
+      "request": {
+        "urlPathTemplate": "/v1/static-wallets",
+        "method": "GET",
+        "headers": {
+          "X-Api-Key": {
+            "matches": ".+"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"hasMore\": true,\n  \"items\": [\n    {\n      \"address\": \"address\",\n      \"allowedAssets\": [\n        \"USDT_ETHEREUM\"\n      ],\n      \"createdAt\": 1,\n      \"externalId\": \"externalId\",\n      \"id\": \"id\",\n      \"isTest\": true,\n      \"metadata\": {\n        \"key\": \"value\"\n      },\n      \"projectId\": \"projectId\",\n      \"updatedAt\": 1,\n      \"webhookUrl\": \"webhookUrl\"\n    }\n  ],\n  \"lastId\": \"lastId\"\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "bd028ab2-8ef1-43c0-8f87-dc3b4ad4a3cb",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      },
+      "postServeActions": []
+    },
+    {
+      "id": "91140c05-a13b-4eaa-b875-cc1f6982f596",
+      "name": "Create static wallet - default",
+      "request": {
+        "urlPathTemplate": "/v1/static-wallets",
+        "method": "POST",
+        "headers": {
+          "X-Api-Key": {
+            "matches": ".+"
+          }
+        }
+      },
+      "response": {
+        "status": 201,
+        "body": "{\n  \"address\": \"address\",\n  \"allowedAssets\": [\n    \"USDT_ETHEREUM\"\n  ],\n  \"createdAt\": 1,\n  \"externalId\": \"externalId\",\n  \"id\": \"id\",\n  \"isTest\": true,\n  \"metadata\": {\n    \"key\": \"value\"\n  },\n  \"projectId\": \"projectId\",\n  \"updatedAt\": 1,\n  \"webhookUrl\": \"webhookUrl\"\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "91140c05-a13b-4eaa-b875-cc1f6982f596",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "e21c1aa9-6f73-48bb-90b9-ea35e3b255f8",
+      "name": "Get static wallet - default",
+      "request": {
+        "urlPathTemplate": "/v1/static-wallets/{staticWalletId}",
+        "method": "GET",
+        "headers": {
+          "X-Api-Key": {
+            "matches": ".+"
+          }
+        },
+        "pathParameters": {
+          "staticWalletId": {
+            "equalTo": "staticWalletId"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"address\": \"address\",\n  \"allowedAssets\": [\n    \"USDT_ETHEREUM\"\n  ],\n  \"createdAt\": 1,\n  \"externalId\": \"externalId\",\n  \"id\": \"id\",\n  \"isTest\": true,\n  \"metadata\": {\n    \"key\": \"value\"\n  },\n  \"projectId\": \"projectId\",\n  \"updatedAt\": 1,\n  \"webhookUrl\": \"webhookUrl\"\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "e21c1aa9-6f73-48bb-90b9-ea35e3b255f8",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "c98c5cc5-05f9-4bdb-bd15-36ba7f07e8fc",
+      "name": "Delete static wallet - default",
+      "request": {
+        "urlPathTemplate": "/v1/static-wallets/{staticWalletId}",
+        "method": "DELETE",
+        "headers": {
+          "X-Api-Key": {
+            "matches": ".+"
+          }
+        },
+        "pathParameters": {
+          "staticWalletId": {
+            "equalTo": "staticWalletId"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"key\": true\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "c98c5cc5-05f9-4bdb-bd15-36ba7f07e8fc",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "56b64631-0133-4e2b-b8f0-cf9e101eb293",
+      "name": "Update static wallet - default",
+      "request": {
+        "urlPathTemplate": "/v1/static-wallets/{staticWalletId}",
+        "method": "PATCH",
+        "headers": {
+          "X-Api-Key": {
+            "matches": ".+"
+          }
+        },
+        "pathParameters": {
+          "staticWalletId": {
+            "equalTo": "staticWalletId"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"address\": \"address\",\n  \"allowedAssets\": [\n    \"USDT_ETHEREUM\"\n  ],\n  \"createdAt\": 1,\n  \"externalId\": \"externalId\",\n  \"id\": \"id\",\n  \"isTest\": true,\n  \"metadata\": {\n    \"key\": \"value\"\n  },\n  \"projectId\": \"projectId\",\n  \"updatedAt\": 1,\n  \"webhookUrl\": \"webhookUrl\"\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "56b64631-0133-4e2b-b8f0-cf9e101eb293",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "f1e0c845-ba13-4554-acac-76ce2467f859",
+      "name": "List static wallet deposits - default",
+      "request": {
+        "urlPathTemplate": "/v1/static-wallets/{staticWalletId}/deposits",
+        "method": "GET",
+        "headers": {
+          "X-Api-Key": {
+            "matches": ".+"
+          }
+        },
+        "pathParameters": {
+          "staticWalletId": {
+            "equalTo": "staticWalletId"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"hasMore\": true,\n  \"items\": [\n    {\n      \"acceptedAt\": 1,\n      \"address\": \"address\",\n      \"amount\": \"amount\",\n      \"asset\": \"USDT_ETHEREUM\",\n      \"confirmedAt\": 1,\n      \"createdAt\": 1,\n      \"detectedAt\": 1,\n      \"externalId\": \"externalId\",\n      \"fee\": \"fee\",\n      \"id\": \"id\",\n      \"invalidatedAt\": 1,\n      \"netAmount\": \"netAmount\",\n      \"networkFee\": \"networkFee\",\n      \"projectId\": \"projectId\",\n      \"staticWalletId\": \"staticWalletId\",\n      \"status\": \"detected\",\n      \"transferIndex\": \"transferIndex\",\n      \"txHash\": \"txHash\",\n      \"updatedAt\": 1\n    }\n  ],\n  \"lastId\": \"lastId\"\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "f1e0c845-ba13-4554-acac-76ce2467f859",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "299479b4-e570-4fac-bc8d-7a4f2abb1a34",
+      "name": "Get static wallet deposit - default",
+      "request": {
+        "urlPathTemplate": "/v1/static-wallets/{staticWalletId}/deposits/{depositId}",
+        "method": "GET",
+        "headers": {
+          "X-Api-Key": {
+            "matches": ".+"
+          }
+        },
+        "pathParameters": {
+          "staticWalletId": {
+            "equalTo": "staticWalletId"
+          },
+          "depositId": {
+            "equalTo": "depositId"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"acceptedAt\": 1,\n  \"address\": \"address\",\n  \"amount\": \"amount\",\n  \"asset\": \"USDT_ETHEREUM\",\n  \"confirmedAt\": 1,\n  \"createdAt\": 1,\n  \"detectedAt\": 1,\n  \"externalId\": \"externalId\",\n  \"fee\": \"fee\",\n  \"id\": \"id\",\n  \"invalidatedAt\": 1,\n  \"netAmount\": \"netAmount\",\n  \"networkFee\": \"networkFee\",\n  \"projectId\": \"projectId\",\n  \"staticWalletId\": \"staticWalletId\",\n  \"status\": \"detected\",\n  \"transferIndex\": \"transferIndex\",\n  \"txHash\": \"txHash\",\n  \"updatedAt\": 1\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "299479b4-e570-4fac-bc8d-7a4f2abb1a34",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "98225cb0-3998-4968-815b-fcace06091b9",
+      "name": "Simulate static wallet deposit - default",
+      "request": {
+        "urlPathTemplate": "/v1/static-wallets/{staticWalletId}/simulate",
+        "method": "POST",
+        "headers": {
+          "X-Api-Key": {
+            "matches": ".+"
+          }
+        },
+        "pathParameters": {
+          "staticWalletId": {
+            "equalTo": "staticWalletId"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"acceptedAt\": 1,\n  \"address\": \"address\",\n  \"amount\": \"amount\",\n  \"asset\": \"USDT_ETHEREUM\",\n  \"confirmedAt\": 1,\n  \"createdAt\": 1,\n  \"detectedAt\": 1,\n  \"externalId\": \"externalId\",\n  \"fee\": \"fee\",\n  \"id\": \"id\",\n  \"invalidatedAt\": 1,\n  \"netAmount\": \"netAmount\",\n  \"networkFee\": \"networkFee\",\n  \"projectId\": \"projectId\",\n  \"staticWalletId\": \"staticWalletId\",\n  \"status\": \"detected\",\n  \"transferIndex\": \"transferIndex\",\n  \"txHash\": \"txHash\",\n  \"updatedAt\": 1\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "98225cb0-3998-4968-815b-fcace06091b9",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    }
+  ],
+  "meta": {
+    "total": 14
+  }
+}
