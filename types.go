@@ -226,7 +226,7 @@ func (c CryptopayAssetID) Ptr() *CryptopayAssetID {
 	return &c
 }
 
-// Webhook body for a payment lifecycle transition. Signed over the raw body with the project's Ed25519 key; verify with project.webhookPublicKey. `createdAt` is the signed, trusted timestamp; `payment` is the full payment resource (the same shape as the merchant GET /v1/payments/{paymentId} view).
+// Webhook body for a payment lifecycle transition. Signed over the raw body with the project's Ed25519 key; verify with project.webhookPublicKey. `createdAt` is the signed, trusted timestamp; `payment` is the full payment resource (the same shape as the merchant GET /v1/payments/{paymentId} view). Obtain `webhookPublicKey` from your project settings in the Suward dashboard.
 var (
 	webhookPaymentEventFieldType      = big.NewInt(1 << 0)
 	webhookPaymentEventFieldEventID   = big.NewInt(1 << 1)
@@ -385,7 +385,7 @@ func (w WebhookPaymentEventType) Ptr() *WebhookPaymentEventType {
 	return &w
 }
 
-// Webhook body for a static-wallet deposit transition. Signed over the raw body with the project's Ed25519 key; verify with project.webhookPublicKey. `createdAt` is the signed, trusted timestamp; `staticDeposit` is the full deposit resource.
+// Webhook body for a static-wallet deposit transition. Signed over the raw body with the project's Ed25519 key; verify with project.webhookPublicKey. `createdAt` is the signed, trusted timestamp; `staticDeposit` is the full deposit resource. Obtain `webhookPublicKey` from your project settings in the Suward dashboard.
 var (
 	webhookStaticDepositEventFieldType          = big.NewInt(1 << 0)
 	webhookStaticDepositEventFieldEventID       = big.NewInt(1 << 1)

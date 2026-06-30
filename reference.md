@@ -467,6 +467,76 @@ client.Payments.SimulatePayment(
 </dl>
 </details>
 
+<details><summary><code>client.Payments.QuotePaymentFees(request) -> *suwardsdkgo.CryptopayQuotePaymentResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns the platform fee, estimated network fee, and net amount for a payment of `amount` in `asset`, without creating anything. All monetary fields are integer strings in the asset's smallest unit.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+request := &suwardsdkgo.CryptopayQuotePaymentRequest{
+        Asset: suwardsdkgo.CryptopayAssetIDUsdtEthereum,
+        Amount: "amount",
+    }
+client.Payments.QuotePaymentFees(
+        context.TODO(),
+        request,
+    )
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**asset:** `*suwardsdkgo.CryptopayAssetID` — Asset identifier (see GET /v1/assets for the live list).
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**amount:** `string` — Gross amount, integer string in the asset's smallest unit. Example: "5000000" = 5 USDT.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## StaticWallets
 <details><summary><code>client.StaticWallets.ListStaticWallets() -> *suwardsdkgo.CryptopayListStaticWalletsResponse</code></summary>
 <dl>
@@ -1003,6 +1073,91 @@ client.StaticWallets.SimulateStaticWalletDeposit(
 
 **txHash:** `*string` 
     
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## Assets
+<details><summary><code>client.Assets.ListAcceptedAssets() -> *suwardsdkgo.GetV1AssetsResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns all assets accepted by the Suward gateway. No authentication required.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+client.Assets.ListAcceptedAssets(
+        context.TODO(),
+    )
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Assets.ListSupportedBlockchains() -> []*suwardsdkgo.CryptopayBlockchainResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns all supported blockchains (informational). No authentication required.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+client.Assets.ListSupportedBlockchains(
+        context.TODO(),
+    )
+}
+```
 </dd>
 </dl>
 </dd>

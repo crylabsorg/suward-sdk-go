@@ -261,6 +261,63 @@ func (g *GetV1PaymentsRequest) SetLastID(lastID *string) {
 }
 
 var (
+	cryptopayQuotePaymentRequestFieldAsset  = big.NewInt(1 << 0)
+	cryptopayQuotePaymentRequestFieldAmount = big.NewInt(1 << 1)
+)
+
+type CryptopayQuotePaymentRequest struct {
+	// Asset identifier (see GET /v1/assets for the live list).
+	Asset CryptopayAssetID `json:"asset" url:"-"`
+	// Gross amount, integer string in the asset's smallest unit. Example: "5000000" = 5 USDT.
+	Amount string `json:"amount" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (c *CryptopayQuotePaymentRequest) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetAsset sets the Asset field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CryptopayQuotePaymentRequest) SetAsset(asset CryptopayAssetID) {
+	c.Asset = asset
+	c.require(cryptopayQuotePaymentRequestFieldAsset)
+}
+
+// SetAmount sets the Amount field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CryptopayQuotePaymentRequest) SetAmount(amount string) {
+	c.Amount = amount
+	c.require(cryptopayQuotePaymentRequestFieldAmount)
+}
+
+func (c *CryptopayQuotePaymentRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler CryptopayQuotePaymentRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*c = CryptopayQuotePaymentRequest(body)
+	return nil
+}
+
+func (c *CryptopayQuotePaymentRequest) MarshalJSON() ([]byte, error) {
+	type embed CryptopayQuotePaymentRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+var (
 	cryptopaySimulatePaymentRequestFieldPaymentID = big.NewInt(1 << 0)
 	cryptopaySimulatePaymentRequestFieldAmount    = big.NewInt(1 << 1)
 	cryptopaySimulatePaymentRequestFieldSubStatus = big.NewInt(1 << 2)
@@ -467,34 +524,43 @@ var (
 	cryptopayPaymentResponseFieldUnderpaymentTolerance = big.NewInt(1 << 22)
 	cryptopayPaymentResponseFieldUpdatedAt             = big.NewInt(1 << 23)
 	cryptopayPaymentResponseFieldWebhookURL            = big.NewInt(1 << 24)
+	cryptopayPaymentResponseFieldPaymentPageURL        = big.NewInt(1 << 25)
 )
 
 type CryptopayPaymentResponse struct {
-	AcceptedAt            *int                            `json:"acceptedAt,omitempty" url:"acceptedAt,omitempty"`
-	ActivatedAt           *int                            `json:"activatedAt,omitempty" url:"activatedAt,omitempty"`
-	ActivationFlowSeconds *int                            `json:"activationFlowSeconds,omitempty" url:"activationFlowSeconds,omitempty"`
-	Address               *string                         `json:"address,omitempty" url:"address,omitempty"`
-	Amount                *string                         `json:"amount,omitempty" url:"amount,omitempty"`
-	AmountConfirmed       *string                         `json:"amountConfirmed,omitempty" url:"amountConfirmed,omitempty"`
-	AmountReceived        *string                         `json:"amountReceived,omitempty" url:"amountReceived,omitempty"`
-	Asset                 *CryptopayAssetID               `json:"asset,omitempty" url:"asset,omitempty"`
-	CreatedAt             *int                            `json:"createdAt,omitempty" url:"createdAt,omitempty"`
-	ExpiresAt             *int                            `json:"expiresAt,omitempty" url:"expiresAt,omitempty"`
-	ExternalID            *string                         `json:"externalId,omitempty" url:"externalId,omitempty"`
-	Fee                   *string                         `json:"fee,omitempty" url:"fee,omitempty"`
-	ID                    *string                         `json:"id,omitempty" url:"id,omitempty"`
-	IsTest                *bool                           `json:"isTest,omitempty" url:"isTest,omitempty"`
-	Metadata              map[string]any                  `json:"metadata,omitempty" url:"metadata,omitempty"`
-	NetworkFee            *string                         `json:"networkFee,omitempty" url:"networkFee,omitempty"`
-	PaymentWindowSeconds  *int                            `json:"paymentWindowSeconds,omitempty" url:"paymentWindowSeconds,omitempty"`
-	ProjectID             *string                         `json:"projectId,omitempty" url:"projectId,omitempty"`
-	RedirectConfig        *CryptopayRedirectConfigDto     `json:"redirectConfig,omitempty" url:"redirectConfig,omitempty"`
-	Status                *CryptopayPaymentStatusEnum     `json:"status,omitempty" url:"status,omitempty"`
-	SubStatus             *CryptopayPaymentSubStatusEnum  `json:"subStatus,omitempty" url:"subStatus,omitempty"`
-	Transactions          []*CryptopayTransactionResponse `json:"transactions,omitempty" url:"transactions,omitempty"`
-	UnderpaymentTolerance *string                         `json:"underpaymentTolerance,omitempty" url:"underpaymentTolerance,omitempty"`
-	UpdatedAt             *int                            `json:"updatedAt,omitempty" url:"updatedAt,omitempty"`
-	WebhookURL            *string                         `json:"webhookUrl,omitempty" url:"webhookUrl,omitempty"`
+	AcceptedAt            *int    `json:"acceptedAt,omitempty" url:"acceptedAt,omitempty"`
+	ActivatedAt           *int    `json:"activatedAt,omitempty" url:"activatedAt,omitempty"`
+	ActivationFlowSeconds *int    `json:"activationFlowSeconds,omitempty" url:"activationFlowSeconds,omitempty"`
+	Address               *string `json:"address,omitempty" url:"address,omitempty"`
+	// Integer string in the asset's smallest unit.
+	Amount *string `json:"amount,omitempty" url:"amount,omitempty"`
+	// Integer string in the asset's smallest unit.
+	AmountConfirmed *string `json:"amountConfirmed,omitempty" url:"amountConfirmed,omitempty"`
+	// Integer string in the asset's smallest unit.
+	AmountReceived *string           `json:"amountReceived,omitempty" url:"amountReceived,omitempty"`
+	Asset          *CryptopayAssetID `json:"asset,omitempty" url:"asset,omitempty"`
+	CreatedAt      *int              `json:"createdAt,omitempty" url:"createdAt,omitempty"`
+	ExpiresAt      *int              `json:"expiresAt,omitempty" url:"expiresAt,omitempty"`
+	ExternalID     *string           `json:"externalId,omitempty" url:"externalId,omitempty"`
+	// Platform fee: 0.4% of the amount, minimum $1 equivalent. Integer string in the asset's smallest unit.
+	Fee      *string        `json:"fee,omitempty" url:"fee,omitempty"`
+	ID       *string        `json:"id,omitempty" url:"id,omitempty"`
+	IsTest   *bool          `json:"isTest,omitempty" url:"isTest,omitempty"`
+	Metadata map[string]any `json:"metadata,omitempty" url:"metadata,omitempty"`
+	// Estimated on-chain (gas) cost, deducted from the received amount. Integer string in the asset's smallest unit.
+	NetworkFee           *string                         `json:"networkFee,omitempty" url:"networkFee,omitempty"`
+	PaymentWindowSeconds *int                            `json:"paymentWindowSeconds,omitempty" url:"paymentWindowSeconds,omitempty"`
+	ProjectID            *string                         `json:"projectId,omitempty" url:"projectId,omitempty"`
+	RedirectConfig       *CryptopayRedirectConfigDto     `json:"redirectConfig,omitempty" url:"redirectConfig,omitempty"`
+	Status               *CryptopayPaymentStatusEnum     `json:"status,omitempty" url:"status,omitempty"`
+	SubStatus            *CryptopayPaymentSubStatusEnum  `json:"subStatus,omitempty" url:"subStatus,omitempty"`
+	Transactions         []*CryptopayTransactionResponse `json:"transactions,omitempty" url:"transactions,omitempty"`
+	// Integer string in the asset's smallest unit.
+	UnderpaymentTolerance *string `json:"underpaymentTolerance,omitempty" url:"underpaymentTolerance,omitempty"`
+	UpdatedAt             *int    `json:"updatedAt,omitempty" url:"updatedAt,omitempty"`
+	WebhookURL            *string `json:"webhookUrl,omitempty" url:"webhookUrl,omitempty"`
+	// Absolute URL of the Suward-hosted checkout page where the customer pays this payment.
+	PaymentPageURL *string `json:"paymentPageUrl,omitempty" url:"paymentPageUrl,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -676,6 +742,13 @@ func (c *CryptopayPaymentResponse) GetWebhookURL() *string {
 		return nil
 	}
 	return c.WebhookURL
+}
+
+func (c *CryptopayPaymentResponse) GetPaymentPageURL() *string {
+	if c == nil {
+		return nil
+	}
+	return c.PaymentPageURL
 }
 
 func (c *CryptopayPaymentResponse) GetExtraProperties() map[string]interface{} {
@@ -867,6 +940,13 @@ func (c *CryptopayPaymentResponse) SetWebhookURL(webhookURL *string) {
 	c.require(cryptopayPaymentResponseFieldWebhookURL)
 }
 
+// SetPaymentPageURL sets the PaymentPageURL field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CryptopayPaymentResponse) SetPaymentPageURL(paymentPageURL *string) {
+	c.PaymentPageURL = paymentPageURL
+	c.require(cryptopayPaymentResponseFieldPaymentPageURL)
+}
+
 func (c *CryptopayPaymentResponse) UnmarshalJSON(data []byte) error {
 	type unmarshaler CryptopayPaymentResponse
 	var value unmarshaler
@@ -909,6 +989,7 @@ func (c *CryptopayPaymentResponse) String() string {
 	return fmt.Sprintf("%#v", c)
 }
 
+// Terminal states: success (finalized), failed (terminal, no valid payment). Non-final: pending (awaiting funds), accepted (safe confirmations reached, credited — non-final until finalized).
 type CryptopayPaymentStatusEnum string
 
 const (
@@ -937,6 +1018,7 @@ func (c CryptopayPaymentStatusEnum) Ptr() *CryptopayPaymentStatusEnum {
 	return &c
 }
 
+// overpaid / underpaid: more or less than the requested amount was received. partiallyPaid: payment expired with a partial payment that never reached acceptance.
 type CryptopayPaymentSubStatusEnum string
 
 const (
@@ -1008,24 +1090,30 @@ var (
 	cryptopayPublicPaymentResponseFieldSubStatus             = big.NewInt(1 << 12)
 	cryptopayPublicPaymentResponseFieldUnderpaymentTolerance = big.NewInt(1 << 13)
 	cryptopayPublicPaymentResponseFieldUpdatedAt             = big.NewInt(1 << 14)
+	cryptopayPublicPaymentResponseFieldPaymentPageURL        = big.NewInt(1 << 15)
 )
 
 type CryptopayPublicPaymentResponse struct {
-	ActivatedAt           *int                           `json:"activatedAt,omitempty" url:"activatedAt,omitempty"`
-	ActivationFlowSeconds *int                           `json:"activationFlowSeconds,omitempty" url:"activationFlowSeconds,omitempty"`
-	Address               *string                        `json:"address,omitempty" url:"address,omitempty"`
-	Amount                *string                        `json:"amount,omitempty" url:"amount,omitempty"`
-	AmountReceived        *string                        `json:"amountReceived,omitempty" url:"amountReceived,omitempty"`
-	Asset                 *CryptopayAssetID              `json:"asset,omitempty" url:"asset,omitempty"`
-	CreatedAt             *int                           `json:"createdAt,omitempty" url:"createdAt,omitempty"`
-	ExpiresAt             *int                           `json:"expiresAt,omitempty" url:"expiresAt,omitempty"`
-	ID                    *string                        `json:"id,omitempty" url:"id,omitempty"`
-	PaymentWindowSeconds  *int                           `json:"paymentWindowSeconds,omitempty" url:"paymentWindowSeconds,omitempty"`
-	Redirect              *CryptopayPublicRedirect       `json:"redirect,omitempty" url:"redirect,omitempty"`
-	Status                *CryptopayPaymentStatusEnum    `json:"status,omitempty" url:"status,omitempty"`
-	SubStatus             *CryptopayPaymentSubStatusEnum `json:"subStatus,omitempty" url:"subStatus,omitempty"`
-	UnderpaymentTolerance *string                        `json:"underpaymentTolerance,omitempty" url:"underpaymentTolerance,omitempty"`
-	UpdatedAt             *int                           `json:"updatedAt,omitempty" url:"updatedAt,omitempty"`
+	ActivatedAt           *int    `json:"activatedAt,omitempty" url:"activatedAt,omitempty"`
+	ActivationFlowSeconds *int    `json:"activationFlowSeconds,omitempty" url:"activationFlowSeconds,omitempty"`
+	Address               *string `json:"address,omitempty" url:"address,omitempty"`
+	// Integer string in the asset's smallest unit.
+	Amount *string `json:"amount,omitempty" url:"amount,omitempty"`
+	// Integer string in the asset's smallest unit.
+	AmountReceived       *string                        `json:"amountReceived,omitempty" url:"amountReceived,omitempty"`
+	Asset                *CryptopayAssetID              `json:"asset,omitempty" url:"asset,omitempty"`
+	CreatedAt            *int                           `json:"createdAt,omitempty" url:"createdAt,omitempty"`
+	ExpiresAt            *int                           `json:"expiresAt,omitempty" url:"expiresAt,omitempty"`
+	ID                   *string                        `json:"id,omitempty" url:"id,omitempty"`
+	PaymentWindowSeconds *int                           `json:"paymentWindowSeconds,omitempty" url:"paymentWindowSeconds,omitempty"`
+	Redirect             *CryptopayPublicRedirect       `json:"redirect,omitempty" url:"redirect,omitempty"`
+	Status               *CryptopayPaymentStatusEnum    `json:"status,omitempty" url:"status,omitempty"`
+	SubStatus            *CryptopayPaymentSubStatusEnum `json:"subStatus,omitempty" url:"subStatus,omitempty"`
+	// Integer string in the asset's smallest unit.
+	UnderpaymentTolerance *string `json:"underpaymentTolerance,omitempty" url:"underpaymentTolerance,omitempty"`
+	UpdatedAt             *int    `json:"updatedAt,omitempty" url:"updatedAt,omitempty"`
+	// Absolute URL of the Suward-hosted checkout page where the customer pays this payment.
+	PaymentPageURL *string `json:"paymentPageUrl,omitempty" url:"paymentPageUrl,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -1137,6 +1225,13 @@ func (c *CryptopayPublicPaymentResponse) GetUpdatedAt() *int {
 		return nil
 	}
 	return c.UpdatedAt
+}
+
+func (c *CryptopayPublicPaymentResponse) GetPaymentPageURL() *string {
+	if c == nil {
+		return nil
+	}
+	return c.PaymentPageURL
 }
 
 func (c *CryptopayPublicPaymentResponse) GetExtraProperties() map[string]interface{} {
@@ -1256,6 +1351,13 @@ func (c *CryptopayPublicPaymentResponse) SetUnderpaymentTolerance(underpaymentTo
 func (c *CryptopayPublicPaymentResponse) SetUpdatedAt(updatedAt *int) {
 	c.UpdatedAt = updatedAt
 	c.require(cryptopayPublicPaymentResponseFieldUpdatedAt)
+}
+
+// SetPaymentPageURL sets the PaymentPageURL field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CryptopayPublicPaymentResponse) SetPaymentPageURL(paymentPageURL *string) {
+	c.PaymentPageURL = paymentPageURL
+	c.require(cryptopayPublicPaymentResponseFieldPaymentPageURL)
 }
 
 func (c *CryptopayPublicPaymentResponse) UnmarshalJSON(data []byte) error {
@@ -1386,6 +1488,158 @@ func (c *CryptopayPublicRedirect) MarshalJSON() ([]byte, error) {
 }
 
 func (c *CryptopayPublicRedirect) String() string {
+	if c == nil {
+		return "<nil>"
+	}
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
+var (
+	cryptopayQuotePaymentResponseFieldAsset      = big.NewInt(1 << 0)
+	cryptopayQuotePaymentResponseFieldAmount     = big.NewInt(1 << 1)
+	cryptopayQuotePaymentResponseFieldFee        = big.NewInt(1 << 2)
+	cryptopayQuotePaymentResponseFieldNetworkFee = big.NewInt(1 << 3)
+	cryptopayQuotePaymentResponseFieldNetAmount  = big.NewInt(1 << 4)
+)
+
+type CryptopayQuotePaymentResponse struct {
+	Asset *CryptopayAssetID `json:"asset,omitempty" url:"asset,omitempty"`
+	// Gross amount, integer string in the asset's smallest unit.
+	Amount *string `json:"amount,omitempty" url:"amount,omitempty"`
+	// Platform fee: 0.4% of the amount, minimum $1 equivalent. Integer string in the asset's smallest unit.
+	Fee *string `json:"fee,omitempty" url:"fee,omitempty"`
+	// Estimated on-chain (gas) cost, deducted from the received amount. Integer string in the asset's smallest unit.
+	NetworkFee *string `json:"networkFee,omitempty" url:"networkFee,omitempty"`
+	// Amount the merchant receives after all fees. Integer string in the asset's smallest unit.
+	NetAmount *string `json:"netAmount,omitempty" url:"netAmount,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *CryptopayQuotePaymentResponse) GetAsset() *CryptopayAssetID {
+	if c == nil {
+		return nil
+	}
+	return c.Asset
+}
+
+func (c *CryptopayQuotePaymentResponse) GetAmount() *string {
+	if c == nil {
+		return nil
+	}
+	return c.Amount
+}
+
+func (c *CryptopayQuotePaymentResponse) GetFee() *string {
+	if c == nil {
+		return nil
+	}
+	return c.Fee
+}
+
+func (c *CryptopayQuotePaymentResponse) GetNetworkFee() *string {
+	if c == nil {
+		return nil
+	}
+	return c.NetworkFee
+}
+
+func (c *CryptopayQuotePaymentResponse) GetNetAmount() *string {
+	if c == nil {
+		return nil
+	}
+	return c.NetAmount
+}
+
+func (c *CryptopayQuotePaymentResponse) GetExtraProperties() map[string]interface{} {
+	if c == nil {
+		return nil
+	}
+	return c.extraProperties
+}
+
+func (c *CryptopayQuotePaymentResponse) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetAsset sets the Asset field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CryptopayQuotePaymentResponse) SetAsset(asset *CryptopayAssetID) {
+	c.Asset = asset
+	c.require(cryptopayQuotePaymentResponseFieldAsset)
+}
+
+// SetAmount sets the Amount field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CryptopayQuotePaymentResponse) SetAmount(amount *string) {
+	c.Amount = amount
+	c.require(cryptopayQuotePaymentResponseFieldAmount)
+}
+
+// SetFee sets the Fee field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CryptopayQuotePaymentResponse) SetFee(fee *string) {
+	c.Fee = fee
+	c.require(cryptopayQuotePaymentResponseFieldFee)
+}
+
+// SetNetworkFee sets the NetworkFee field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CryptopayQuotePaymentResponse) SetNetworkFee(networkFee *string) {
+	c.NetworkFee = networkFee
+	c.require(cryptopayQuotePaymentResponseFieldNetworkFee)
+}
+
+// SetNetAmount sets the NetAmount field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CryptopayQuotePaymentResponse) SetNetAmount(netAmount *string) {
+	c.NetAmount = netAmount
+	c.require(cryptopayQuotePaymentResponseFieldNetAmount)
+}
+
+func (c *CryptopayQuotePaymentResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler CryptopayQuotePaymentResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = CryptopayQuotePaymentResponse(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *CryptopayQuotePaymentResponse) MarshalJSON() ([]byte, error) {
+	type embed CryptopayQuotePaymentResponse
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (c *CryptopayQuotePaymentResponse) String() string {
 	if c == nil {
 		return "<nil>"
 	}

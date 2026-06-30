@@ -136,3 +136,20 @@ func (c *Client) SimulatePayment(
 	}
 	return response.Body, nil
 }
+
+// Returns the platform fee, estimated network fee, and net amount for a payment of `amount` in `asset`, without creating anything. All monetary fields are integer strings in the asset's smallest unit.
+func (c *Client) QuotePaymentFees(
+	ctx context.Context,
+	request *suwardsdkgo.CryptopayQuotePaymentRequest,
+	opts ...option.RequestOption,
+) (*suwardsdkgo.CryptopayQuotePaymentResponse, error) {
+	response, err := c.WithRawResponse.QuotePaymentFees(
+		ctx,
+		request,
+		opts...,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return response.Body, nil
+}

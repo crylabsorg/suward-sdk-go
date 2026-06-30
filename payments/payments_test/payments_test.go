@@ -227,3 +227,30 @@ func TestPaymentsSimulatePaymentWithWireMock(
 	require.NoError(t, invocationErr, "Client method call should succeed")
 	VerifyRequestCount(t, "TestPaymentsSimulatePaymentWithWireMock", "POST", "/v1/payments/paymentId/simulate", nil, 1)
 }
+
+func TestPaymentsQuotePaymentFeesWithWireMock(
+	t *testing.T,
+) {
+	WireMockBaseURL := os.Getenv("WIREMOCK_URL")
+	if WireMockBaseURL == "" {
+		WireMockBaseURL = "http://localhost:8080"
+	}
+	client := client.NewClient(
+		option.WithBaseURL(WireMockBaseURL),
+		option.WithAPIKey("test-value"),
+	)
+	request := &suwardsdkgo.CryptopayQuotePaymentRequest{
+		Asset:  suwardsdkgo.CryptopayAssetIDUsdtEthereum,
+		Amount: "amount",
+	}
+	_, invocationErr := client.Payments.QuotePaymentFees(
+		context.TODO(),
+		request,
+		option.WithHTTPHeader(
+			http.Header{"X-Test-Id": []string{"TestPaymentsQuotePaymentFeesWithWireMock"}},
+		),
+	)
+
+	require.NoError(t, invocationErr, "Client method call should succeed")
+	VerifyRequestCount(t, "TestPaymentsQuotePaymentFeesWithWireMock", "POST", "/v1/payments/quote", nil, 1)
+}
