@@ -306,3 +306,47 @@ func (r *RawClient) SimulatePayment(
 		Body:       response,
 	}, nil
 }
+
+func (r *RawClient) QuotePaymentFees(
+	ctx context.Context,
+	request *suwardsdkgo.CryptopayQuotePaymentRequest,
+	opts ...option.RequestOption,
+) (*core.Response[*suwardsdkgo.CryptopayQuotePaymentResponse], error) {
+	options := core.NewRequestOptions(opts...)
+	baseURL := internal.ResolveBaseURL(
+		options.BaseURL,
+		r.baseURL,
+		"https://api.suward.com",
+	)
+	endpointURL := baseURL + "/v1/payments/quote"
+	headers := internal.MergeHeaders(
+		r.options.ToHeader(),
+		options.ToHeader(),
+	)
+	headers.Add("Content-Type", "application/json")
+	var response *suwardsdkgo.CryptopayQuotePaymentResponse
+	raw, err := r.caller.Call(
+		ctx,
+		&internal.CallParams{
+			URL:             endpointURL,
+			Method:          http.MethodPost,
+			Headers:         headers,
+			MaxAttempts:     options.MaxAttempts,
+			DisableRetries:  options.DisableRetries,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			Request:         request,
+			Response:        &response,
+			ErrorDecoder:    internal.NewErrorDecoder(suwardsdkgo.ErrorCodes),
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &core.Response[*suwardsdkgo.CryptopayQuotePaymentResponse]{
+		StatusCode: raw.StatusCode,
+		Header:     raw.Header,
+		Body:       response,
+	}, nil
+}

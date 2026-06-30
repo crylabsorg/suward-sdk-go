@@ -3,6 +3,7 @@
 package client
 
 import (
+	assets "github.com/crylabsorg/suward-sdk-go/assets"
 	core "github.com/crylabsorg/suward-sdk-go/core"
 	internal "github.com/crylabsorg/suward-sdk-go/internal"
 	option "github.com/crylabsorg/suward-sdk-go/option"
@@ -13,6 +14,7 @@ import (
 type Client struct {
 	Payments      *payments.Client
 	StaticWallets *staticwallets.Client
+	Assets        *assets.Client
 
 	options *core.RequestOptions
 	baseURL string
@@ -24,6 +26,7 @@ func NewClient(opts ...option.RequestOption) *Client {
 	return &Client{
 		Payments:      payments.NewClient(options),
 		StaticWallets: staticwallets.NewClient(options),
+		Assets:        assets.NewClient(options),
 		options:       options,
 		baseURL:       options.BaseURL,
 		caller: internal.NewCaller(

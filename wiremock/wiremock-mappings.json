@@ -14,7 +14,7 @@
       },
       "response": {
         "status": 200,
-        "body": "{\n  \"hasMore\": true,\n  \"items\": [\n    {\n      \"acceptedAt\": 1,\n      \"activatedAt\": 1,\n      \"activationFlowSeconds\": 1,\n      \"address\": \"address\",\n      \"amount\": \"amount\",\n      \"amountConfirmed\": \"amountConfirmed\",\n      \"amountReceived\": \"amountReceived\",\n      \"asset\": \"USDT_ETHEREUM\",\n      \"createdAt\": 1,\n      \"expiresAt\": 1,\n      \"externalId\": \"externalId\",\n      \"fee\": \"fee\",\n      \"id\": \"id\",\n      \"isTest\": true,\n      \"metadata\": {\n        \"key\": \"value\"\n      },\n      \"networkFee\": \"networkFee\",\n      \"paymentWindowSeconds\": 1,\n      \"projectId\": \"projectId\",\n      \"status\": \"pending\",\n      \"subStatus\": \"created\",\n      \"transactions\": [\n        {}\n      ],\n      \"underpaymentTolerance\": \"underpaymentTolerance\",\n      \"updatedAt\": 1,\n      \"webhookUrl\": \"webhookUrl\"\n    }\n  ],\n  \"lastId\": \"lastId\"\n}",
+        "body": "{\n  \"hasMore\": true,\n  \"items\": [\n    {\n      \"acceptedAt\": 1,\n      \"activatedAt\": 1,\n      \"activationFlowSeconds\": 1,\n      \"address\": \"address\",\n      \"amount\": \"amount\",\n      \"amountConfirmed\": \"amountConfirmed\",\n      \"amountReceived\": \"amountReceived\",\n      \"asset\": \"USDT_ETHEREUM\",\n      \"createdAt\": 1,\n      \"expiresAt\": 1,\n      \"externalId\": \"externalId\",\n      \"fee\": \"fee\",\n      \"id\": \"id\",\n      \"isTest\": true,\n      \"metadata\": {\n        \"key\": \"value\"\n      },\n      \"networkFee\": \"networkFee\",\n      \"paymentWindowSeconds\": 1,\n      \"projectId\": \"projectId\",\n      \"status\": \"pending\",\n      \"subStatus\": \"created\",\n      \"transactions\": [\n        {}\n      ],\n      \"underpaymentTolerance\": \"underpaymentTolerance\",\n      \"updatedAt\": 1,\n      \"webhookUrl\": \"webhookUrl\",\n      \"paymentPageUrl\": \"paymentPageUrl\"\n    }\n  ],\n  \"lastId\": \"lastId\"\n}",
         "headers": {
           "Content-Type": "application/json"
         }
@@ -46,7 +46,7 @@
       },
       "response": {
         "status": 201,
-        "body": "{\n  \"acceptedAt\": 1,\n  \"activatedAt\": 1,\n  \"activationFlowSeconds\": 1,\n  \"address\": \"address\",\n  \"amount\": \"amount\",\n  \"amountConfirmed\": \"amountConfirmed\",\n  \"amountReceived\": \"amountReceived\",\n  \"asset\": \"USDT_ETHEREUM\",\n  \"createdAt\": 1,\n  \"expiresAt\": 1,\n  \"externalId\": \"externalId\",\n  \"fee\": \"fee\",\n  \"id\": \"id\",\n  \"isTest\": true,\n  \"metadata\": {\n    \"key\": \"value\"\n  },\n  \"networkFee\": \"networkFee\",\n  \"paymentWindowSeconds\": 1,\n  \"projectId\": \"projectId\",\n  \"redirectConfig\": {\n    \"data\": \"data\",\n    \"params\": [\n      \"id\"\n    ],\n    \"url\": \"url\"\n  },\n  \"status\": \"pending\",\n  \"subStatus\": \"created\",\n  \"transactions\": [\n    {\n      \"acceptedAt\": 1,\n      \"amount\": \"amount\",\n      \"detectedAt\": 1,\n      \"txHash\": \"txHash\"\n    }\n  ],\n  \"underpaymentTolerance\": \"underpaymentTolerance\",\n  \"updatedAt\": 1,\n  \"webhookUrl\": \"webhookUrl\"\n}",
+        "body": "{\n  \"acceptedAt\": 1,\n  \"activatedAt\": 1,\n  \"activationFlowSeconds\": 1,\n  \"address\": \"address\",\n  \"amount\": \"amount\",\n  \"amountConfirmed\": \"amountConfirmed\",\n  \"amountReceived\": \"amountReceived\",\n  \"asset\": \"USDT_ETHEREUM\",\n  \"createdAt\": 1,\n  \"expiresAt\": 1,\n  \"externalId\": \"externalId\",\n  \"fee\": \"fee\",\n  \"id\": \"id\",\n  \"isTest\": true,\n  \"metadata\": {\n    \"key\": \"value\"\n  },\n  \"networkFee\": \"networkFee\",\n  \"paymentWindowSeconds\": 1,\n  \"projectId\": \"projectId\",\n  \"redirectConfig\": {\n    \"data\": \"data\",\n    \"params\": [\n      \"id\"\n    ],\n    \"url\": \"url\"\n  },\n  \"status\": \"pending\",\n  \"subStatus\": \"created\",\n  \"transactions\": [\n    {\n      \"acceptedAt\": 1,\n      \"amount\": \"amount\",\n      \"detectedAt\": 1,\n      \"txHash\": \"txHash\"\n    }\n  ],\n  \"underpaymentTolerance\": \"underpaymentTolerance\",\n  \"updatedAt\": 1,\n  \"webhookUrl\": \"webhookUrl\",\n  \"paymentPageUrl\": \"paymentPageUrl\"\n}",
         "headers": {
           "Content-Type": "application/json"
         }
@@ -82,7 +82,7 @@
       },
       "response": {
         "status": 200,
-        "body": "{\n  \"acceptedAt\": 1,\n  \"activatedAt\": 1,\n  \"activationFlowSeconds\": 1,\n  \"address\": \"address\",\n  \"amount\": \"amount\",\n  \"amountConfirmed\": \"amountConfirmed\",\n  \"amountReceived\": \"amountReceived\",\n  \"asset\": \"USDT_ETHEREUM\",\n  \"createdAt\": 1,\n  \"expiresAt\": 1,\n  \"externalId\": \"externalId\",\n  \"fee\": \"fee\",\n  \"id\": \"id\",\n  \"isTest\": true,\n  \"metadata\": {\n    \"key\": \"value\"\n  },\n  \"networkFee\": \"networkFee\",\n  \"paymentWindowSeconds\": 1,\n  \"projectId\": \"projectId\",\n  \"redirectConfig\": {\n    \"data\": \"data\",\n    \"params\": [\n      \"id\"\n    ],\n    \"url\": \"url\"\n  },\n  \"status\": \"pending\",\n  \"subStatus\": \"created\",\n  \"transactions\": [\n    {\n      \"acceptedAt\": 1,\n      \"amount\": \"amount\",\n      \"detectedAt\": 1,\n      \"txHash\": \"txHash\"\n    }\n  ],\n  \"underpaymentTolerance\": \"underpaymentTolerance\",\n  \"updatedAt\": 1,\n  \"webhookUrl\": \"webhookUrl\"\n}",
+        "body": "{\n  \"acceptedAt\": 1,\n  \"activatedAt\": 1,\n  \"activationFlowSeconds\": 1,\n  \"address\": \"address\",\n  \"amount\": \"amount\",\n  \"amountConfirmed\": \"amountConfirmed\",\n  \"amountReceived\": \"amountReceived\",\n  \"asset\": \"USDT_ETHEREUM\",\n  \"createdAt\": 1,\n  \"expiresAt\": 1,\n  \"externalId\": \"externalId\",\n  \"fee\": \"fee\",\n  \"id\": \"id\",\n  \"isTest\": true,\n  \"metadata\": {\n    \"key\": \"value\"\n  },\n  \"networkFee\": \"networkFee\",\n  \"paymentWindowSeconds\": 1,\n  \"projectId\": \"projectId\",\n  \"redirectConfig\": {\n    \"data\": \"data\",\n    \"params\": [\n      \"id\"\n    ],\n    \"url\": \"url\"\n  },\n  \"status\": \"pending\",\n  \"subStatus\": \"created\",\n  \"transactions\": [\n    {\n      \"acceptedAt\": 1,\n      \"amount\": \"amount\",\n      \"detectedAt\": 1,\n      \"txHash\": \"txHash\"\n    }\n  ],\n  \"underpaymentTolerance\": \"underpaymentTolerance\",\n  \"updatedAt\": 1,\n  \"webhookUrl\": \"webhookUrl\",\n  \"paymentPageUrl\": \"paymentPageUrl\"\n}",
         "headers": {
           "Content-Type": "application/json"
         }
@@ -113,7 +113,7 @@
       },
       "response": {
         "status": 200,
-        "body": "{\n  \"activatedAt\": 1,\n  \"activationFlowSeconds\": 1,\n  \"address\": \"address\",\n  \"amount\": \"amount\",\n  \"amountReceived\": \"amountReceived\",\n  \"asset\": \"USDT_ETHEREUM\",\n  \"createdAt\": 1,\n  \"expiresAt\": 1,\n  \"id\": \"id\",\n  \"paymentWindowSeconds\": 1,\n  \"redirect\": {\n    \"query\": {\n      \"key\": \"value\"\n    },\n    \"url\": \"url\"\n  },\n  \"status\": \"pending\",\n  \"subStatus\": \"created\",\n  \"underpaymentTolerance\": \"underpaymentTolerance\",\n  \"updatedAt\": 1\n}",
+        "body": "{\n  \"activatedAt\": 1,\n  \"activationFlowSeconds\": 1,\n  \"address\": \"address\",\n  \"amount\": \"amount\",\n  \"amountReceived\": \"amountReceived\",\n  \"asset\": \"USDT_ETHEREUM\",\n  \"createdAt\": 1,\n  \"expiresAt\": 1,\n  \"id\": \"id\",\n  \"paymentWindowSeconds\": 1,\n  \"redirect\": {\n    \"query\": {\n      \"key\": \"value\"\n    },\n    \"url\": \"url\"\n  },\n  \"status\": \"pending\",\n  \"subStatus\": \"created\",\n  \"underpaymentTolerance\": \"underpaymentTolerance\",\n  \"updatedAt\": 1,\n  \"paymentPageUrl\": \"paymentPageUrl\"\n}",
         "headers": {
           "Content-Type": "application/json"
         }
@@ -149,7 +149,7 @@
       },
       "response": {
         "status": 200,
-        "body": "{\n  \"acceptedAt\": 1,\n  \"activatedAt\": 1,\n  \"activationFlowSeconds\": 1,\n  \"address\": \"address\",\n  \"amount\": \"amount\",\n  \"amountConfirmed\": \"amountConfirmed\",\n  \"amountReceived\": \"amountReceived\",\n  \"asset\": \"USDT_ETHEREUM\",\n  \"createdAt\": 1,\n  \"expiresAt\": 1,\n  \"externalId\": \"externalId\",\n  \"fee\": \"fee\",\n  \"id\": \"id\",\n  \"isTest\": true,\n  \"metadata\": {\n    \"key\": \"value\"\n  },\n  \"networkFee\": \"networkFee\",\n  \"paymentWindowSeconds\": 1,\n  \"projectId\": \"projectId\",\n  \"redirectConfig\": {\n    \"data\": \"data\",\n    \"params\": [\n      \"id\"\n    ],\n    \"url\": \"url\"\n  },\n  \"status\": \"pending\",\n  \"subStatus\": \"created\",\n  \"transactions\": [\n    {\n      \"acceptedAt\": 1,\n      \"amount\": \"amount\",\n      \"detectedAt\": 1,\n      \"txHash\": \"txHash\"\n    }\n  ],\n  \"underpaymentTolerance\": \"underpaymentTolerance\",\n  \"updatedAt\": 1,\n  \"webhookUrl\": \"webhookUrl\"\n}",
+        "body": "{\n  \"acceptedAt\": 1,\n  \"activatedAt\": 1,\n  \"activationFlowSeconds\": 1,\n  \"address\": \"address\",\n  \"amount\": \"amount\",\n  \"amountConfirmed\": \"amountConfirmed\",\n  \"amountReceived\": \"amountReceived\",\n  \"asset\": \"USDT_ETHEREUM\",\n  \"createdAt\": 1,\n  \"expiresAt\": 1,\n  \"externalId\": \"externalId\",\n  \"fee\": \"fee\",\n  \"id\": \"id\",\n  \"isTest\": true,\n  \"metadata\": {\n    \"key\": \"value\"\n  },\n  \"networkFee\": \"networkFee\",\n  \"paymentWindowSeconds\": 1,\n  \"projectId\": \"projectId\",\n  \"redirectConfig\": {\n    \"data\": \"data\",\n    \"params\": [\n      \"id\"\n    ],\n    \"url\": \"url\"\n  },\n  \"status\": \"pending\",\n  \"subStatus\": \"created\",\n  \"transactions\": [\n    {\n      \"acceptedAt\": 1,\n      \"amount\": \"amount\",\n      \"detectedAt\": 1,\n      \"txHash\": \"txHash\"\n    }\n  ],\n  \"underpaymentTolerance\": \"underpaymentTolerance\",\n  \"updatedAt\": 1,\n  \"webhookUrl\": \"webhookUrl\",\n  \"paymentPageUrl\": \"paymentPageUrl\"\n}",
         "headers": {
           "Content-Type": "application/json"
         }
@@ -185,12 +185,43 @@
       },
       "response": {
         "status": 200,
-        "body": "{\n  \"acceptedAt\": 1,\n  \"activatedAt\": 1,\n  \"activationFlowSeconds\": 1,\n  \"address\": \"address\",\n  \"amount\": \"amount\",\n  \"amountConfirmed\": \"amountConfirmed\",\n  \"amountReceived\": \"amountReceived\",\n  \"asset\": \"USDT_ETHEREUM\",\n  \"createdAt\": 1,\n  \"expiresAt\": 1,\n  \"externalId\": \"externalId\",\n  \"fee\": \"fee\",\n  \"id\": \"id\",\n  \"isTest\": true,\n  \"metadata\": {\n    \"key\": \"value\"\n  },\n  \"networkFee\": \"networkFee\",\n  \"paymentWindowSeconds\": 1,\n  \"projectId\": \"projectId\",\n  \"redirectConfig\": {\n    \"data\": \"data\",\n    \"params\": [\n      \"id\"\n    ],\n    \"url\": \"url\"\n  },\n  \"status\": \"pending\",\n  \"subStatus\": \"created\",\n  \"transactions\": [\n    {\n      \"acceptedAt\": 1,\n      \"amount\": \"amount\",\n      \"detectedAt\": 1,\n      \"txHash\": \"txHash\"\n    }\n  ],\n  \"underpaymentTolerance\": \"underpaymentTolerance\",\n  \"updatedAt\": 1,\n  \"webhookUrl\": \"webhookUrl\"\n}",
+        "body": "{\n  \"acceptedAt\": 1,\n  \"activatedAt\": 1,\n  \"activationFlowSeconds\": 1,\n  \"address\": \"address\",\n  \"amount\": \"amount\",\n  \"amountConfirmed\": \"amountConfirmed\",\n  \"amountReceived\": \"amountReceived\",\n  \"asset\": \"USDT_ETHEREUM\",\n  \"createdAt\": 1,\n  \"expiresAt\": 1,\n  \"externalId\": \"externalId\",\n  \"fee\": \"fee\",\n  \"id\": \"id\",\n  \"isTest\": true,\n  \"metadata\": {\n    \"key\": \"value\"\n  },\n  \"networkFee\": \"networkFee\",\n  \"paymentWindowSeconds\": 1,\n  \"projectId\": \"projectId\",\n  \"redirectConfig\": {\n    \"data\": \"data\",\n    \"params\": [\n      \"id\"\n    ],\n    \"url\": \"url\"\n  },\n  \"status\": \"pending\",\n  \"subStatus\": \"created\",\n  \"transactions\": [\n    {\n      \"acceptedAt\": 1,\n      \"amount\": \"amount\",\n      \"detectedAt\": 1,\n      \"txHash\": \"txHash\"\n    }\n  ],\n  \"underpaymentTolerance\": \"underpaymentTolerance\",\n  \"updatedAt\": 1,\n  \"webhookUrl\": \"webhookUrl\",\n  \"paymentPageUrl\": \"paymentPageUrl\"\n}",
         "headers": {
           "Content-Type": "application/json"
         }
       },
       "uuid": "5193c5f7-2afe-4718-b1f4-67d83eccdb20",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "0d7f5c9e-44c9-4c79-a011-58dbaadb4581",
+      "name": "Quote payment fees - default",
+      "request": {
+        "urlPathTemplate": "/v1/payments/quote",
+        "method": "POST",
+        "headers": {
+          "X-Api-Key": {
+            "matches": ".+"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"asset\": \"USDT_ETHEREUM\",\n  \"amount\": \"amount\",\n  \"fee\": \"fee\",\n  \"networkFee\": \"networkFee\",\n  \"netAmount\": \"netAmount\"\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "0d7f5c9e-44c9-4c79-a011-58dbaadb4581",
       "persistent": true,
       "priority": 3,
       "metadata": {
@@ -483,9 +514,63 @@
           }
         }
       }
+    },
+    {
+      "id": "f93ae396-a83e-4578-9eea-0bb536e3bd95",
+      "name": "List accepted assets - default",
+      "request": {
+        "urlPathTemplate": "/v1/assets",
+        "method": "GET"
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"items\": [\n    {\n      \"id\": \"USDT_ETHEREUM\",\n      \"blockchainId\": 1,\n      \"contractAddress\": \"contractAddress\",\n      \"decimals\": 1,\n      \"group\": \"group\",\n      \"name\": \"name\"\n    }\n  ]\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "f93ae396-a83e-4578-9eea-0bb536e3bd95",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      },
+      "postServeActions": []
+    },
+    {
+      "id": "ad829c35-ee50-4d2f-b45b-144b194cdfba",
+      "name": "List supported blockchains - default",
+      "request": {
+        "urlPathTemplate": "/v1/blockchains",
+        "method": "GET"
+      },
+      "response": {
+        "status": 200,
+        "body": "[\n  {\n    \"id\": 1,\n    \"idString\": \"idString\",\n    \"evmChainId\": 1,\n    \"chainName\": \"chainName\",\n    \"requiredConfirmations\": 1,\n    \"networkFeeUsd\": \"networkFeeUsd\"\n  }\n]",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "ad829c35-ee50-4d2f-b45b-144b194cdfba",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      },
+      "postServeActions": []
     }
   ],
   "meta": {
-    "total": 14
+    "total": 17
   }
 }
