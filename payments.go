@@ -65,19 +65,26 @@ var (
 	cryptopayCreatePaymentRequestFieldActivationFlowSeconds = big.NewInt(1 << 0)
 	cryptopayCreatePaymentRequestFieldAmount                = big.NewInt(1 << 1)
 	cryptopayCreatePaymentRequestFieldAsset                 = big.NewInt(1 << 2)
-	cryptopayCreatePaymentRequestFieldExternalID            = big.NewInt(1 << 3)
-	cryptopayCreatePaymentRequestFieldIsTest                = big.NewInt(1 << 4)
-	cryptopayCreatePaymentRequestFieldMetadata              = big.NewInt(1 << 5)
-	cryptopayCreatePaymentRequestFieldPaymentWindowSeconds  = big.NewInt(1 << 6)
-	cryptopayCreatePaymentRequestFieldRedirectConfig        = big.NewInt(1 << 7)
-	cryptopayCreatePaymentRequestFieldUnderpaymentTolerance = big.NewInt(1 << 8)
-	cryptopayCreatePaymentRequestFieldWebhookURL            = big.NewInt(1 << 9)
+	cryptopayCreatePaymentRequestFieldNetworkFeePayer       = big.NewInt(1 << 3)
+	cryptopayCreatePaymentRequestFieldServiceFeePayer       = big.NewInt(1 << 4)
+	cryptopayCreatePaymentRequestFieldExternalID            = big.NewInt(1 << 5)
+	cryptopayCreatePaymentRequestFieldIsTest                = big.NewInt(1 << 6)
+	cryptopayCreatePaymentRequestFieldMetadata              = big.NewInt(1 << 7)
+	cryptopayCreatePaymentRequestFieldPaymentWindowSeconds  = big.NewInt(1 << 8)
+	cryptopayCreatePaymentRequestFieldRedirectConfig        = big.NewInt(1 << 9)
+	cryptopayCreatePaymentRequestFieldUnderpaymentTolerance = big.NewInt(1 << 10)
+	cryptopayCreatePaymentRequestFieldWebhookURL            = big.NewInt(1 << 11)
 )
 
 type CryptopayCreatePaymentRequest struct {
-	ActivationFlowSeconds *int                        `json:"activationFlowSeconds,omitempty" url:"-"`
-	Amount                *string                     `json:"amount,omitempty" url:"-"`
-	Asset                 *CryptopayAssetID           `json:"asset,omitempty" url:"-"`
+	ActivationFlowSeconds *int `json:"activationFlowSeconds,omitempty" url:"-"`
+	// Merchant base amount, integer string in the asset's smallest unit. When a fee payer is on_top the customer is charged more than this (gross); when absorbed (default) the fee is deducted from the merchant's proceeds.
+	Amount *string           `json:"amount,omitempty" url:"-"`
+	Asset  *CryptopayAssetID `json:"asset,omitempty" url:"-"`
+	// Who bears the network (gas) fee. Default absorbed.
+	NetworkFeePayer *CryptopayFeePayer `json:"networkFeePayer,omitempty" url:"-"`
+	// Who bears the platform (service) fee. Default absorbed.
+	ServiceFeePayer       *CryptopayFeePayer          `json:"serviceFeePayer,omitempty" url:"-"`
 	ExternalID            *string                     `json:"externalId,omitempty" url:"-"`
 	IsTest                *bool                       `json:"isTest,omitempty" url:"-"`
 	Metadata              map[string]any              `json:"metadata,omitempty" url:"-"`
@@ -116,6 +123,20 @@ func (c *CryptopayCreatePaymentRequest) SetAmount(amount *string) {
 func (c *CryptopayCreatePaymentRequest) SetAsset(asset *CryptopayAssetID) {
 	c.Asset = asset
 	c.require(cryptopayCreatePaymentRequestFieldAsset)
+}
+
+// SetNetworkFeePayer sets the NetworkFeePayer field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CryptopayCreatePaymentRequest) SetNetworkFeePayer(networkFeePayer *CryptopayFeePayer) {
+	c.NetworkFeePayer = networkFeePayer
+	c.require(cryptopayCreatePaymentRequestFieldNetworkFeePayer)
+}
+
+// SetServiceFeePayer sets the ServiceFeePayer field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CryptopayCreatePaymentRequest) SetServiceFeePayer(serviceFeePayer *CryptopayFeePayer) {
+	c.ServiceFeePayer = serviceFeePayer
+	c.require(cryptopayCreatePaymentRequestFieldServiceFeePayer)
 }
 
 // SetExternalID sets the ExternalID field and marks it as non-optional;
@@ -261,15 +282,21 @@ func (g *GetV1PaymentsRequest) SetLastID(lastID *string) {
 }
 
 var (
-	cryptopayQuotePaymentRequestFieldAsset  = big.NewInt(1 << 0)
-	cryptopayQuotePaymentRequestFieldAmount = big.NewInt(1 << 1)
+	cryptopayQuotePaymentRequestFieldAsset           = big.NewInt(1 << 0)
+	cryptopayQuotePaymentRequestFieldAmount          = big.NewInt(1 << 1)
+	cryptopayQuotePaymentRequestFieldNetworkFeePayer = big.NewInt(1 << 2)
+	cryptopayQuotePaymentRequestFieldServiceFeePayer = big.NewInt(1 << 3)
 )
 
 type CryptopayQuotePaymentRequest struct {
 	// Asset identifier (see GET /v1/assets for the live list).
 	Asset CryptopayAssetID `json:"asset" url:"-"`
-	// Gross amount, integer string in the asset's smallest unit. Example: "5000000" = 5 USDT.
+	// Merchant base amount, integer string in the asset's smallest unit. Example: "5000000" = 5 USDT. The response returns the derived gross (what the customer pays) and netAmount (what the merchant receives).
 	Amount string `json:"amount" url:"-"`
+	// Who bears the network (gas) fee. Default absorbed.
+	NetworkFeePayer *CryptopayFeePayer `json:"networkFeePayer,omitempty" url:"-"`
+	// Who bears the platform (service) fee. Default absorbed.
+	ServiceFeePayer *CryptopayFeePayer `json:"serviceFeePayer,omitempty" url:"-"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -294,6 +321,20 @@ func (c *CryptopayQuotePaymentRequest) SetAsset(asset CryptopayAssetID) {
 func (c *CryptopayQuotePaymentRequest) SetAmount(amount string) {
 	c.Amount = amount
 	c.require(cryptopayQuotePaymentRequestFieldAmount)
+}
+
+// SetNetworkFeePayer sets the NetworkFeePayer field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CryptopayQuotePaymentRequest) SetNetworkFeePayer(networkFeePayer *CryptopayFeePayer) {
+	c.NetworkFeePayer = networkFeePayer
+	c.require(cryptopayQuotePaymentRequestFieldNetworkFeePayer)
+}
+
+// SetServiceFeePayer sets the ServiceFeePayer field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CryptopayQuotePaymentRequest) SetServiceFeePayer(serviceFeePayer *CryptopayFeePayer) {
+	c.ServiceFeePayer = serviceFeePayer
+	c.require(cryptopayQuotePaymentRequestFieldServiceFeePayer)
 }
 
 func (c *CryptopayQuotePaymentRequest) UnmarshalJSON(data []byte) error {
@@ -380,6 +421,29 @@ func (c *CryptopaySimulatePaymentRequest) MarshalJSON() ([]byte, error) {
 	}
 	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
 	return json.Marshal(explicitMarshaler)
+}
+
+// Who bears a fee: absorbed = deducted from the merchant's proceeds (default); onTop = added on top of the customer charge.
+type CryptopayFeePayer string
+
+const (
+	CryptopayFeePayerAbsorbed CryptopayFeePayer = "absorbed"
+	CryptopayFeePayerOnTop    CryptopayFeePayer = "onTop"
+)
+
+func NewCryptopayFeePayerFromString(s string) (CryptopayFeePayer, error) {
+	switch s {
+	case "absorbed":
+		return CryptopayFeePayerAbsorbed, nil
+	case "onTop":
+		return CryptopayFeePayerOnTop, nil
+	}
+	var t CryptopayFeePayer
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (c CryptopayFeePayer) Ptr() *CryptopayFeePayer {
+	return &c
 }
 
 var (
@@ -515,16 +579,19 @@ var (
 	cryptopayPaymentResponseFieldIsTest                = big.NewInt(1 << 13)
 	cryptopayPaymentResponseFieldMetadata              = big.NewInt(1 << 14)
 	cryptopayPaymentResponseFieldNetworkFee            = big.NewInt(1 << 15)
-	cryptopayPaymentResponseFieldPaymentWindowSeconds  = big.NewInt(1 << 16)
-	cryptopayPaymentResponseFieldProjectID             = big.NewInt(1 << 17)
-	cryptopayPaymentResponseFieldRedirectConfig        = big.NewInt(1 << 18)
-	cryptopayPaymentResponseFieldStatus                = big.NewInt(1 << 19)
-	cryptopayPaymentResponseFieldSubStatus             = big.NewInt(1 << 20)
-	cryptopayPaymentResponseFieldTransactions          = big.NewInt(1 << 21)
-	cryptopayPaymentResponseFieldUnderpaymentTolerance = big.NewInt(1 << 22)
-	cryptopayPaymentResponseFieldUpdatedAt             = big.NewInt(1 << 23)
-	cryptopayPaymentResponseFieldWebhookURL            = big.NewInt(1 << 24)
-	cryptopayPaymentResponseFieldPaymentPageURL        = big.NewInt(1 << 25)
+	cryptopayPaymentResponseFieldQuotedPrice           = big.NewInt(1 << 16)
+	cryptopayPaymentResponseFieldNetworkFeePayer       = big.NewInt(1 << 17)
+	cryptopayPaymentResponseFieldServiceFeePayer       = big.NewInt(1 << 18)
+	cryptopayPaymentResponseFieldPaymentWindowSeconds  = big.NewInt(1 << 19)
+	cryptopayPaymentResponseFieldProjectID             = big.NewInt(1 << 20)
+	cryptopayPaymentResponseFieldRedirectConfig        = big.NewInt(1 << 21)
+	cryptopayPaymentResponseFieldStatus                = big.NewInt(1 << 22)
+	cryptopayPaymentResponseFieldSubStatus             = big.NewInt(1 << 23)
+	cryptopayPaymentResponseFieldTransactions          = big.NewInt(1 << 24)
+	cryptopayPaymentResponseFieldUnderpaymentTolerance = big.NewInt(1 << 25)
+	cryptopayPaymentResponseFieldUpdatedAt             = big.NewInt(1 << 26)
+	cryptopayPaymentResponseFieldWebhookURL            = big.NewInt(1 << 27)
+	cryptopayPaymentResponseFieldPaymentPageURL        = big.NewInt(1 << 28)
 )
 
 type CryptopayPaymentResponse struct {
@@ -548,7 +615,13 @@ type CryptopayPaymentResponse struct {
 	IsTest   *bool          `json:"isTest,omitempty" url:"isTest,omitempty"`
 	Metadata map[string]any `json:"metadata,omitempty" url:"metadata,omitempty"`
 	// Estimated on-chain (gas) cost, deducted from the received amount. Integer string in the asset's smallest unit.
-	NetworkFee           *string                         `json:"networkFee,omitempty" url:"networkFee,omitempty"`
+	NetworkFee *string `json:"networkFee,omitempty" url:"networkFee,omitempty"`
+	// USD price of the asset locked at creation, decimal string. Fees are computed from this price at settlement, so the merchant's net is deterministic.
+	QuotedPrice *string `json:"quotedPrice,omitempty" url:"quotedPrice,omitempty"`
+	// Who bears the network (gas) fee, echoed from creation.
+	NetworkFeePayer *CryptopayFeePayer `json:"networkFeePayer,omitempty" url:"networkFeePayer,omitempty"`
+	// Who bears the platform (service) fee, echoed from creation.
+	ServiceFeePayer      *CryptopayFeePayer              `json:"serviceFeePayer,omitempty" url:"serviceFeePayer,omitempty"`
 	PaymentWindowSeconds *int                            `json:"paymentWindowSeconds,omitempty" url:"paymentWindowSeconds,omitempty"`
 	ProjectID            *string                         `json:"projectId,omitempty" url:"projectId,omitempty"`
 	RedirectConfig       *CryptopayRedirectConfigDto     `json:"redirectConfig,omitempty" url:"redirectConfig,omitempty"`
@@ -679,6 +752,27 @@ func (c *CryptopayPaymentResponse) GetNetworkFee() *string {
 		return nil
 	}
 	return c.NetworkFee
+}
+
+func (c *CryptopayPaymentResponse) GetQuotedPrice() *string {
+	if c == nil {
+		return nil
+	}
+	return c.QuotedPrice
+}
+
+func (c *CryptopayPaymentResponse) GetNetworkFeePayer() *CryptopayFeePayer {
+	if c == nil {
+		return nil
+	}
+	return c.NetworkFeePayer
+}
+
+func (c *CryptopayPaymentResponse) GetServiceFeePayer() *CryptopayFeePayer {
+	if c == nil {
+		return nil
+	}
+	return c.ServiceFeePayer
 }
 
 func (c *CryptopayPaymentResponse) GetPaymentWindowSeconds() *int {
@@ -875,6 +969,27 @@ func (c *CryptopayPaymentResponse) SetMetadata(metadata map[string]any) {
 func (c *CryptopayPaymentResponse) SetNetworkFee(networkFee *string) {
 	c.NetworkFee = networkFee
 	c.require(cryptopayPaymentResponseFieldNetworkFee)
+}
+
+// SetQuotedPrice sets the QuotedPrice field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CryptopayPaymentResponse) SetQuotedPrice(quotedPrice *string) {
+	c.QuotedPrice = quotedPrice
+	c.require(cryptopayPaymentResponseFieldQuotedPrice)
+}
+
+// SetNetworkFeePayer sets the NetworkFeePayer field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CryptopayPaymentResponse) SetNetworkFeePayer(networkFeePayer *CryptopayFeePayer) {
+	c.NetworkFeePayer = networkFeePayer
+	c.require(cryptopayPaymentResponseFieldNetworkFeePayer)
+}
+
+// SetServiceFeePayer sets the ServiceFeePayer field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CryptopayPaymentResponse) SetServiceFeePayer(serviceFeePayer *CryptopayFeePayer) {
+	c.ServiceFeePayer = serviceFeePayer
+	c.require(cryptopayPaymentResponseFieldServiceFeePayer)
 }
 
 // SetPaymentWindowSeconds sets the PaymentWindowSeconds field and marks it as non-optional;
@@ -1503,11 +1618,13 @@ func (c *CryptopayPublicRedirect) String() string {
 }
 
 var (
-	cryptopayQuotePaymentResponseFieldAsset      = big.NewInt(1 << 0)
-	cryptopayQuotePaymentResponseFieldAmount     = big.NewInt(1 << 1)
-	cryptopayQuotePaymentResponseFieldFee        = big.NewInt(1 << 2)
-	cryptopayQuotePaymentResponseFieldNetworkFee = big.NewInt(1 << 3)
-	cryptopayQuotePaymentResponseFieldNetAmount  = big.NewInt(1 << 4)
+	cryptopayQuotePaymentResponseFieldAsset       = big.NewInt(1 << 0)
+	cryptopayQuotePaymentResponseFieldAmount      = big.NewInt(1 << 1)
+	cryptopayQuotePaymentResponseFieldFee         = big.NewInt(1 << 2)
+	cryptopayQuotePaymentResponseFieldNetworkFee  = big.NewInt(1 << 3)
+	cryptopayQuotePaymentResponseFieldNetAmount   = big.NewInt(1 << 4)
+	cryptopayQuotePaymentResponseFieldGross       = big.NewInt(1 << 5)
+	cryptopayQuotePaymentResponseFieldQuotedPrice = big.NewInt(1 << 6)
 )
 
 type CryptopayQuotePaymentResponse struct {
@@ -1520,6 +1637,10 @@ type CryptopayQuotePaymentResponse struct {
 	NetworkFee *string `json:"networkFee,omitempty" url:"networkFee,omitempty"`
 	// Amount the merchant receives after all fees. Integer string in the asset's smallest unit.
 	NetAmount *string `json:"netAmount,omitempty" url:"netAmount,omitempty"`
+	// Amount the customer pays: base plus any on_top fees. Integer string in the asset's smallest unit.
+	Gross *string `json:"gross,omitempty" url:"gross,omitempty"`
+	// USD price used for this quote, decimal string. Not locked — the binding price is captured when the payment is created.
+	QuotedPrice *string `json:"quotedPrice,omitempty" url:"quotedPrice,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -1561,6 +1682,20 @@ func (c *CryptopayQuotePaymentResponse) GetNetAmount() *string {
 		return nil
 	}
 	return c.NetAmount
+}
+
+func (c *CryptopayQuotePaymentResponse) GetGross() *string {
+	if c == nil {
+		return nil
+	}
+	return c.Gross
+}
+
+func (c *CryptopayQuotePaymentResponse) GetQuotedPrice() *string {
+	if c == nil {
+		return nil
+	}
+	return c.QuotedPrice
 }
 
 func (c *CryptopayQuotePaymentResponse) GetExtraProperties() map[string]interface{} {
@@ -1610,6 +1745,20 @@ func (c *CryptopayQuotePaymentResponse) SetNetworkFee(networkFee *string) {
 func (c *CryptopayQuotePaymentResponse) SetNetAmount(netAmount *string) {
 	c.NetAmount = netAmount
 	c.require(cryptopayQuotePaymentResponseFieldNetAmount)
+}
+
+// SetGross sets the Gross field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CryptopayQuotePaymentResponse) SetGross(gross *string) {
+	c.Gross = gross
+	c.require(cryptopayQuotePaymentResponseFieldGross)
+}
+
+// SetQuotedPrice sets the QuotedPrice field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CryptopayQuotePaymentResponse) SetQuotedPrice(quotedPrice *string) {
+	c.QuotedPrice = quotedPrice
+	c.require(cryptopayQuotePaymentResponseFieldQuotedPrice)
 }
 
 func (c *CryptopayQuotePaymentResponse) UnmarshalJSON(data []byte) error {
