@@ -120,7 +120,7 @@ func (c *Client) CancelPayment(
 	return response.Body, nil
 }
 
-// Simulate payment status change (test mode only)
+// Simulate a payment status transition. Available for test-coin assets only.
 func (c *Client) SimulatePayment(
 	ctx context.Context,
 	request *suwardsdkgo.CryptopaySimulatePaymentRequest,

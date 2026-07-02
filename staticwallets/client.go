@@ -147,7 +147,7 @@ func (c *Client) GetStaticWalletDeposit(
 	return response.Body, nil
 }
 
-// Drive a synthetic deposit through its lifecycle on a test wallet (no on-chain activity, no balance credit). Test wallets only.
+// Drive a synthetic deposit through its lifecycle (no on-chain activity, no balance credit). Available for test-coin assets only.
 func (c *Client) SimulateStaticWalletDeposit(
 	ctx context.Context,
 	request *suwardsdkgo.CryptopaySimulateStaticDepositRequest,

@@ -12,15 +12,13 @@ import (
 var (
 	cryptopayCreateStaticWalletRequestFieldAllowedAssets = big.NewInt(1 << 0)
 	cryptopayCreateStaticWalletRequestFieldExternalID    = big.NewInt(1 << 1)
-	cryptopayCreateStaticWalletRequestFieldIsTest        = big.NewInt(1 << 2)
-	cryptopayCreateStaticWalletRequestFieldMetadata      = big.NewInt(1 << 3)
-	cryptopayCreateStaticWalletRequestFieldWebhookURL    = big.NewInt(1 << 4)
+	cryptopayCreateStaticWalletRequestFieldMetadata      = big.NewInt(1 << 2)
+	cryptopayCreateStaticWalletRequestFieldWebhookURL    = big.NewInt(1 << 3)
 )
 
 type CryptopayCreateStaticWalletRequest struct {
 	AllowedAssets []CryptopayAssetID `json:"allowedAssets,omitempty" url:"-"`
 	ExternalID    *string            `json:"externalId,omitempty" url:"-"`
-	IsTest        *bool              `json:"isTest,omitempty" url:"-"`
 	Metadata      map[string]any     `json:"metadata,omitempty" url:"-"`
 	WebhookURL    *string            `json:"webhookUrl,omitempty" url:"-"`
 
@@ -47,13 +45,6 @@ func (c *CryptopayCreateStaticWalletRequest) SetAllowedAssets(allowedAssets []Cr
 func (c *CryptopayCreateStaticWalletRequest) SetExternalID(externalID *string) {
 	c.ExternalID = externalID
 	c.require(cryptopayCreateStaticWalletRequestFieldExternalID)
-}
-
-// SetIsTest sets the IsTest field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayCreateStaticWalletRequest) SetIsTest(isTest *bool) {
-	c.IsTest = isTest
-	c.require(cryptopayCreateStaticWalletRequestFieldIsTest)
 }
 
 // SetMetadata sets the Metadata field and marks it as non-optional;
@@ -1015,11 +1006,10 @@ var (
 	cryptopayStaticWalletResponseFieldCreatedAt     = big.NewInt(1 << 2)
 	cryptopayStaticWalletResponseFieldExternalID    = big.NewInt(1 << 3)
 	cryptopayStaticWalletResponseFieldID            = big.NewInt(1 << 4)
-	cryptopayStaticWalletResponseFieldIsTest        = big.NewInt(1 << 5)
-	cryptopayStaticWalletResponseFieldMetadata      = big.NewInt(1 << 6)
-	cryptopayStaticWalletResponseFieldProjectID     = big.NewInt(1 << 7)
-	cryptopayStaticWalletResponseFieldUpdatedAt     = big.NewInt(1 << 8)
-	cryptopayStaticWalletResponseFieldWebhookURL    = big.NewInt(1 << 9)
+	cryptopayStaticWalletResponseFieldMetadata      = big.NewInt(1 << 5)
+	cryptopayStaticWalletResponseFieldProjectID     = big.NewInt(1 << 6)
+	cryptopayStaticWalletResponseFieldUpdatedAt     = big.NewInt(1 << 7)
+	cryptopayStaticWalletResponseFieldWebhookURL    = big.NewInt(1 << 8)
 )
 
 type CryptopayStaticWalletResponse struct {
@@ -1028,7 +1018,6 @@ type CryptopayStaticWalletResponse struct {
 	CreatedAt     *int               `json:"createdAt,omitempty" url:"createdAt,omitempty"`
 	ExternalID    *string            `json:"externalId,omitempty" url:"externalId,omitempty"`
 	ID            *string            `json:"id,omitempty" url:"id,omitempty"`
-	IsTest        *bool              `json:"isTest,omitempty" url:"isTest,omitempty"`
 	Metadata      map[string]any     `json:"metadata,omitempty" url:"metadata,omitempty"`
 	ProjectID     *string            `json:"projectId,omitempty" url:"projectId,omitempty"`
 	UpdatedAt     *int               `json:"updatedAt,omitempty" url:"updatedAt,omitempty"`
@@ -1074,13 +1063,6 @@ func (c *CryptopayStaticWalletResponse) GetID() *string {
 		return nil
 	}
 	return c.ID
-}
-
-func (c *CryptopayStaticWalletResponse) GetIsTest() *bool {
-	if c == nil {
-		return nil
-	}
-	return c.IsTest
 }
 
 func (c *CryptopayStaticWalletResponse) GetMetadata() map[string]any {
@@ -1158,13 +1140,6 @@ func (c *CryptopayStaticWalletResponse) SetExternalID(externalID *string) {
 func (c *CryptopayStaticWalletResponse) SetID(id *string) {
 	c.ID = id
 	c.require(cryptopayStaticWalletResponseFieldID)
-}
-
-// SetIsTest sets the IsTest field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayStaticWalletResponse) SetIsTest(isTest *bool) {
-	c.IsTest = isTest
-	c.require(cryptopayStaticWalletResponseFieldIsTest)
 }
 
 // SetMetadata sets the Metadata field and marks it as non-optional;

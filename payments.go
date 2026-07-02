@@ -68,12 +68,11 @@ var (
 	cryptopayCreatePaymentRequestFieldNetworkFeePayer       = big.NewInt(1 << 3)
 	cryptopayCreatePaymentRequestFieldServiceFeePayer       = big.NewInt(1 << 4)
 	cryptopayCreatePaymentRequestFieldExternalID            = big.NewInt(1 << 5)
-	cryptopayCreatePaymentRequestFieldIsTest                = big.NewInt(1 << 6)
-	cryptopayCreatePaymentRequestFieldMetadata              = big.NewInt(1 << 7)
-	cryptopayCreatePaymentRequestFieldPaymentWindowSeconds  = big.NewInt(1 << 8)
-	cryptopayCreatePaymentRequestFieldRedirectConfig        = big.NewInt(1 << 9)
-	cryptopayCreatePaymentRequestFieldUnderpaymentTolerance = big.NewInt(1 << 10)
-	cryptopayCreatePaymentRequestFieldWebhookURL            = big.NewInt(1 << 11)
+	cryptopayCreatePaymentRequestFieldMetadata              = big.NewInt(1 << 6)
+	cryptopayCreatePaymentRequestFieldPaymentWindowSeconds  = big.NewInt(1 << 7)
+	cryptopayCreatePaymentRequestFieldRedirectConfig        = big.NewInt(1 << 8)
+	cryptopayCreatePaymentRequestFieldUnderpaymentTolerance = big.NewInt(1 << 9)
+	cryptopayCreatePaymentRequestFieldWebhookURL            = big.NewInt(1 << 10)
 )
 
 type CryptopayCreatePaymentRequest struct {
@@ -86,7 +85,6 @@ type CryptopayCreatePaymentRequest struct {
 	// Who bears the platform (service) fee. Default absorbed.
 	ServiceFeePayer       *CryptopayFeePayer          `json:"serviceFeePayer,omitempty" url:"-"`
 	ExternalID            *string                     `json:"externalId,omitempty" url:"-"`
-	IsTest                *bool                       `json:"isTest,omitempty" url:"-"`
 	Metadata              map[string]any              `json:"metadata,omitempty" url:"-"`
 	PaymentWindowSeconds  *int                        `json:"paymentWindowSeconds,omitempty" url:"-"`
 	RedirectConfig        *CryptopayRedirectConfigDto `json:"redirectConfig,omitempty" url:"-"`
@@ -144,13 +142,6 @@ func (c *CryptopayCreatePaymentRequest) SetServiceFeePayer(serviceFeePayer *Cryp
 func (c *CryptopayCreatePaymentRequest) SetExternalID(externalID *string) {
 	c.ExternalID = externalID
 	c.require(cryptopayCreatePaymentRequestFieldExternalID)
-}
-
-// SetIsTest sets the IsTest field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayCreatePaymentRequest) SetIsTest(isTest *bool) {
-	c.IsTest = isTest
-	c.require(cryptopayCreatePaymentRequestFieldIsTest)
 }
 
 // SetMetadata sets the Metadata field and marks it as non-optional;
@@ -576,22 +567,21 @@ var (
 	cryptopayPaymentResponseFieldExternalID            = big.NewInt(1 << 10)
 	cryptopayPaymentResponseFieldFee                   = big.NewInt(1 << 11)
 	cryptopayPaymentResponseFieldID                    = big.NewInt(1 << 12)
-	cryptopayPaymentResponseFieldIsTest                = big.NewInt(1 << 13)
-	cryptopayPaymentResponseFieldMetadata              = big.NewInt(1 << 14)
-	cryptopayPaymentResponseFieldNetworkFee            = big.NewInt(1 << 15)
-	cryptopayPaymentResponseFieldQuotedPrice           = big.NewInt(1 << 16)
-	cryptopayPaymentResponseFieldNetworkFeePayer       = big.NewInt(1 << 17)
-	cryptopayPaymentResponseFieldServiceFeePayer       = big.NewInt(1 << 18)
-	cryptopayPaymentResponseFieldPaymentWindowSeconds  = big.NewInt(1 << 19)
-	cryptopayPaymentResponseFieldProjectID             = big.NewInt(1 << 20)
-	cryptopayPaymentResponseFieldRedirectConfig        = big.NewInt(1 << 21)
-	cryptopayPaymentResponseFieldStatus                = big.NewInt(1 << 22)
-	cryptopayPaymentResponseFieldSubStatus             = big.NewInt(1 << 23)
-	cryptopayPaymentResponseFieldTransactions          = big.NewInt(1 << 24)
-	cryptopayPaymentResponseFieldUnderpaymentTolerance = big.NewInt(1 << 25)
-	cryptopayPaymentResponseFieldUpdatedAt             = big.NewInt(1 << 26)
-	cryptopayPaymentResponseFieldWebhookURL            = big.NewInt(1 << 27)
-	cryptopayPaymentResponseFieldPaymentPageURL        = big.NewInt(1 << 28)
+	cryptopayPaymentResponseFieldMetadata              = big.NewInt(1 << 13)
+	cryptopayPaymentResponseFieldNetworkFee            = big.NewInt(1 << 14)
+	cryptopayPaymentResponseFieldQuotedPrice           = big.NewInt(1 << 15)
+	cryptopayPaymentResponseFieldNetworkFeePayer       = big.NewInt(1 << 16)
+	cryptopayPaymentResponseFieldServiceFeePayer       = big.NewInt(1 << 17)
+	cryptopayPaymentResponseFieldPaymentWindowSeconds  = big.NewInt(1 << 18)
+	cryptopayPaymentResponseFieldProjectID             = big.NewInt(1 << 19)
+	cryptopayPaymentResponseFieldRedirectConfig        = big.NewInt(1 << 20)
+	cryptopayPaymentResponseFieldStatus                = big.NewInt(1 << 21)
+	cryptopayPaymentResponseFieldSubStatus             = big.NewInt(1 << 22)
+	cryptopayPaymentResponseFieldTransactions          = big.NewInt(1 << 23)
+	cryptopayPaymentResponseFieldUnderpaymentTolerance = big.NewInt(1 << 24)
+	cryptopayPaymentResponseFieldUpdatedAt             = big.NewInt(1 << 25)
+	cryptopayPaymentResponseFieldWebhookURL            = big.NewInt(1 << 26)
+	cryptopayPaymentResponseFieldPaymentPageURL        = big.NewInt(1 << 27)
 )
 
 type CryptopayPaymentResponse struct {
@@ -612,7 +602,6 @@ type CryptopayPaymentResponse struct {
 	// Platform fee: 0.4% of the amount, minimum $1 equivalent. Integer string in the asset's smallest unit.
 	Fee      *string        `json:"fee,omitempty" url:"fee,omitempty"`
 	ID       *string        `json:"id,omitempty" url:"id,omitempty"`
-	IsTest   *bool          `json:"isTest,omitempty" url:"isTest,omitempty"`
 	Metadata map[string]any `json:"metadata,omitempty" url:"metadata,omitempty"`
 	// Estimated on-chain (gas) cost, deducted from the received amount. Integer string in the asset's smallest unit.
 	NetworkFee *string `json:"networkFee,omitempty" url:"networkFee,omitempty"`
@@ -731,13 +720,6 @@ func (c *CryptopayPaymentResponse) GetID() *string {
 		return nil
 	}
 	return c.ID
-}
-
-func (c *CryptopayPaymentResponse) GetIsTest() *bool {
-	if c == nil {
-		return nil
-	}
-	return c.IsTest
 }
 
 func (c *CryptopayPaymentResponse) GetMetadata() map[string]any {
@@ -948,13 +930,6 @@ func (c *CryptopayPaymentResponse) SetFee(fee *string) {
 func (c *CryptopayPaymentResponse) SetID(id *string) {
 	c.ID = id
 	c.require(cryptopayPaymentResponseFieldID)
-}
-
-// SetIsTest sets the IsTest field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayPaymentResponse) SetIsTest(isTest *bool) {
-	c.IsTest = isTest
-	c.require(cryptopayPaymentResponseFieldIsTest)
 }
 
 // SetMetadata sets the Metadata field and marks it as non-optional;

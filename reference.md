@@ -170,14 +170,6 @@ client.Payments.CreatePayment(
 <dl>
 <dd>
 
-**isTest:** `*bool` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
 **metadata:** `map[string]any` 
     
 </dd>
@@ -418,7 +410,7 @@ client.Payments.CancelPayment(
 <dl>
 <dd>
 
-Simulate payment status change (test mode only)
+Simulate a payment status transition. Available for test-coin assets only.
 </dd>
 </dl>
 </dd>
@@ -687,14 +679,6 @@ client.StaticWallets.CreateStaticWallet(
 <dd>
 
 **externalID:** `*string` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**isTest:** `*bool` 
     
 </dd>
 </dl>
@@ -1026,7 +1010,7 @@ client.StaticWallets.GetStaticWalletDeposit(
 <dl>
 <dd>
 
-Drive a synthetic deposit through its lifecycle on a test wallet (no on-chain activity, no balance credit). Test wallets only.
+Drive a synthetic deposit through its lifecycle (no on-chain activity, no balance credit). Available for test-coin assets only.
 </dd>
 </dl>
 </dd>
