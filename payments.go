@@ -1112,19 +1112,16 @@ func (c CryptopayPaymentStatusEnum) Ptr() *CryptopayPaymentStatusEnum {
 type CryptopayPaymentSubStatusEnum string
 
 const (
-	CryptopayPaymentSubStatusEnumCreated           CryptopayPaymentSubStatusEnum = "created"
-	CryptopayPaymentSubStatusEnumActivated         CryptopayPaymentSubStatusEnum = "activated"
-	CryptopayPaymentSubStatusEnumAwaitingPayment   CryptopayPaymentSubStatusEnum = "awaitingPayment"
-	CryptopayPaymentSubStatusEnumConfirming        CryptopayPaymentSubStatusEnum = "confirming"
-	CryptopayPaymentSubStatusEnumAcceptedCompleted CryptopayPaymentSubStatusEnum = "acceptedCompleted"
-	CryptopayPaymentSubStatusEnumAcceptedOverpaid  CryptopayPaymentSubStatusEnum = "acceptedOverpaid"
-	CryptopayPaymentSubStatusEnumAcceptedUnderpaid CryptopayPaymentSubStatusEnum = "acceptedUnderpaid"
-	CryptopayPaymentSubStatusEnumCompleted         CryptopayPaymentSubStatusEnum = "completed"
-	CryptopayPaymentSubStatusEnumOverpaid          CryptopayPaymentSubStatusEnum = "overpaid"
-	CryptopayPaymentSubStatusEnumUnderpaid         CryptopayPaymentSubStatusEnum = "underpaid"
-	CryptopayPaymentSubStatusEnumExpired           CryptopayPaymentSubStatusEnum = "expired"
-	CryptopayPaymentSubStatusEnumCancelled         CryptopayPaymentSubStatusEnum = "cancelled"
-	CryptopayPaymentSubStatusEnumPartiallyPaid     CryptopayPaymentSubStatusEnum = "partiallyPaid"
+	CryptopayPaymentSubStatusEnumCreated         CryptopayPaymentSubStatusEnum = "created"
+	CryptopayPaymentSubStatusEnumActivated       CryptopayPaymentSubStatusEnum = "activated"
+	CryptopayPaymentSubStatusEnumAwaitingPayment CryptopayPaymentSubStatusEnum = "awaitingPayment"
+	CryptopayPaymentSubStatusEnumConfirming      CryptopayPaymentSubStatusEnum = "confirming"
+	CryptopayPaymentSubStatusEnumCompleted       CryptopayPaymentSubStatusEnum = "completed"
+	CryptopayPaymentSubStatusEnumOverpaid        CryptopayPaymentSubStatusEnum = "overpaid"
+	CryptopayPaymentSubStatusEnumUnderpaid       CryptopayPaymentSubStatusEnum = "underpaid"
+	CryptopayPaymentSubStatusEnumExpired         CryptopayPaymentSubStatusEnum = "expired"
+	CryptopayPaymentSubStatusEnumCancelled       CryptopayPaymentSubStatusEnum = "cancelled"
+	CryptopayPaymentSubStatusEnumPartiallyPaid   CryptopayPaymentSubStatusEnum = "partiallyPaid"
 )
 
 func NewCryptopayPaymentSubStatusEnumFromString(s string) (CryptopayPaymentSubStatusEnum, error) {
@@ -1137,12 +1134,6 @@ func NewCryptopayPaymentSubStatusEnumFromString(s string) (CryptopayPaymentSubSt
 		return CryptopayPaymentSubStatusEnumAwaitingPayment, nil
 	case "confirming":
 		return CryptopayPaymentSubStatusEnumConfirming, nil
-	case "acceptedCompleted":
-		return CryptopayPaymentSubStatusEnumAcceptedCompleted, nil
-	case "acceptedOverpaid":
-		return CryptopayPaymentSubStatusEnumAcceptedOverpaid, nil
-	case "acceptedUnderpaid":
-		return CryptopayPaymentSubStatusEnumAcceptedUnderpaid, nil
 	case "completed":
 		return CryptopayPaymentSubStatusEnumCompleted, nil
 	case "overpaid":

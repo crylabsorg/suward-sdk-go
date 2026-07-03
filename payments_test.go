@@ -6099,27 +6099,6 @@ func TestEnumCryptopayPaymentSubStatusEnum(t *testing.T) {
 		assert.Equal(t, CryptopayPaymentSubStatusEnum("confirming"), val, "enum value should match expected wire value")
 	})
 
-	t.Run("NewFromString_acceptedCompleted", func(t *testing.T) {
-		t.Parallel()
-		val, err := NewCryptopayPaymentSubStatusEnumFromString("acceptedCompleted")
-		assert.NoError(t, err, "valid enum value should not return error")
-		assert.Equal(t, CryptopayPaymentSubStatusEnum("acceptedCompleted"), val, "enum value should match expected wire value")
-	})
-
-	t.Run("NewFromString_acceptedOverpaid", func(t *testing.T) {
-		t.Parallel()
-		val, err := NewCryptopayPaymentSubStatusEnumFromString("acceptedOverpaid")
-		assert.NoError(t, err, "valid enum value should not return error")
-		assert.Equal(t, CryptopayPaymentSubStatusEnum("acceptedOverpaid"), val, "enum value should match expected wire value")
-	})
-
-	t.Run("NewFromString_acceptedUnderpaid", func(t *testing.T) {
-		t.Parallel()
-		val, err := NewCryptopayPaymentSubStatusEnumFromString("acceptedUnderpaid")
-		assert.NoError(t, err, "valid enum value should not return error")
-		assert.Equal(t, CryptopayPaymentSubStatusEnum("acceptedUnderpaid"), val, "enum value should match expected wire value")
-	})
-
 	t.Run("NewFromString_completed", func(t *testing.T) {
 		t.Parallel()
 		val, err := NewCryptopayPaymentSubStatusEnumFromString("completed")
