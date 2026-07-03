@@ -130,7 +130,7 @@ client.Payments.CreatePayment(
 <dl>
 <dd>
 
-**amount:** `*string` — Merchant base amount, integer string in the asset's smallest unit. When a fee payer is on_top the customer is charged more than this (gross); when absorbed (default) the fee is deducted from the merchant's proceeds.
+**amount:** `*string` — Merchant base amount, integer string in the asset's smallest unit. When a fee payer is customer the customer is charged more than this (gross); when merchant (default) the fee is deducted from the merchant's proceeds.
     
 </dd>
 </dl>
@@ -146,7 +146,7 @@ client.Payments.CreatePayment(
 <dl>
 <dd>
 
-**networkFeePayer:** `*suwardsdkgo.CryptopayFeePayer` — Who bears the network (gas) fee. Default absorbed.
+**networkFeePayer:** `*suwardsdkgo.CryptopayFeePayer` — Who bears the network (gas) fee. Default merchant.
     
 </dd>
 </dl>
@@ -154,7 +154,7 @@ client.Payments.CreatePayment(
 <dl>
 <dd>
 
-**serviceFeePayer:** `*suwardsdkgo.CryptopayFeePayer` — Who bears the platform (service) fee. Default absorbed.
+**serviceFeePayer:** `*suwardsdkgo.CryptopayFeePayer` — Who bears the platform (service) fee. Default merchant.
     
 </dd>
 </dl>
@@ -541,7 +541,7 @@ client.Payments.QuotePaymentFees(
 <dl>
 <dd>
 
-**networkFeePayer:** `*suwardsdkgo.CryptopayFeePayer` — Who bears the network (gas) fee. Default absorbed.
+**networkFeePayer:** `*suwardsdkgo.CryptopayFeePayer` — Who bears the network (gas) fee. Default merchant.
     
 </dd>
 </dl>
@@ -549,7 +549,7 @@ client.Payments.QuotePaymentFees(
 <dl>
 <dd>
 
-**serviceFeePayer:** `*suwardsdkgo.CryptopayFeePayer` — Who bears the platform (service) fee. Default absorbed.
+**serviceFeePayer:** `*suwardsdkgo.CryptopayFeePayer` — Who bears the platform (service) fee. Default merchant.
     
 </dd>
 </dl>
