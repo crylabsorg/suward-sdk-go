@@ -77,12 +77,12 @@ var (
 
 type CryptopayCreatePaymentRequest struct {
 	ActivationFlowSeconds *int `json:"activationFlowSeconds,omitempty" url:"-"`
-	// Merchant base amount, integer string in the asset's smallest unit. When a fee payer is on_top the customer is charged more than this (gross); when absorbed (default) the fee is deducted from the merchant's proceeds.
+	// Merchant base amount, integer string in the asset's smallest unit. When a fee payer is customer the customer is charged more than this (gross); when merchant (default) the fee is deducted from the merchant's proceeds.
 	Amount *string           `json:"amount,omitempty" url:"-"`
 	Asset  *CryptopayAssetID `json:"asset,omitempty" url:"-"`
-	// Who bears the network (gas) fee. Default absorbed.
+	// Who bears the network (gas) fee. Default merchant.
 	NetworkFeePayer *CryptopayFeePayer `json:"networkFeePayer,omitempty" url:"-"`
-	// Who bears the platform (service) fee. Default absorbed.
+	// Who bears the platform (service) fee. Default merchant.
 	ServiceFeePayer       *CryptopayFeePayer          `json:"serviceFeePayer,omitempty" url:"-"`
 	ExternalID            *string                     `json:"externalId,omitempty" url:"-"`
 	Metadata              map[string]any              `json:"metadata,omitempty" url:"-"`
@@ -284,9 +284,9 @@ type CryptopayQuotePaymentRequest struct {
 	Asset CryptopayAssetID `json:"asset" url:"-"`
 	// Merchant base amount, integer string in the asset's smallest unit. Example: "5000000" = 5 USDT. The response returns the derived gross (what the customer pays) and netAmount (what the merchant receives).
 	Amount string `json:"amount" url:"-"`
-	// Who bears the network (gas) fee. Default absorbed.
+	// Who bears the network (gas) fee. Default merchant.
 	NetworkFeePayer *CryptopayFeePayer `json:"networkFeePayer,omitempty" url:"-"`
-	// Who bears the platform (service) fee. Default absorbed.
+	// Who bears the platform (service) fee. Default merchant.
 	ServiceFeePayer *CryptopayFeePayer `json:"serviceFeePayer,omitempty" url:"-"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
@@ -414,20 +414,20 @@ func (c *CryptopaySimulatePaymentRequest) MarshalJSON() ([]byte, error) {
 	return json.Marshal(explicitMarshaler)
 }
 
-// Who bears a fee: absorbed = deducted from the merchant's proceeds (default); onTop = added on top of the customer charge.
+// Who bears a fee: merchant = deducted from the merchant's proceeds (default); customer = added on top of the customer charge.
 type CryptopayFeePayer string
 
 const (
-	CryptopayFeePayerAbsorbed CryptopayFeePayer = "absorbed"
-	CryptopayFeePayerOnTop    CryptopayFeePayer = "onTop"
+	CryptopayFeePayerMerchant CryptopayFeePayer = "merchant"
+	CryptopayFeePayerCustomer CryptopayFeePayer = "customer"
 )
 
 func NewCryptopayFeePayerFromString(s string) (CryptopayFeePayer, error) {
 	switch s {
-	case "absorbed":
-		return CryptopayFeePayerAbsorbed, nil
-	case "onTop":
-		return CryptopayFeePayerOnTop, nil
+	case "merchant":
+		return CryptopayFeePayerMerchant, nil
+	case "customer":
+		return CryptopayFeePayerCustomer, nil
 	}
 	var t CryptopayFeePayer
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
@@ -1612,7 +1612,7 @@ type CryptopayQuotePaymentResponse struct {
 	NetworkFee *string `json:"networkFee,omitempty" url:"networkFee,omitempty"`
 	// Amount the merchant receives after all fees. Integer string in the asset's smallest unit.
 	NetAmount *string `json:"netAmount,omitempty" url:"netAmount,omitempty"`
-	// Amount the customer pays: base plus any on_top fees. Integer string in the asset's smallest unit.
+	// Amount the customer pays: base plus any customer-paid fees. Integer string in the asset's smallest unit.
 	Gross *string `json:"gross,omitempty" url:"gross,omitempty"`
 	// USD price used for this quote, decimal string. Not locked — the binding price is captured when the payment is created.
 	QuotedPrice *string `json:"quotedPrice,omitempty" url:"quotedPrice,omitempty"`

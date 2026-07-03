@@ -5999,18 +5999,18 @@ func TestStringCryptopayTransactionResponse(t *testing.T) {
 }
 
 func TestEnumCryptopayFeePayer(t *testing.T) {
-	t.Run("NewFromString_absorbed", func(t *testing.T) {
+	t.Run("NewFromString_merchant", func(t *testing.T) {
 		t.Parallel()
-		val, err := NewCryptopayFeePayerFromString("absorbed")
+		val, err := NewCryptopayFeePayerFromString("merchant")
 		assert.NoError(t, err, "valid enum value should not return error")
-		assert.Equal(t, CryptopayFeePayer("absorbed"), val, "enum value should match expected wire value")
+		assert.Equal(t, CryptopayFeePayer("merchant"), val, "enum value should match expected wire value")
 	})
 
-	t.Run("NewFromString_onTop", func(t *testing.T) {
+	t.Run("NewFromString_customer", func(t *testing.T) {
 		t.Parallel()
-		val, err := NewCryptopayFeePayerFromString("onTop")
+		val, err := NewCryptopayFeePayerFromString("customer")
 		assert.NoError(t, err, "valid enum value should not return error")
-		assert.Equal(t, CryptopayFeePayer("onTop"), val, "enum value should match expected wire value")
+		assert.Equal(t, CryptopayFeePayer("customer"), val, "enum value should match expected wire value")
 	})
 
 	t.Run("NewFromString_Invalid", func(t *testing.T) {
@@ -6019,7 +6019,7 @@ func TestEnumCryptopayFeePayer(t *testing.T) {
 	})
 
 	t.Run("Ptr", func(t *testing.T) {
-		val, err := NewCryptopayFeePayerFromString("absorbed")
+		val, err := NewCryptopayFeePayerFromString("merchant")
 		assert.NoError(t, err)
 		ptr := val.Ptr()
 		assert.NotNil(t, ptr)
