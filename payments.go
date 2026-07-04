@@ -352,13 +352,18 @@ func (c *CryptopayQuotePaymentRequest) MarshalJSON() ([]byte, error) {
 var (
 	cryptopaySimulatePaymentRequestFieldPaymentID = big.NewInt(1 << 0)
 	cryptopaySimulatePaymentRequestFieldAmount    = big.NewInt(1 << 1)
-	cryptopaySimulatePaymentRequestFieldSubStatus = big.NewInt(1 << 2)
+	cryptopaySimulatePaymentRequestFieldStatus    = big.NewInt(1 << 2)
+	cryptopaySimulatePaymentRequestFieldSubStatus = big.NewInt(1 << 3)
 )
 
 type CryptopaySimulatePaymentRequest struct {
 	// Payment ID
-	PaymentID string                         `json:"-" url:"-"`
-	Amount    *string                        `json:"amount,omitempty" url:"-"`
+	PaymentID string `json:"-" url:"-"`
+	// Optional simulated received amount, integer string in the asset's smallest unit (see CreatePaymentRequest.amount).
+	Amount *string `json:"amount,omitempty" url:"-"`
+	// Target main status. Required — status and subStatus are independent axes, both must be supplied.
+	Status *CryptopayPaymentStatusEnum `json:"status,omitempty" url:"-"`
+	// Target sub-status (amount/detail axis). Required — status and subStatus are independent axes, both must be supplied.
 	SubStatus *CryptopayPaymentSubStatusEnum `json:"subStatus,omitempty" url:"-"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
@@ -384,6 +389,13 @@ func (c *CryptopaySimulatePaymentRequest) SetPaymentID(paymentID string) {
 func (c *CryptopaySimulatePaymentRequest) SetAmount(amount *string) {
 	c.Amount = amount
 	c.require(cryptopaySimulatePaymentRequestFieldAmount)
+}
+
+// SetStatus sets the Status field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CryptopaySimulatePaymentRequest) SetStatus(status *CryptopayPaymentStatusEnum) {
+	c.Status = status
+	c.require(cryptopaySimulatePaymentRequestFieldStatus)
 }
 
 // SetSubStatus sets the SubStatus field and marks it as non-optional;
@@ -562,26 +574,27 @@ var (
 	cryptopayPaymentResponseFieldAmountConfirmed       = big.NewInt(1 << 5)
 	cryptopayPaymentResponseFieldAmountReceived        = big.NewInt(1 << 6)
 	cryptopayPaymentResponseFieldAsset                 = big.NewInt(1 << 7)
-	cryptopayPaymentResponseFieldCreatedAt             = big.NewInt(1 << 8)
-	cryptopayPaymentResponseFieldExpiresAt             = big.NewInt(1 << 9)
-	cryptopayPaymentResponseFieldExternalID            = big.NewInt(1 << 10)
-	cryptopayPaymentResponseFieldFee                   = big.NewInt(1 << 11)
-	cryptopayPaymentResponseFieldID                    = big.NewInt(1 << 12)
-	cryptopayPaymentResponseFieldMetadata              = big.NewInt(1 << 13)
-	cryptopayPaymentResponseFieldNetworkFee            = big.NewInt(1 << 14)
-	cryptopayPaymentResponseFieldQuotedPrice           = big.NewInt(1 << 15)
-	cryptopayPaymentResponseFieldNetworkFeePayer       = big.NewInt(1 << 16)
-	cryptopayPaymentResponseFieldServiceFeePayer       = big.NewInt(1 << 17)
-	cryptopayPaymentResponseFieldPaymentWindowSeconds  = big.NewInt(1 << 18)
-	cryptopayPaymentResponseFieldProjectID             = big.NewInt(1 << 19)
-	cryptopayPaymentResponseFieldRedirectConfig        = big.NewInt(1 << 20)
-	cryptopayPaymentResponseFieldStatus                = big.NewInt(1 << 21)
-	cryptopayPaymentResponseFieldSubStatus             = big.NewInt(1 << 22)
-	cryptopayPaymentResponseFieldTransactions          = big.NewInt(1 << 23)
-	cryptopayPaymentResponseFieldUnderpaymentTolerance = big.NewInt(1 << 24)
-	cryptopayPaymentResponseFieldUpdatedAt             = big.NewInt(1 << 25)
-	cryptopayPaymentResponseFieldWebhookURL            = big.NewInt(1 << 26)
-	cryptopayPaymentResponseFieldPaymentPageURL        = big.NewInt(1 << 27)
+	cryptopayPaymentResponseFieldConfirmedAt           = big.NewInt(1 << 8)
+	cryptopayPaymentResponseFieldCreatedAt             = big.NewInt(1 << 9)
+	cryptopayPaymentResponseFieldExpiresAt             = big.NewInt(1 << 10)
+	cryptopayPaymentResponseFieldExternalID            = big.NewInt(1 << 11)
+	cryptopayPaymentResponseFieldFee                   = big.NewInt(1 << 12)
+	cryptopayPaymentResponseFieldID                    = big.NewInt(1 << 13)
+	cryptopayPaymentResponseFieldMetadata              = big.NewInt(1 << 14)
+	cryptopayPaymentResponseFieldNetworkFee            = big.NewInt(1 << 15)
+	cryptopayPaymentResponseFieldQuotedPrice           = big.NewInt(1 << 16)
+	cryptopayPaymentResponseFieldNetworkFeePayer       = big.NewInt(1 << 17)
+	cryptopayPaymentResponseFieldServiceFeePayer       = big.NewInt(1 << 18)
+	cryptopayPaymentResponseFieldPaymentWindowSeconds  = big.NewInt(1 << 19)
+	cryptopayPaymentResponseFieldProjectID             = big.NewInt(1 << 20)
+	cryptopayPaymentResponseFieldRedirectConfig        = big.NewInt(1 << 21)
+	cryptopayPaymentResponseFieldStatus                = big.NewInt(1 << 22)
+	cryptopayPaymentResponseFieldSubStatus             = big.NewInt(1 << 23)
+	cryptopayPaymentResponseFieldTransactions          = big.NewInt(1 << 24)
+	cryptopayPaymentResponseFieldUnderpaymentTolerance = big.NewInt(1 << 25)
+	cryptopayPaymentResponseFieldUpdatedAt             = big.NewInt(1 << 26)
+	cryptopayPaymentResponseFieldWebhookURL            = big.NewInt(1 << 27)
+	cryptopayPaymentResponseFieldPaymentPageURL        = big.NewInt(1 << 28)
 )
 
 type CryptopayPaymentResponse struct {
@@ -596,6 +609,7 @@ type CryptopayPaymentResponse struct {
 	// Integer string in the asset's smallest unit.
 	AmountReceived *string           `json:"amountReceived,omitempty" url:"amountReceived,omitempty"`
 	Asset          *CryptopayAssetID `json:"asset,omitempty" url:"asset,omitempty"`
+	ConfirmedAt    *int              `json:"confirmedAt,omitempty" url:"confirmedAt,omitempty"`
 	CreatedAt      *int              `json:"createdAt,omitempty" url:"createdAt,omitempty"`
 	ExpiresAt      *int              `json:"expiresAt,omitempty" url:"expiresAt,omitempty"`
 	ExternalID     *string           `json:"externalId,omitempty" url:"externalId,omitempty"`
@@ -685,6 +699,13 @@ func (c *CryptopayPaymentResponse) GetAsset() *CryptopayAssetID {
 		return nil
 	}
 	return c.Asset
+}
+
+func (c *CryptopayPaymentResponse) GetConfirmedAt() *int {
+	if c == nil {
+		return nil
+	}
+	return c.ConfirmedAt
 }
 
 func (c *CryptopayPaymentResponse) GetCreatedAt() *int {
@@ -895,6 +916,13 @@ func (c *CryptopayPaymentResponse) SetAmountReceived(amountReceived *string) {
 func (c *CryptopayPaymentResponse) SetAsset(asset *CryptopayAssetID) {
 	c.Asset = asset
 	c.require(cryptopayPaymentResponseFieldAsset)
+}
+
+// SetConfirmedAt sets the ConfirmedAt field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CryptopayPaymentResponse) SetConfirmedAt(confirmedAt *int) {
+	c.ConfirmedAt = confirmedAt
+	c.require(cryptopayPaymentResponseFieldConfirmedAt)
 }
 
 // SetCreatedAt sets the CreatedAt field and marks it as non-optional;
