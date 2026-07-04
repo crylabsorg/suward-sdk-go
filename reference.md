@@ -455,7 +455,7 @@ client.Payments.SimulatePayment(
 <dl>
 <dd>
 
-**amount:** `*string` 
+**amount:** `*string` — Optional simulated received amount, integer string in the asset's smallest unit (see CreatePaymentRequest.amount).
     
 </dd>
 </dl>
@@ -463,7 +463,15 @@ client.Payments.SimulatePayment(
 <dl>
 <dd>
 
-**subStatus:** `*suwardsdkgo.CryptopayPaymentSubStatusEnum` 
+**status:** `*suwardsdkgo.CryptopayPaymentStatusEnum` — Target main status. Required — status and subStatus are independent axes, both must be supplied.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**subStatus:** `*suwardsdkgo.CryptopayPaymentSubStatusEnum` — Target sub-status (amount/detail axis). Required — status and subStatus are independent axes, both must be supplied.
     
 </dd>
 </dl>
