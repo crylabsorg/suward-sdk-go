@@ -34,6 +34,7 @@ func NewClient(options *core.RequestOptions) *Client {
 	}
 }
 
+// List the project's static wallets, newest first. Paginated via limit and lastId.
 func (c *Client) ListStaticWallets(
 	ctx context.Context,
 	request *suwardsdkgo.GetV1StaticWalletsRequest,
@@ -67,6 +68,7 @@ func (c *Client) CreateStaticWallet(
 	return response.Body, nil
 }
 
+// Fetch a single static wallet by its id.
 func (c *Client) GetStaticWallet(
 	ctx context.Context,
 	request *suwardsdkgo.GetV1StaticWalletsStaticWalletIDRequest,
@@ -83,6 +85,7 @@ func (c *Client) GetStaticWallet(
 	return response.Body, nil
 }
 
+// Delete a static wallet. Its address stops being monitored and can no longer receive new deposits; previously recorded deposits are unaffected.
 func (c *Client) DeleteStaticWallet(
 	ctx context.Context,
 	request *suwardsdkgo.DeleteV1StaticWalletsStaticWalletIDRequest,
@@ -99,6 +102,7 @@ func (c *Client) DeleteStaticWallet(
 	return response.Body, nil
 }
 
+// Update a static wallet's accepted-asset allow-list, metadata, or webhook URL. Only the fields present in the body are changed.
 func (c *Client) UpdateStaticWallet(
 	ctx context.Context,
 	request *suwardsdkgo.CryptopayUpdateStaticWalletRequest,
@@ -115,6 +119,7 @@ func (c *Client) UpdateStaticWallet(
 	return response.Body, nil
 }
 
+// Paginated list of the deposits received by a static wallet, newest first.
 func (c *Client) ListStaticWalletDeposits(
 	ctx context.Context,
 	request *suwardsdkgo.GetV1StaticWalletsStaticWalletIDDepositsRequest,
@@ -131,6 +136,7 @@ func (c *Client) ListStaticWalletDeposits(
 	return response.Body, nil
 }
 
+// Fetch a single static-wallet deposit by its id.
 func (c *Client) GetStaticWalletDeposit(
 	ctx context.Context,
 	request *suwardsdkgo.GetV1StaticWalletsStaticWalletIDDepositsDepositIDRequest,

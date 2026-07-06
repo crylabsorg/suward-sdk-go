@@ -19,6 +19,7 @@ var (
 )
 
 type CryptopayAssetResponse struct {
+	// Asset id-string used everywhere else in the API, e.g. USDT_ARBITRUM.
 	ID *CryptopayAssetID `json:"id,omitempty" url:"id,omitempty"`
 	// Internal blockchain ID (corresponds to GET /v1/blockchains[].id).
 	BlockchainID *int `json:"blockchainId,omitempty" url:"blockchainId,omitempty"`
