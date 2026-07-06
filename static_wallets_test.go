@@ -887,14 +887,6 @@ func TestSettersCryptopayListStaticDepositsResponse(t *testing.T) {
 		assert.NotNil(t, obj.explicitFields)
 	})
 
-	t.Run("SetLastID", func(t *testing.T) {
-		obj := &CryptopayListStaticDepositsResponse{}
-		var fernTestValueLastID *string
-		obj.SetLastID(fernTestValueLastID)
-		assert.Equal(t, fernTestValueLastID, obj.LastID)
-		assert.NotNil(t, obj.explicitFields)
-	})
-
 }
 
 func TestGettersCryptopayListStaticDepositsResponse(t *testing.T) {
@@ -964,39 +956,6 @@ func TestGettersCryptopayListStaticDepositsResponse(t *testing.T) {
 		_ = obj.GetItems() // Should return zero value
 	})
 
-	t.Run("GetLastID", func(t *testing.T) {
-		t.Parallel()
-		// Arrange
-		obj := &CryptopayListStaticDepositsResponse{}
-		var expected *string
-		obj.LastID = expected
-
-		// Act & Assert
-		assert.Equal(t, expected, obj.GetLastID(), "getter should return the property value")
-	})
-
-	t.Run("GetLastID_NilValue", func(t *testing.T) {
-		t.Parallel()
-		// Arrange
-		obj := &CryptopayListStaticDepositsResponse{}
-		obj.LastID = nil
-
-		// Act & Assert
-		assert.Nil(t, obj.GetLastID(), "getter should return nil when property is nil")
-	})
-
-	t.Run("GetLastID_NilReceiver", func(t *testing.T) {
-		t.Parallel()
-		var obj *CryptopayListStaticDepositsResponse
-		// Should not panic - getters should handle nil receiver gracefully
-		defer func() {
-			if r := recover(); r != nil {
-				t.Errorf("Getter panicked on nil receiver: %v", r)
-			}
-		}()
-		_ = obj.GetLastID() // Should return zero value
-	})
-
 }
 
 func TestSettersMarkExplicitCryptopayListStaticDepositsResponse(t *testing.T) {
@@ -1062,37 +1021,6 @@ func TestSettersMarkExplicitCryptopayListStaticDepositsResponse(t *testing.T) {
 		// It verifies that setting a field via setter allows successful JSON round-trip
 	})
 
-	t.Run("SetLastID_MarksExplicit", func(t *testing.T) {
-		t.Parallel()
-		// Arrange
-		obj := &CryptopayListStaticDepositsResponse{}
-		var fernTestValueLastID *string
-
-		// Act
-		obj.SetLastID(fernTestValueLastID)
-
-		// Assert - object with explicitly set field can be marshaled/unmarshaled
-		bytes, err := json.Marshal(obj)
-		require.NoError(t, err, "marshaling should succeed for test setup")
-
-		// This test ensures JSON marshaling and unmarshaling succeed when the field has a zero/nil value
-		// Detect if marshaled JSON is an object or primitive to use correct unmarshal target
-		if len(bytes) > 0 && bytes[0] == '{' {
-			// JSON object - unmarshal into map
-			var unmarshaled map[string]interface{}
-			err = json.Unmarshal(bytes, &unmarshaled)
-			require.NoError(t, err, "unmarshaling should succeed for test verification")
-		} else {
-			// JSON primitive (string, number, boolean, null) - unmarshal into interface{}
-			var unmarshaled interface{}
-			err = json.Unmarshal(bytes, &unmarshaled)
-			require.NoError(t, err, "unmarshaling should succeed for test verification")
-		}
-
-		// Note: This does not explicitly assert the presence of a specific JSON field
-		// It verifies that setting a field via setter allows successful JSON round-trip
-	})
-
 }
 
 func TestSettersCryptopayListStaticWalletsResponse(t *testing.T) {
@@ -1109,14 +1037,6 @@ func TestSettersCryptopayListStaticWalletsResponse(t *testing.T) {
 		var fernTestValueItems []*CryptopayStaticWalletResponse
 		obj.SetItems(fernTestValueItems)
 		assert.Equal(t, fernTestValueItems, obj.Items)
-		assert.NotNil(t, obj.explicitFields)
-	})
-
-	t.Run("SetLastID", func(t *testing.T) {
-		obj := &CryptopayListStaticWalletsResponse{}
-		var fernTestValueLastID *string
-		obj.SetLastID(fernTestValueLastID)
-		assert.Equal(t, fernTestValueLastID, obj.LastID)
 		assert.NotNil(t, obj.explicitFields)
 	})
 
@@ -1189,39 +1109,6 @@ func TestGettersCryptopayListStaticWalletsResponse(t *testing.T) {
 		_ = obj.GetItems() // Should return zero value
 	})
 
-	t.Run("GetLastID", func(t *testing.T) {
-		t.Parallel()
-		// Arrange
-		obj := &CryptopayListStaticWalletsResponse{}
-		var expected *string
-		obj.LastID = expected
-
-		// Act & Assert
-		assert.Equal(t, expected, obj.GetLastID(), "getter should return the property value")
-	})
-
-	t.Run("GetLastID_NilValue", func(t *testing.T) {
-		t.Parallel()
-		// Arrange
-		obj := &CryptopayListStaticWalletsResponse{}
-		obj.LastID = nil
-
-		// Act & Assert
-		assert.Nil(t, obj.GetLastID(), "getter should return nil when property is nil")
-	})
-
-	t.Run("GetLastID_NilReceiver", func(t *testing.T) {
-		t.Parallel()
-		var obj *CryptopayListStaticWalletsResponse
-		// Should not panic - getters should handle nil receiver gracefully
-		defer func() {
-			if r := recover(); r != nil {
-				t.Errorf("Getter panicked on nil receiver: %v", r)
-			}
-		}()
-		_ = obj.GetLastID() // Should return zero value
-	})
-
 }
 
 func TestSettersMarkExplicitCryptopayListStaticWalletsResponse(t *testing.T) {
@@ -1264,37 +1151,6 @@ func TestSettersMarkExplicitCryptopayListStaticWalletsResponse(t *testing.T) {
 
 		// Act
 		obj.SetItems(fernTestValueItems)
-
-		// Assert - object with explicitly set field can be marshaled/unmarshaled
-		bytes, err := json.Marshal(obj)
-		require.NoError(t, err, "marshaling should succeed for test setup")
-
-		// This test ensures JSON marshaling and unmarshaling succeed when the field has a zero/nil value
-		// Detect if marshaled JSON is an object or primitive to use correct unmarshal target
-		if len(bytes) > 0 && bytes[0] == '{' {
-			// JSON object - unmarshal into map
-			var unmarshaled map[string]interface{}
-			err = json.Unmarshal(bytes, &unmarshaled)
-			require.NoError(t, err, "unmarshaling should succeed for test verification")
-		} else {
-			// JSON primitive (string, number, boolean, null) - unmarshal into interface{}
-			var unmarshaled interface{}
-			err = json.Unmarshal(bytes, &unmarshaled)
-			require.NoError(t, err, "unmarshaling should succeed for test verification")
-		}
-
-		// Note: This does not explicitly assert the presence of a specific JSON field
-		// It verifies that setting a field via setter allows successful JSON round-trip
-	})
-
-	t.Run("SetLastID_MarksExplicit", func(t *testing.T) {
-		t.Parallel()
-		// Arrange
-		obj := &CryptopayListStaticWalletsResponse{}
-		var fernTestValueLastID *string
-
-		// Act
-		obj.SetLastID(fernTestValueLastID)
 
 		// Assert - object with explicitly set field can be marshaled/unmarshaled
 		bytes, err := json.Marshal(obj)

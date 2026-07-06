@@ -122,7 +122,7 @@ client.Payments.CreatePayment(
 <dl>
 <dd>
 
-**activationFlowSeconds:** `*int` 
+**activationFlowSeconds:** `*int` — Grace period in seconds before the payment window starts counting, giving the customer time to open the checkout before the timer runs. Optional; range 1 to 3600 (1 hour).
     
 </dd>
 </dl>
@@ -138,7 +138,7 @@ client.Payments.CreatePayment(
 <dl>
 <dd>
 
-**asset:** `*suwardsdkgo.CryptopayAssetID` 
+**asset:** `*suwardsdkgo.CryptopayAssetID` — Asset the customer will pay in, as an asset id-string (e.g. USDT_ARBITRUM). Required only when the project allows more than one asset; when the project has a single asset it may be omitted. The full set of accepted values is served live at GET /v1/assets.
     
 </dd>
 </dl>
@@ -162,7 +162,7 @@ client.Payments.CreatePayment(
 <dl>
 <dd>
 
-**externalID:** `*string` 
+**externalID:** `*string` — Your own identifier for this payment. Echoed back on the payment and its webhooks, and can be appended to the return URL as a redirect parameter. Optional.
     
 </dd>
 </dl>
@@ -170,7 +170,7 @@ client.Payments.CreatePayment(
 <dl>
 <dd>
 
-**metadata:** `map[string]any` 
+**metadata:** `map[string]any` — Arbitrary JSON key/value data to attach to the payment. Stored and echoed back unchanged on the payment and its webhooks; never sent on-chain. Use it to correlate the payment with your own records.
     
 </dd>
 </dl>
@@ -178,7 +178,7 @@ client.Payments.CreatePayment(
 <dl>
 <dd>
 
-**paymentWindowSeconds:** `*int` 
+**paymentWindowSeconds:** `*int` — How long the payment stays open for funding, in seconds. Optional; when omitted the project default applies. Range 300 (5 minutes) to 86400 (24 hours).
     
 </dd>
 </dl>
@@ -186,7 +186,7 @@ client.Payments.CreatePayment(
 <dl>
 <dd>
 
-**redirectConfig:** `*suwardsdkgo.CryptopayRedirectConfigDto` 
+**redirectConfig:** `*suwardsdkgo.CryptopayRedirectConfigDto` — Optional "return to store" redirect configuration: the base URL the customer is sent back to after paying, plus which payment identifiers to append as query parameters.
     
 </dd>
 </dl>
@@ -194,7 +194,7 @@ client.Payments.CreatePayment(
 <dl>
 <dd>
 
-**underpaymentTolerance:** `*string` 
+**underpaymentTolerance:** `*string` — Amount the customer may underpay and still have the payment accepted, as an integer string in the asset's smallest unit (same scale as amount). Optional; if set it must be >= 0 and strictly less than amount. Default 0 (exact amount required). Example: for amount "10000000" (10 USDT) a value of "500000" allows a 0.50 USDT shortfall.
     
 </dd>
 </dl>
@@ -202,7 +202,7 @@ client.Payments.CreatePayment(
 <dl>
 <dd>
 
-**webhookURL:** `*string` 
+**webhookURL:** `*string` — Webhook URL to receive this payment's events. Optional; overrides the project's default webhook URL for this payment only.
     
 </dd>
 </dl>
@@ -569,10 +569,109 @@ client.Payments.QuotePaymentFees(
 </dl>
 </details>
 
+<details><summary><code>client.Payments.ListPaymentTransactions(PaymentID) -> *suwardsdkgo.CryptopaywireTransactionList</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Paginated list of the on-chain transactions detected for a payment.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+request := &suwardsdkgo.GetV1PaymentsPaymentIDTransactionsRequest{
+        PaymentID: "paymentId",
+    }
+client.Payments.ListPaymentTransactions(
+        context.TODO(),
+        request,
+    )
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**paymentID:** `string` — Payment ID
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**order:** `*suwardsdkgo.GetV1PaymentsPaymentIDTransactionsRequestOrder` — Sort order by id: asc = ascending, anything else = descending
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**limit:** `*int` — Page size (default 20, max 100)
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**lastID:** `*string` — Pagination cursor: last id from the previous page
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## StaticWallets
 <details><summary><code>client.StaticWallets.ListStaticWallets() -> *suwardsdkgo.CryptopayListStaticWalletsResponse</code></summary>
 <dl>
 <dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+List the project's static wallets, newest first. Paginated via limit and lastId.
+</dd>
+</dl>
+</dd>
+</dl>
 
 #### 🔌 Usage
 
@@ -678,7 +777,7 @@ client.StaticWallets.CreateStaticWallet(
 <dl>
 <dd>
 
-**allowedAssets:** `[]*suwardsdkgo.CryptopayAssetID` 
+**allowedAssets:** `[]*suwardsdkgo.CryptopayAssetID` — Accepted-asset allow-list, as asset id-strings (see GET /v1/assets), e.g. ["USDT_ARBITRUM"]. Deposits of assets not on this list are ignored (status "ignored") and not credited.
     
 </dd>
 </dl>
@@ -686,7 +785,7 @@ client.StaticWallets.CreateStaticWallet(
 <dl>
 <dd>
 
-**externalID:** `*string` 
+**externalID:** `*string` — Your own identifier for this static wallet. Echoed back on the wallet and denormalized onto each of its deposits. Optional.
     
 </dd>
 </dl>
@@ -694,7 +793,7 @@ client.StaticWallets.CreateStaticWallet(
 <dl>
 <dd>
 
-**metadata:** `map[string]any` 
+**metadata:** `map[string]any` — Arbitrary JSON key/value data to attach to the static wallet. Stored and echoed back unchanged.
     
 </dd>
 </dl>
@@ -702,7 +801,7 @@ client.StaticWallets.CreateStaticWallet(
 <dl>
 <dd>
 
-**webhookURL:** `*string` 
+**webhookURL:** `*string` — Webhook URL to receive this wallet's deposit events. Optional; falls back to the project default webhook when omitted.
     
 </dd>
 </dl>
@@ -717,6 +816,20 @@ client.StaticWallets.CreateStaticWallet(
 <details><summary><code>client.StaticWallets.GetStaticWallet(StaticWalletID) -> *suwardsdkgo.CryptopayStaticWalletResponse</code></summary>
 <dl>
 <dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Fetch a single static wallet by its id.
+</dd>
+</dl>
+</dd>
+</dl>
 
 #### 🔌 Usage
 
@@ -765,6 +878,20 @@ client.StaticWallets.GetStaticWallet(
 <dl>
 <dd>
 
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Delete a static wallet. Its address stops being monitored and can no longer receive new deposits; previously recorded deposits are unaffected.
+</dd>
+</dl>
+</dd>
+</dl>
+
 #### 🔌 Usage
 
 <dl>
@@ -812,6 +939,20 @@ client.StaticWallets.DeleteStaticWallet(
 <dl>
 <dd>
 
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Update a static wallet's accepted-asset allow-list, metadata, or webhook URL. Only the fields present in the body are changed.
+</dd>
+</dl>
+</dd>
+</dl>
+
 #### 🔌 Usage
 
 <dl>
@@ -851,7 +992,7 @@ client.StaticWallets.UpdateStaticWallet(
 <dl>
 <dd>
 
-**allowedAssets:** `[]*suwardsdkgo.CryptopayAssetID` 
+**allowedAssets:** `[]*suwardsdkgo.CryptopayAssetID` — New accepted-asset allow-list, as asset id-strings (see GET /v1/assets). When empty or omitted the current list is left unchanged.
     
 </dd>
 </dl>
@@ -859,7 +1000,7 @@ client.StaticWallets.UpdateStaticWallet(
 <dl>
 <dd>
 
-**metadata:** `map[string]any` 
+**metadata:** `map[string]any` — Replacement key/value metadata for the static wallet.
     
 </dd>
 </dl>
@@ -867,7 +1008,7 @@ client.StaticWallets.UpdateStaticWallet(
 <dl>
 <dd>
 
-**webhookURL:** `*string` 
+**webhookURL:** `*string` — Replacement webhook URL for this wallet's deposit events.
     
 </dd>
 </dl>
@@ -882,6 +1023,20 @@ client.StaticWallets.UpdateStaticWallet(
 <details><summary><code>client.StaticWallets.ListStaticWalletDeposits(StaticWalletID) -> *suwardsdkgo.CryptopayListStaticDepositsResponse</code></summary>
 <dl>
 <dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Paginated list of the deposits received by a static wallet, newest first.
+</dd>
+</dl>
+</dd>
+</dl>
 
 #### 🔌 Usage
 
@@ -953,6 +1108,20 @@ client.StaticWallets.ListStaticWalletDeposits(
 <details><summary><code>client.StaticWallets.GetStaticWalletDeposit(StaticWalletID, DepositID) -> *suwardsdkgo.CryptopayStaticDepositResponse</code></summary>
 <dl>
 <dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Fetch a single static-wallet deposit by its id.
+</dd>
+</dl>
+</dd>
+</dl>
 
 #### 🔌 Usage
 
@@ -1063,7 +1232,7 @@ client.StaticWallets.SimulateStaticWalletDeposit(
 <dl>
 <dd>
 
-**amount:** `*string` 
+**amount:** `*string` — Deposited amount to simulate, an integer string in the asset's smallest unit (see CreatePaymentRequest.amount).
     
 </dd>
 </dl>
@@ -1071,7 +1240,7 @@ client.StaticWallets.SimulateStaticWalletDeposit(
 <dl>
 <dd>
 
-**asset:** `*suwardsdkgo.CryptopayAssetID` 
+**asset:** `*suwardsdkgo.CryptopayAssetID` — Asset id-string of the simulated deposit (see GET /v1/assets), e.g. USDT_ARBITRUM.
     
 </dd>
 </dl>
@@ -1079,7 +1248,7 @@ client.StaticWallets.SimulateStaticWalletDeposit(
 <dl>
 <dd>
 
-**status:** `*suwardsdkgo.CryptopaySimulateStaticDepositRequestStatus` 
+**status:** `*suwardsdkgo.CryptopaySimulateStaticDepositRequestStatus` — Target lifecycle stage to drive the simulated deposit to.
     
 </dd>
 </dl>
@@ -1087,7 +1256,7 @@ client.StaticWallets.SimulateStaticWalletDeposit(
 <dl>
 <dd>
 
-**transferIndex:** `*string` 
+**transferIndex:** `*string` — Optional index of the transfer within the transaction, as a string-encoded integer.
     
 </dd>
 </dl>
@@ -1095,7 +1264,7 @@ client.StaticWallets.SimulateStaticWalletDeposit(
 <dl>
 <dd>
 
-**txHash:** `*string` 
+**txHash:** `*string` — Optional synthetic transaction hash; a random one is generated when omitted.
     
 </dd>
 </dl>

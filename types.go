@@ -16,9 +16,12 @@ var (
 )
 
 type ControllerErrorResponse struct {
-	Args      []any   `json:"args,omitempty" url:"args,omitempty"`
-	ErrorCode *int    `json:"errorCode,omitempty" url:"errorCode,omitempty"`
-	Message   *string `json:"message,omitempty" url:"message,omitempty"`
+	// Optional list of values interpolated into the error message template (e.g. field names or limits). Order matches the placeholders in the message.
+	Args []any `json:"args,omitempty" url:"args,omitempty"`
+	// Stable numeric application error code identifying the error type. Use it for programmatic handling; it does not change across locales or message wording.
+	ErrorCode *int `json:"errorCode,omitempty" url:"errorCode,omitempty"`
+	// Human-readable description of what went wrong. Intended for logging and debugging, not for programmatic branching (use errorCode for that).
+	Message *string `json:"message,omitempty" url:"message,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -235,11 +238,14 @@ var (
 )
 
 type WebhookPaymentEvent struct {
-	Type    WebhookPaymentEventType `json:"type" url:"type"`
-	EventID string                  `json:"eventId" url:"eventId"`
+	// Event type. payment.accepted: safe confirmations reached and the balance was credited (non-final). payment.success: the payment finalized (terminal). payment.failed: the payment failed or expired without a valid payment (terminal).
+	Type WebhookPaymentEventType `json:"type" url:"type"`
+	// Unique identifier of this event. The same event may be redelivered on retry; use eventId to deduplicate.
+	EventID string `json:"eventId" url:"eventId"`
 	// Event creation time, unix milliseconds.
-	CreatedAt int64                     `json:"createdAt" url:"createdAt"`
-	Payment   *CryptopayPaymentResponse `json:"payment" url:"payment"`
+	CreatedAt int64 `json:"createdAt" url:"createdAt"`
+	// Full payment resource at the time of the event — the same shape as the merchant GET /v1/payments/{paymentId} view.
+	Payment *CryptopayPaymentResponse `json:"payment" url:"payment"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -360,6 +366,7 @@ func (w *WebhookPaymentEvent) String() string {
 	return fmt.Sprintf("%#v", w)
 }
 
+// Event type. payment.accepted: safe confirmations reached and the balance was credited (non-final). payment.success: the payment finalized (terminal). payment.failed: the payment failed or expired without a valid payment (terminal).
 type WebhookPaymentEventType string
 
 const (
@@ -394,10 +401,13 @@ var (
 )
 
 type WebhookStaticDepositEvent struct {
-	Type    WebhookStaticDepositEventType `json:"type" url:"type"`
-	EventID string                        `json:"eventId" url:"eventId"`
+	// Event type. static_deposit.accepted: the deposit reached safe confirmations and was credited (non-final). static_deposit.success: the deposit finalized (terminal).
+	Type WebhookStaticDepositEventType `json:"type" url:"type"`
+	// Unique identifier of this event. The same event may be redelivered on retry; use eventId to deduplicate.
+	EventID string `json:"eventId" url:"eventId"`
 	// Event creation time, unix milliseconds.
-	CreatedAt     int64                           `json:"createdAt" url:"createdAt"`
+	CreatedAt int64 `json:"createdAt" url:"createdAt"`
+	// Full static-wallet deposit resource at the time of the event.
 	StaticDeposit *CryptopayStaticDepositResponse `json:"staticDeposit" url:"staticDeposit"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
@@ -519,6 +529,7 @@ func (w *WebhookStaticDepositEvent) String() string {
 	return fmt.Sprintf("%#v", w)
 }
 
+// Event type. static_deposit.accepted: the deposit reached safe confirmations and was credited (non-final). static_deposit.success: the deposit finalized (terminal).
 type WebhookStaticDepositEventType string
 
 const (

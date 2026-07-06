@@ -17,10 +17,14 @@ var (
 )
 
 type CryptopayCreateStaticWalletRequest struct {
+	// Accepted-asset allow-list, as asset id-strings (see GET /v1/assets), e.g. ["USDT_ARBITRUM"]. Deposits of assets not on this list are ignored (status "ignored") and not credited.
 	AllowedAssets []CryptopayAssetID `json:"allowedAssets,omitempty" url:"-"`
-	ExternalID    *string            `json:"externalId,omitempty" url:"-"`
-	Metadata      map[string]any     `json:"metadata,omitempty" url:"-"`
-	WebhookURL    *string            `json:"webhookUrl,omitempty" url:"-"`
+	// Your own identifier for this static wallet. Echoed back on the wallet and denormalized onto each of its deposits. Optional.
+	ExternalID *string `json:"externalId,omitempty" url:"-"`
+	// Arbitrary JSON key/value data to attach to the static wallet. Stored and echoed back unchanged.
+	Metadata map[string]any `json:"metadata,omitempty" url:"-"`
+	// Webhook URL to receive this wallet's deposit events. Optional; falls back to the project default webhook when omitted.
+	WebhookURL *string `json:"webhookUrl,omitempty" url:"-"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -283,12 +287,17 @@ var (
 
 type CryptopaySimulateStaticDepositRequest struct {
 	// Static wallet ID
-	StaticWalletID string                                       `json:"-" url:"-"`
-	Amount         *string                                      `json:"amount,omitempty" url:"-"`
-	Asset          *CryptopayAssetID                            `json:"asset,omitempty" url:"-"`
-	Status         *CryptopaySimulateStaticDepositRequestStatus `json:"status,omitempty" url:"-"`
-	TransferIndex  *string                                      `json:"transferIndex,omitempty" url:"-"`
-	TxHash         *string                                      `json:"txHash,omitempty" url:"-"`
+	StaticWalletID string `json:"-" url:"-"`
+	// Deposited amount to simulate, an integer string in the asset's smallest unit (see CreatePaymentRequest.amount).
+	Amount *string `json:"amount,omitempty" url:"-"`
+	// Asset id-string of the simulated deposit (see GET /v1/assets), e.g. USDT_ARBITRUM.
+	Asset *CryptopayAssetID `json:"asset,omitempty" url:"-"`
+	// Target lifecycle stage to drive the simulated deposit to.
+	Status *CryptopaySimulateStaticDepositRequestStatus `json:"status,omitempty" url:"-"`
+	// Optional index of the transfer within the transaction, as a string-encoded integer.
+	TransferIndex *string `json:"transferIndex,omitempty" url:"-"`
+	// Optional synthetic transaction hash; a random one is generated when omitted.
+	TxHash *string `json:"txHash,omitempty" url:"-"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -367,13 +376,13 @@ func (c *CryptopaySimulateStaticDepositRequest) MarshalJSON() ([]byte, error) {
 var (
 	cryptopayListStaticDepositsResponseFieldHasMore = big.NewInt(1 << 0)
 	cryptopayListStaticDepositsResponseFieldItems   = big.NewInt(1 << 1)
-	cryptopayListStaticDepositsResponseFieldLastID  = big.NewInt(1 << 2)
 )
 
 type CryptopayListStaticDepositsResponse struct {
-	HasMore *bool                             `json:"hasMore,omitempty" url:"hasMore,omitempty"`
-	Items   []*CryptopayStaticDepositResponse `json:"items,omitempty" url:"items,omitempty"`
-	LastID  *string                           `json:"lastId,omitempty" url:"lastId,omitempty"`
+	// True when more deposits exist beyond this page. To fetch the next page, pass the last item's id as the lastId query parameter.
+	HasMore *bool `json:"hasMore,omitempty" url:"hasMore,omitempty"`
+	// Page of static-wallet deposits, ordered per the request's order parameter.
+	Items []*CryptopayStaticDepositResponse `json:"items,omitempty" url:"items,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -394,13 +403,6 @@ func (c *CryptopayListStaticDepositsResponse) GetItems() []*CryptopayStaticDepos
 		return nil
 	}
 	return c.Items
-}
-
-func (c *CryptopayListStaticDepositsResponse) GetLastID() *string {
-	if c == nil {
-		return nil
-	}
-	return c.LastID
 }
 
 func (c *CryptopayListStaticDepositsResponse) GetExtraProperties() map[string]interface{} {
@@ -429,13 +431,6 @@ func (c *CryptopayListStaticDepositsResponse) SetHasMore(hasMore *bool) {
 func (c *CryptopayListStaticDepositsResponse) SetItems(items []*CryptopayStaticDepositResponse) {
 	c.Items = items
 	c.require(cryptopayListStaticDepositsResponseFieldItems)
-}
-
-// SetLastID sets the LastID field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayListStaticDepositsResponse) SetLastID(lastID *string) {
-	c.LastID = lastID
-	c.require(cryptopayListStaticDepositsResponseFieldLastID)
 }
 
 func (c *CryptopayListStaticDepositsResponse) UnmarshalJSON(data []byte) error {
@@ -483,13 +478,13 @@ func (c *CryptopayListStaticDepositsResponse) String() string {
 var (
 	cryptopayListStaticWalletsResponseFieldHasMore = big.NewInt(1 << 0)
 	cryptopayListStaticWalletsResponseFieldItems   = big.NewInt(1 << 1)
-	cryptopayListStaticWalletsResponseFieldLastID  = big.NewInt(1 << 2)
 )
 
 type CryptopayListStaticWalletsResponse struct {
-	HasMore *bool                            `json:"hasMore,omitempty" url:"hasMore,omitempty"`
-	Items   []*CryptopayStaticWalletResponse `json:"items,omitempty" url:"items,omitempty"`
-	LastID  *string                          `json:"lastId,omitempty" url:"lastId,omitempty"`
+	// True when more static wallets exist beyond this page. To fetch the next page, pass the last item's id as the lastId query parameter.
+	HasMore *bool `json:"hasMore,omitempty" url:"hasMore,omitempty"`
+	// Page of static wallets, ordered per the request's order parameter.
+	Items []*CryptopayStaticWalletResponse `json:"items,omitempty" url:"items,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -510,13 +505,6 @@ func (c *CryptopayListStaticWalletsResponse) GetItems() []*CryptopayStaticWallet
 		return nil
 	}
 	return c.Items
-}
-
-func (c *CryptopayListStaticWalletsResponse) GetLastID() *string {
-	if c == nil {
-		return nil
-	}
-	return c.LastID
 }
 
 func (c *CryptopayListStaticWalletsResponse) GetExtraProperties() map[string]interface{} {
@@ -545,13 +533,6 @@ func (c *CryptopayListStaticWalletsResponse) SetHasMore(hasMore *bool) {
 func (c *CryptopayListStaticWalletsResponse) SetItems(items []*CryptopayStaticWalletResponse) {
 	c.Items = items
 	c.require(cryptopayListStaticWalletsResponseFieldItems)
-}
-
-// SetLastID sets the LastID field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayListStaticWalletsResponse) SetLastID(lastID *string) {
-	c.LastID = lastID
-	c.require(cryptopayListStaticWalletsResponseFieldLastID)
 }
 
 func (c *CryptopayListStaticWalletsResponse) UnmarshalJSON(data []byte) error {
@@ -619,26 +600,44 @@ var (
 )
 
 type CryptopayStaticDepositResponse struct {
-	AcceptedAt  *int              `json:"acceptedAt,omitempty" url:"acceptedAt,omitempty"`
-	Address     *string           `json:"address,omitempty" url:"address,omitempty"`
-	Amount      *string           `json:"amount,omitempty" url:"amount,omitempty"`
-	Asset       *CryptopayAssetID `json:"asset,omitempty" url:"asset,omitempty"`
-	ConfirmedAt *int              `json:"confirmedAt,omitempty" url:"confirmedAt,omitempty"`
-	CreatedAt   *int              `json:"createdAt,omitempty" url:"createdAt,omitempty"`
-	DetectedAt  *int              `json:"detectedAt,omitempty" url:"detectedAt,omitempty"`
+	// Unix-milliseconds timestamp when the deposit reached the accepted (safe confirmations) tier. Null before acceptance.
+	AcceptedAt *int `json:"acceptedAt,omitempty" url:"acceptedAt,omitempty"`
+	// On-chain address that received the deposit (the static wallet's address).
+	Address *string `json:"address,omitempty" url:"address,omitempty"`
+	// Gross deposited amount, an integer string in the asset's smallest unit (see CreatePaymentRequest.amount).
+	Amount *string `json:"amount,omitempty" url:"amount,omitempty"`
+	// Asset of the deposit, as an asset id-string (see GET /v1/assets).
+	Asset *CryptopayAssetID `json:"asset,omitempty" url:"asset,omitempty"`
+	// Unix-milliseconds timestamp when the deposit reached finality (confirmed). Null before confirmation.
+	ConfirmedAt *int `json:"confirmedAt,omitempty" url:"confirmedAt,omitempty"`
+	// Unix-milliseconds timestamp when the deposit record was created.
+	CreatedAt *int `json:"createdAt,omitempty" url:"createdAt,omitempty"`
+	// Unix-milliseconds timestamp when the deposit was first detected on-chain.
+	DetectedAt *int `json:"detectedAt,omitempty" url:"detectedAt,omitempty"`
 	// ExternalID is the static wallet's externalId, denormalized onto the deposit.
-	ExternalID     *string                               `json:"externalId,omitempty" url:"externalId,omitempty"`
-	Fee            *string                               `json:"fee,omitempty" url:"fee,omitempty"`
-	ID             *string                               `json:"id,omitempty" url:"id,omitempty"`
-	InvalidatedAt  *int                                  `json:"invalidatedAt,omitempty" url:"invalidatedAt,omitempty"`
-	NetAmount      *string                               `json:"netAmount,omitempty" url:"netAmount,omitempty"`
-	NetworkFee     *string                               `json:"networkFee,omitempty" url:"networkFee,omitempty"`
-	ProjectID      *string                               `json:"projectId,omitempty" url:"projectId,omitempty"`
-	StaticWalletID *string                               `json:"staticWalletId,omitempty" url:"staticWalletId,omitempty"`
-	Status         *CryptopayStaticDepositResponseStatus `json:"status,omitempty" url:"status,omitempty"`
-	TransferIndex  *string                               `json:"transferIndex,omitempty" url:"transferIndex,omitempty"`
-	TxHash         *string                               `json:"txHash,omitempty" url:"txHash,omitempty"`
-	UpdatedAt      *int                                  `json:"updatedAt,omitempty" url:"updatedAt,omitempty"`
+	ExternalID *string `json:"externalId,omitempty" url:"externalId,omitempty"`
+	// Platform fee on this deposit, integer string in the asset's smallest unit: max(0.4% of the amount, $1 equivalent). The $1 floor is 0 for assets without a published USD price.
+	Fee *string `json:"fee,omitempty" url:"fee,omitempty"`
+	// Unique Suward identifier of the deposit.
+	ID *string `json:"id,omitempty" url:"id,omitempty"`
+	// Unix-milliseconds timestamp when the deposit was invalidated (e.g. dropped by a chain reorg). Null unless invalidated.
+	InvalidatedAt *int `json:"invalidatedAt,omitempty" url:"invalidatedAt,omitempty"`
+	// Amount credited to the merchant after fees (amount - fee - networkFee), integer string in the asset's smallest unit.
+	NetAmount *string `json:"netAmount,omitempty" url:"netAmount,omitempty"`
+	// Estimated on-chain (gas) cost deducted from the deposit, integer string in the asset's smallest unit.
+	NetworkFee *string `json:"networkFee,omitempty" url:"networkFee,omitempty"`
+	// Identifier of the project that owns this deposit.
+	ProjectID *string `json:"projectId,omitempty" url:"projectId,omitempty"`
+	// Identifier of the static wallet that received this deposit.
+	StaticWalletID *string `json:"staticWalletId,omitempty" url:"staticWalletId,omitempty"`
+	// Deposit lifecycle status. detected: seen on-chain, awaiting confirmations. accepted: safe confirmations reached, credited (non-final). confirmed: finalized (terminal). ignored: the asset is not on the wallet's allow-list, so the deposit is not credited. invalidated: dropped after detection, e.g. by a chain reorg.
+	Status *CryptopayStaticDepositResponseStatus `json:"status,omitempty" url:"status,omitempty"`
+	// Index of this transfer within its transaction, as a string-encoded integer. Distinguishes multiple transfers to the same address in one transaction.
+	TransferIndex *string `json:"transferIndex,omitempty" url:"transferIndex,omitempty"`
+	// On-chain transaction hash of the deposit.
+	TxHash *string `json:"txHash,omitempty" url:"txHash,omitempty"`
+	// Unix-milliseconds timestamp when the deposit was last updated.
+	UpdatedAt *int `json:"updatedAt,omitempty" url:"updatedAt,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -969,6 +968,7 @@ func (c *CryptopayStaticDepositResponse) String() string {
 	return fmt.Sprintf("%#v", c)
 }
 
+// Deposit lifecycle status. detected: seen on-chain, awaiting confirmations. accepted: safe confirmations reached, credited (non-final). confirmed: finalized (terminal). ignored: the asset is not on the wallet's allow-list, so the deposit is not credited. invalidated: dropped after detection, e.g. by a chain reorg.
 type CryptopayStaticDepositResponseStatus string
 
 const (
@@ -1013,15 +1013,24 @@ var (
 )
 
 type CryptopayStaticWalletResponse struct {
-	Address       *string            `json:"address,omitempty" url:"address,omitempty"`
+	// Reusable on-chain deposit address of this static wallet. Customers may send accepted assets to it repeatedly; each incoming transfer becomes a deposit.
+	Address *string `json:"address,omitempty" url:"address,omitempty"`
+	// Accepted-asset allow-list, as asset id-strings (see GET /v1/assets). Deposits of assets outside this list are ignored and not credited.
 	AllowedAssets []CryptopayAssetID `json:"allowedAssets,omitempty" url:"allowedAssets,omitempty"`
-	CreatedAt     *int               `json:"createdAt,omitempty" url:"createdAt,omitempty"`
-	ExternalID    *string            `json:"externalId,omitempty" url:"externalId,omitempty"`
-	ID            *string            `json:"id,omitempty" url:"id,omitempty"`
-	Metadata      map[string]any     `json:"metadata,omitempty" url:"metadata,omitempty"`
-	ProjectID     *string            `json:"projectId,omitempty" url:"projectId,omitempty"`
-	UpdatedAt     *int               `json:"updatedAt,omitempty" url:"updatedAt,omitempty"`
-	WebhookURL    *string            `json:"webhookUrl,omitempty" url:"webhookUrl,omitempty"`
+	// Unix-milliseconds timestamp when the static wallet was created.
+	CreatedAt *int `json:"createdAt,omitempty" url:"createdAt,omitempty"`
+	// Your own identifier for this static wallet, echoed from creation. Null when none was provided.
+	ExternalID *string `json:"externalId,omitempty" url:"externalId,omitempty"`
+	// Unique Suward identifier of the static wallet.
+	ID *string `json:"id,omitempty" url:"id,omitempty"`
+	// Arbitrary key/value data attached by the merchant, echoed back unchanged.
+	Metadata map[string]any `json:"metadata,omitempty" url:"metadata,omitempty"`
+	// Identifier of the project that owns this static wallet.
+	ProjectID *string `json:"projectId,omitempty" url:"projectId,omitempty"`
+	// Unix-milliseconds timestamp when the static wallet was last updated.
+	UpdatedAt *int `json:"updatedAt,omitempty" url:"updatedAt,omitempty"`
+	// Webhook URL that receives this wallet's deposit events. Null when the project default webhook is used.
+	WebhookURL *string `json:"webhookUrl,omitempty" url:"webhookUrl,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -1212,6 +1221,7 @@ func (c *CryptopayStaticWalletResponse) String() string {
 	return fmt.Sprintf("%#v", c)
 }
 
+// Target lifecycle stage to drive the simulated deposit to.
 type CryptopaySimulateStaticDepositRequestStatus string
 
 const (
@@ -1293,10 +1303,13 @@ var (
 
 type CryptopayUpdateStaticWalletRequest struct {
 	// Static wallet ID
-	StaticWalletID string             `json:"-" url:"-"`
-	AllowedAssets  []CryptopayAssetID `json:"allowedAssets,omitempty" url:"-"`
-	Metadata       map[string]any     `json:"metadata,omitempty" url:"-"`
-	WebhookURL     *string            `json:"webhookUrl,omitempty" url:"-"`
+	StaticWalletID string `json:"-" url:"-"`
+	// New accepted-asset allow-list, as asset id-strings (see GET /v1/assets). When empty or omitted the current list is left unchanged.
+	AllowedAssets []CryptopayAssetID `json:"allowedAssets,omitempty" url:"-"`
+	// Replacement key/value metadata for the static wallet.
+	Metadata map[string]any `json:"metadata,omitempty" url:"-"`
+	// Replacement webhook URL for this wallet's deposit events.
+	WebhookURL *string `json:"webhookUrl,omitempty" url:"-"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`

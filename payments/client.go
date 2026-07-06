@@ -153,3 +153,20 @@ func (c *Client) QuotePaymentFees(
 	}
 	return response.Body, nil
 }
+
+// Paginated list of the on-chain transactions detected for a payment.
+func (c *Client) ListPaymentTransactions(
+	ctx context.Context,
+	request *suwardsdkgo.GetV1PaymentsPaymentIDTransactionsRequest,
+	opts ...option.RequestOption,
+) (*suwardsdkgo.CryptopaywireTransactionList, error) {
+	response, err := c.WithRawResponse.ListPaymentTransactions(
+		ctx,
+		request,
+		opts...,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return response.Body, nil
+}

@@ -76,20 +76,28 @@ var (
 )
 
 type CryptopayCreatePaymentRequest struct {
+	// Grace period in seconds before the payment window starts counting, giving the customer time to open the checkout before the timer runs. Optional; range 1 to 3600 (1 hour).
 	ActivationFlowSeconds *int `json:"activationFlowSeconds,omitempty" url:"-"`
 	// Merchant base amount, integer string in the asset's smallest unit. When a fee payer is customer the customer is charged more than this (gross); when merchant (default) the fee is deducted from the merchant's proceeds.
-	Amount *string           `json:"amount,omitempty" url:"-"`
-	Asset  *CryptopayAssetID `json:"asset,omitempty" url:"-"`
+	Amount *string `json:"amount,omitempty" url:"-"`
+	// Asset the customer will pay in, as an asset id-string (e.g. USDT_ARBITRUM). Required only when the project allows more than one asset; when the project has a single asset it may be omitted. The full set of accepted values is served live at GET /v1/assets.
+	Asset *CryptopayAssetID `json:"asset,omitempty" url:"-"`
 	// Who bears the network (gas) fee. Default merchant.
 	NetworkFeePayer *CryptopayFeePayer `json:"networkFeePayer,omitempty" url:"-"`
 	// Who bears the platform (service) fee. Default merchant.
-	ServiceFeePayer       *CryptopayFeePayer          `json:"serviceFeePayer,omitempty" url:"-"`
-	ExternalID            *string                     `json:"externalId,omitempty" url:"-"`
-	Metadata              map[string]any              `json:"metadata,omitempty" url:"-"`
-	PaymentWindowSeconds  *int                        `json:"paymentWindowSeconds,omitempty" url:"-"`
-	RedirectConfig        *CryptopayRedirectConfigDto `json:"redirectConfig,omitempty" url:"-"`
-	UnderpaymentTolerance *string                     `json:"underpaymentTolerance,omitempty" url:"-"`
-	WebhookURL            *string                     `json:"webhookUrl,omitempty" url:"-"`
+	ServiceFeePayer *CryptopayFeePayer `json:"serviceFeePayer,omitempty" url:"-"`
+	// Your own identifier for this payment. Echoed back on the payment and its webhooks, and can be appended to the return URL as a redirect parameter. Optional.
+	ExternalID *string `json:"externalId,omitempty" url:"-"`
+	// Arbitrary JSON key/value data to attach to the payment. Stored and echoed back unchanged on the payment and its webhooks; never sent on-chain. Use it to correlate the payment with your own records.
+	Metadata map[string]any `json:"metadata,omitempty" url:"-"`
+	// How long the payment stays open for funding, in seconds. Optional; when omitted the project default applies. Range 300 (5 minutes) to 86400 (24 hours).
+	PaymentWindowSeconds *int `json:"paymentWindowSeconds,omitempty" url:"-"`
+	// Optional "return to store" redirect configuration: the base URL the customer is sent back to after paying, plus which payment identifiers to append as query parameters.
+	RedirectConfig *CryptopayRedirectConfigDto `json:"redirectConfig,omitempty" url:"-"`
+	// Amount the customer may underpay and still have the payment accepted, as an integer string in the asset's smallest unit (same scale as amount). Optional; if set it must be >= 0 and strictly less than amount. Default 0 (exact amount required). Example: for amount "10000000" (10 USDT) a value of "500000" allows a 0.50 USDT shortfall.
+	UnderpaymentTolerance *string `json:"underpaymentTolerance,omitempty" url:"-"`
+	// Webhook URL to receive this payment's events. Optional; overrides the project's default webhook URL for this payment only.
+	WebhookURL *string `json:"webhookUrl,omitempty" url:"-"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -224,6 +232,62 @@ func (g *GetV1PaymentsPaymentIDRequest) require(field *big.Int) {
 func (g *GetV1PaymentsPaymentIDRequest) SetPaymentID(paymentID string) {
 	g.PaymentID = paymentID
 	g.require(getV1PaymentsPaymentIDRequestFieldPaymentID)
+}
+
+var (
+	getV1PaymentsPaymentIDTransactionsRequestFieldPaymentID = big.NewInt(1 << 0)
+	getV1PaymentsPaymentIDTransactionsRequestFieldOrder     = big.NewInt(1 << 1)
+	getV1PaymentsPaymentIDTransactionsRequestFieldLimit     = big.NewInt(1 << 2)
+	getV1PaymentsPaymentIDTransactionsRequestFieldLastID    = big.NewInt(1 << 3)
+)
+
+type GetV1PaymentsPaymentIDTransactionsRequest struct {
+	// Payment ID
+	PaymentID string `json:"-" url:"-"`
+	// Sort order by id: asc = ascending, anything else = descending
+	Order *GetV1PaymentsPaymentIDTransactionsRequestOrder `json:"-" url:"order,omitempty"`
+	// Page size (default 20, max 100)
+	Limit *int `json:"-" url:"limit,omitempty"`
+	// Pagination cursor: last id from the previous page
+	LastID *string `json:"-" url:"lastId,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (g *GetV1PaymentsPaymentIDTransactionsRequest) require(field *big.Int) {
+	if g.explicitFields == nil {
+		g.explicitFields = big.NewInt(0)
+	}
+	g.explicitFields.Or(g.explicitFields, field)
+}
+
+// SetPaymentID sets the PaymentID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GetV1PaymentsPaymentIDTransactionsRequest) SetPaymentID(paymentID string) {
+	g.PaymentID = paymentID
+	g.require(getV1PaymentsPaymentIDTransactionsRequestFieldPaymentID)
+}
+
+// SetOrder sets the Order field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GetV1PaymentsPaymentIDTransactionsRequest) SetOrder(order *GetV1PaymentsPaymentIDTransactionsRequestOrder) {
+	g.Order = order
+	g.require(getV1PaymentsPaymentIDTransactionsRequestFieldOrder)
+}
+
+// SetLimit sets the Limit field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GetV1PaymentsPaymentIDTransactionsRequest) SetLimit(limit *int) {
+	g.Limit = limit
+	g.require(getV1PaymentsPaymentIDTransactionsRequestFieldLimit)
+}
+
+// SetLastID sets the LastID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GetV1PaymentsPaymentIDTransactionsRequest) SetLastID(lastID *string) {
+	g.LastID = lastID
+	g.require(getV1PaymentsPaymentIDTransactionsRequestFieldLastID)
 }
 
 var (
@@ -452,13 +516,13 @@ func (c CryptopayFeePayer) Ptr() *CryptopayFeePayer {
 var (
 	cryptopayListPaymentsResponseFieldHasMore = big.NewInt(1 << 0)
 	cryptopayListPaymentsResponseFieldItems   = big.NewInt(1 << 1)
-	cryptopayListPaymentsResponseFieldLastID  = big.NewInt(1 << 2)
 )
 
 type CryptopayListPaymentsResponse struct {
-	HasMore *bool                       `json:"hasMore,omitempty" url:"hasMore,omitempty"`
-	Items   []*CryptopayPaymentResponse `json:"items,omitempty" url:"items,omitempty"`
-	LastID  *string                     `json:"lastId,omitempty" url:"lastId,omitempty"`
+	// True when more payments exist beyond this page. To fetch the next page, pass the last item's id as the lastId query parameter.
+	HasMore *bool `json:"hasMore,omitempty" url:"hasMore,omitempty"`
+	// Page of payments, ordered per the request's order parameter.
+	Items []*CryptopayPaymentResponse `json:"items,omitempty" url:"items,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -479,13 +543,6 @@ func (c *CryptopayListPaymentsResponse) GetItems() []*CryptopayPaymentResponse {
 		return nil
 	}
 	return c.Items
-}
-
-func (c *CryptopayListPaymentsResponse) GetLastID() *string {
-	if c == nil {
-		return nil
-	}
-	return c.LastID
 }
 
 func (c *CryptopayListPaymentsResponse) GetExtraProperties() map[string]interface{} {
@@ -514,13 +571,6 @@ func (c *CryptopayListPaymentsResponse) SetHasMore(hasMore *bool) {
 func (c *CryptopayListPaymentsResponse) SetItems(items []*CryptopayPaymentResponse) {
 	c.Items = items
 	c.require(cryptopayListPaymentsResponseFieldItems)
-}
-
-// SetLastID sets the LastID field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayListPaymentsResponse) SetLastID(lastID *string) {
-	c.LastID = lastID
-	c.require(cryptopayListPaymentsResponseFieldLastID)
 }
 
 func (c *CryptopayListPaymentsResponse) UnmarshalJSON(data []byte) error {
@@ -598,24 +648,35 @@ var (
 )
 
 type CryptopayPaymentResponse struct {
-	AcceptedAt            *int    `json:"acceptedAt,omitempty" url:"acceptedAt,omitempty"`
-	ActivatedAt           *int    `json:"activatedAt,omitempty" url:"activatedAt,omitempty"`
-	ActivationFlowSeconds *int    `json:"activationFlowSeconds,omitempty" url:"activationFlowSeconds,omitempty"`
-	Address               *string `json:"address,omitempty" url:"address,omitempty"`
+	// Unix-milliseconds timestamp when the payment reached the accepted state (safe confirmations, balance credited). Null before acceptance.
+	AcceptedAt *int `json:"acceptedAt,omitempty" url:"acceptedAt,omitempty"`
+	// Unix-milliseconds timestamp when the payment was activated and its payment window began counting. Null before activation.
+	ActivatedAt *int `json:"activatedAt,omitempty" url:"activatedAt,omitempty"`
+	// Resolved activation grace period, in seconds. Null when not configured.
+	ActivationFlowSeconds *int `json:"activationFlowSeconds,omitempty" url:"activationFlowSeconds,omitempty"`
+	// On-chain deposit address the customer must send funds to. Null until the payment is activated and an address is assigned.
+	Address *string `json:"address,omitempty" url:"address,omitempty"`
 	// Integer string in the asset's smallest unit.
 	Amount *string `json:"amount,omitempty" url:"amount,omitempty"`
 	// Integer string in the asset's smallest unit.
 	AmountConfirmed *string `json:"amountConfirmed,omitempty" url:"amountConfirmed,omitempty"`
 	// Integer string in the asset's smallest unit.
-	AmountReceived *string           `json:"amountReceived,omitempty" url:"amountReceived,omitempty"`
-	Asset          *CryptopayAssetID `json:"asset,omitempty" url:"asset,omitempty"`
-	ConfirmedAt    *int              `json:"confirmedAt,omitempty" url:"confirmedAt,omitempty"`
-	CreatedAt      *int              `json:"createdAt,omitempty" url:"createdAt,omitempty"`
-	ExpiresAt      *int              `json:"expiresAt,omitempty" url:"expiresAt,omitempty"`
-	ExternalID     *string           `json:"externalId,omitempty" url:"externalId,omitempty"`
+	AmountReceived *string `json:"amountReceived,omitempty" url:"amountReceived,omitempty"`
+	// Asset the payment is denominated in, as an asset id-string (see GET /v1/assets). Null until an asset is selected for the payment.
+	Asset *CryptopayAssetID `json:"asset,omitempty" url:"asset,omitempty"`
+	// Unix-milliseconds timestamp when the payment reached finalization (confirmed). Null until confirmed; may revert if a chain reorg undoes the confirmation.
+	ConfirmedAt *int `json:"confirmedAt,omitempty" url:"confirmedAt,omitempty"`
+	// Unix-milliseconds timestamp when the payment was created.
+	CreatedAt *int `json:"createdAt,omitempty" url:"createdAt,omitempty"`
+	// Unix-milliseconds timestamp when the payment window closes; the payment expires (fails) if it has not been paid by then.
+	ExpiresAt *int `json:"expiresAt,omitempty" url:"expiresAt,omitempty"`
+	// Merchant's own identifier for this payment, echoed from creation. Null when none was provided.
+	ExternalID *string `json:"externalId,omitempty" url:"externalId,omitempty"`
 	// Platform fee: 0.4% of the amount, minimum $1 equivalent. Integer string in the asset's smallest unit.
-	Fee      *string        `json:"fee,omitempty" url:"fee,omitempty"`
-	ID       *string        `json:"id,omitempty" url:"id,omitempty"`
+	Fee *string `json:"fee,omitempty" url:"fee,omitempty"`
+	// Unique Suward identifier of the payment. Use it in the payment endpoints (get, cancel, transactions) and as the checkout page path.
+	ID *string `json:"id,omitempty" url:"id,omitempty"`
+	// Arbitrary key/value data attached by the merchant at creation, echoed back unchanged.
 	Metadata map[string]any `json:"metadata,omitempty" url:"metadata,omitempty"`
 	// Estimated on-chain (gas) cost, deducted from the received amount. Integer string in the asset's smallest unit.
 	NetworkFee *string `json:"networkFee,omitempty" url:"networkFee,omitempty"`
@@ -624,17 +685,25 @@ type CryptopayPaymentResponse struct {
 	// Who bears the network (gas) fee, echoed from creation.
 	NetworkFeePayer *CryptopayFeePayer `json:"networkFeePayer,omitempty" url:"networkFeePayer,omitempty"`
 	// Who bears the platform (service) fee, echoed from creation.
-	ServiceFeePayer      *CryptopayFeePayer              `json:"serviceFeePayer,omitempty" url:"serviceFeePayer,omitempty"`
-	PaymentWindowSeconds *int                            `json:"paymentWindowSeconds,omitempty" url:"paymentWindowSeconds,omitempty"`
-	ProjectID            *string                         `json:"projectId,omitempty" url:"projectId,omitempty"`
-	RedirectConfig       *CryptopayRedirectConfigDto     `json:"redirectConfig,omitempty" url:"redirectConfig,omitempty"`
-	Status               *CryptopayPaymentStatusEnum     `json:"status,omitempty" url:"status,omitempty"`
-	SubStatus            *CryptopayPaymentSubStatusEnum  `json:"subStatus,omitempty" url:"subStatus,omitempty"`
-	Transactions         []*CryptopayTransactionResponse `json:"transactions,omitempty" url:"transactions,omitempty"`
+	ServiceFeePayer *CryptopayFeePayer `json:"serviceFeePayer,omitempty" url:"serviceFeePayer,omitempty"`
+	// Resolved length of the payment window, in seconds.
+	PaymentWindowSeconds *int `json:"paymentWindowSeconds,omitempty" url:"paymentWindowSeconds,omitempty"`
+	// Identifier of the project that owns this payment.
+	ProjectID *string `json:"projectId,omitempty" url:"projectId,omitempty"`
+	// Return-to-store redirect configuration echoed from creation. Null when none was configured.
+	RedirectConfig *CryptopayRedirectConfigDto `json:"redirectConfig,omitempty" url:"redirectConfig,omitempty"`
+	// Main payment lifecycle status. See the status enum for the full meaning of each value.
+	Status *CryptopayPaymentStatusEnum `json:"status,omitempty" url:"status,omitempty"`
+	// Fine-grained payment sub-status describing the current step or amount condition. See the sub-status enum for the full meaning of each value.
+	SubStatus *CryptopayPaymentSubStatusEnum `json:"subStatus,omitempty" url:"subStatus,omitempty"`
+	// Preview page of the on-chain transactions detected for this payment (newest first). Use GET /v1/payments/{paymentId}/transactions for the full paginated list.
+	Transactions *CryptopaywireTransactionList `json:"transactions,omitempty" url:"transactions,omitempty"`
 	// Integer string in the asset's smallest unit.
 	UnderpaymentTolerance *string `json:"underpaymentTolerance,omitempty" url:"underpaymentTolerance,omitempty"`
-	UpdatedAt             *int    `json:"updatedAt,omitempty" url:"updatedAt,omitempty"`
-	WebhookURL            *string `json:"webhookUrl,omitempty" url:"webhookUrl,omitempty"`
+	// Unix-milliseconds timestamp when the payment was last updated.
+	UpdatedAt *int `json:"updatedAt,omitempty" url:"updatedAt,omitempty"`
+	// Webhook URL that receives this payment's events, echoed from creation. Null when the project default webhook is used.
+	WebhookURL *string `json:"webhookUrl,omitempty" url:"webhookUrl,omitempty"`
 	// Absolute URL of the Suward-hosted checkout page where the customer pays this payment.
 	PaymentPageURL *string `json:"paymentPageUrl,omitempty" url:"paymentPageUrl,omitempty"`
 
@@ -813,7 +882,7 @@ func (c *CryptopayPaymentResponse) GetSubStatus() *CryptopayPaymentSubStatusEnum
 	return c.SubStatus
 }
 
-func (c *CryptopayPaymentResponse) GetTransactions() []*CryptopayTransactionResponse {
+func (c *CryptopayPaymentResponse) GetTransactions() *CryptopaywireTransactionList {
 	if c == nil {
 		return nil
 	}
@@ -1032,7 +1101,7 @@ func (c *CryptopayPaymentResponse) SetSubStatus(subStatus *CryptopayPaymentSubSt
 
 // SetTransactions sets the Transactions field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayPaymentResponse) SetTransactions(transactions []*CryptopayTransactionResponse) {
+func (c *CryptopayPaymentResponse) SetTransactions(transactions *CryptopaywireTransactionList) {
 	c.Transactions = transactions
 	c.require(cryptopayPaymentResponseFieldTransactions)
 }
@@ -1203,24 +1272,36 @@ var (
 )
 
 type CryptopayPublicPaymentResponse struct {
-	ActivatedAt           *int    `json:"activatedAt,omitempty" url:"activatedAt,omitempty"`
-	ActivationFlowSeconds *int    `json:"activationFlowSeconds,omitempty" url:"activationFlowSeconds,omitempty"`
-	Address               *string `json:"address,omitempty" url:"address,omitempty"`
+	// Unix-milliseconds timestamp when the payment was activated. Null before activation.
+	ActivatedAt *int `json:"activatedAt,omitempty" url:"activatedAt,omitempty"`
+	// Activation grace period in seconds before the payment window starts counting. Null when not configured.
+	ActivationFlowSeconds *int `json:"activationFlowSeconds,omitempty" url:"activationFlowSeconds,omitempty"`
+	// On-chain deposit address the customer must send funds to. Null until the payment is activated and an address is assigned.
+	Address *string `json:"address,omitempty" url:"address,omitempty"`
 	// Integer string in the asset's smallest unit.
 	Amount *string `json:"amount,omitempty" url:"amount,omitempty"`
 	// Integer string in the asset's smallest unit.
-	AmountReceived       *string                        `json:"amountReceived,omitempty" url:"amountReceived,omitempty"`
-	Asset                *CryptopayAssetID              `json:"asset,omitempty" url:"asset,omitempty"`
-	CreatedAt            *int                           `json:"createdAt,omitempty" url:"createdAt,omitempty"`
-	ExpiresAt            *int                           `json:"expiresAt,omitempty" url:"expiresAt,omitempty"`
-	ID                   *string                        `json:"id,omitempty" url:"id,omitempty"`
-	PaymentWindowSeconds *int                           `json:"paymentWindowSeconds,omitempty" url:"paymentWindowSeconds,omitempty"`
-	Redirect             *CryptopayPublicRedirect       `json:"redirect,omitempty" url:"redirect,omitempty"`
-	Status               *CryptopayPaymentStatusEnum    `json:"status,omitempty" url:"status,omitempty"`
-	SubStatus            *CryptopayPaymentSubStatusEnum `json:"subStatus,omitempty" url:"subStatus,omitempty"`
+	AmountReceived *string `json:"amountReceived,omitempty" url:"amountReceived,omitempty"`
+	// Asset the payment is denominated in, as an asset id-string (see GET /v1/assets). Null until an asset is selected.
+	Asset *CryptopayAssetID `json:"asset,omitempty" url:"asset,omitempty"`
+	// Unix-milliseconds timestamp when the payment was created.
+	CreatedAt *int `json:"createdAt,omitempty" url:"createdAt,omitempty"`
+	// Unix-milliseconds timestamp when the payment window closes; the payment expires if unpaid by then.
+	ExpiresAt *int `json:"expiresAt,omitempty" url:"expiresAt,omitempty"`
+	// Unique Suward identifier of the payment.
+	ID *string `json:"id,omitempty" url:"id,omitempty"`
+	// Length of the payment window in seconds — how long the payment stays open for funding once activated.
+	PaymentWindowSeconds *int `json:"paymentWindowSeconds,omitempty" url:"paymentWindowSeconds,omitempty"`
+	// Resolved "return to store" redirect (base URL plus the query parameters to append) used to send the customer back after payment. Null when none was configured.
+	Redirect *CryptopayPublicRedirect `json:"redirect,omitempty" url:"redirect,omitempty"`
+	// Main payment lifecycle status. See the status enum for the full meaning of each value.
+	Status *CryptopayPaymentStatusEnum `json:"status,omitempty" url:"status,omitempty"`
+	// Fine-grained payment sub-status. See the sub-status enum for the full meaning of each value.
+	SubStatus *CryptopayPaymentSubStatusEnum `json:"subStatus,omitempty" url:"subStatus,omitempty"`
 	// Integer string in the asset's smallest unit.
 	UnderpaymentTolerance *string `json:"underpaymentTolerance,omitempty" url:"underpaymentTolerance,omitempty"`
-	UpdatedAt             *int    `json:"updatedAt,omitempty" url:"updatedAt,omitempty"`
+	// Unix-milliseconds timestamp when the payment was last updated.
+	UpdatedAt *int `json:"updatedAt,omitempty" url:"updatedAt,omitempty"`
 	// Absolute URL of the Suward-hosted checkout page where the customer pays this payment.
 	PaymentPageURL *string `json:"paymentPageUrl,omitempty" url:"paymentPageUrl,omitempty"`
 
@@ -1517,8 +1598,10 @@ var (
 )
 
 type CryptopayPublicRedirect struct {
+	// Query parameters to append to the URL when redirecting the customer back, e.g. id, externalId, data. Empty when the redirect has no parameters.
 	Query map[string]string `json:"query,omitempty" url:"query,omitempty"`
-	URL   *string           `json:"url,omitempty" url:"url,omitempty"`
+	// Base "return to store" URL the customer is sent back to after paying.
+	URL *string `json:"url,omitempty" url:"url,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -1622,6 +1705,7 @@ var (
 )
 
 type CryptopayQuotePaymentResponse struct {
+	// Asset the quote is denominated in, echoed from the request.
 	Asset *CryptopayAssetID `json:"asset,omitempty" url:"asset,omitempty"`
 	// Gross amount, integer string in the asset's smallest unit.
 	Amount *string `json:"amount,omitempty" url:"amount,omitempty"`
@@ -1804,9 +1888,12 @@ var (
 )
 
 type CryptopayRedirectConfigDto struct {
-	Data   *string                                `json:"data,omitempty" url:"data,omitempty"`
+	// Opaque string passed through unchanged as the "data" query parameter on the return URL. Use it to carry your own session/order token.
+	Data *string `json:"data,omitempty" url:"data,omitempty"`
+	// Which payment identifiers to append to the return URL as query parameters. Allowed values: "id" (the Suward payment id) and "externalId" (your identifier).
 	Params []CryptopayRedirectConfigDtoParamsItem `json:"params,omitempty" url:"params,omitempty"`
-	URL    *string                                `json:"url,omitempty" url:"url,omitempty"`
+	// Base "return to store" URL the customer is sent back to after paying.
+	URL *string `json:"url,omitempty" url:"url,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -1943,10 +2030,14 @@ var (
 )
 
 type CryptopayTransactionResponse struct {
-	AcceptedAt *int    `json:"acceptedAt,omitempty" url:"acceptedAt,omitempty"`
-	Amount     *string `json:"amount,omitempty" url:"amount,omitempty"`
-	DetectedAt *int    `json:"detectedAt,omitempty" url:"detectedAt,omitempty"`
-	TxHash     *string `json:"txHash,omitempty" url:"txHash,omitempty"`
+	// Unix-milliseconds timestamp when the transfer reached the accepted (safe) confirmation tier. Null before acceptance.
+	AcceptedAt *int `json:"acceptedAt,omitempty" url:"acceptedAt,omitempty"`
+	// On-chain transfer amount, an integer string in the asset's smallest unit (see CreatePaymentRequest.amount).
+	Amount *string `json:"amount,omitempty" url:"amount,omitempty"`
+	// Unix-milliseconds timestamp when the transfer was first seen on-chain.
+	DetectedAt *int `json:"detectedAt,omitempty" url:"detectedAt,omitempty"`
+	// On-chain transaction hash of the transfer.
+	TxHash *string `json:"txHash,omitempty" url:"txHash,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -2067,6 +2158,108 @@ func (c *CryptopayTransactionResponse) String() string {
 	return fmt.Sprintf("%#v", c)
 }
 
+var (
+	cryptopaywireTransactionListFieldHasMore = big.NewInt(1 << 0)
+	cryptopaywireTransactionListFieldItems   = big.NewInt(1 << 1)
+)
+
+type CryptopaywireTransactionList struct {
+	// True when more transactions exist beyond this page. To fetch the next page, pass the last item's id as the lastId query parameter.
+	HasMore *bool `json:"hasMore,omitempty" url:"hasMore,omitempty"`
+	// Page of transactions, ordered per the request's order parameter.
+	Items []*CryptopayTransactionResponse `json:"items,omitempty" url:"items,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *CryptopaywireTransactionList) GetHasMore() *bool {
+	if c == nil {
+		return nil
+	}
+	return c.HasMore
+}
+
+func (c *CryptopaywireTransactionList) GetItems() []*CryptopayTransactionResponse {
+	if c == nil {
+		return nil
+	}
+	return c.Items
+}
+
+func (c *CryptopaywireTransactionList) GetExtraProperties() map[string]interface{} {
+	if c == nil {
+		return nil
+	}
+	return c.extraProperties
+}
+
+func (c *CryptopaywireTransactionList) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetHasMore sets the HasMore field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CryptopaywireTransactionList) SetHasMore(hasMore *bool) {
+	c.HasMore = hasMore
+	c.require(cryptopaywireTransactionListFieldHasMore)
+}
+
+// SetItems sets the Items field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CryptopaywireTransactionList) SetItems(items []*CryptopayTransactionResponse) {
+	c.Items = items
+	c.require(cryptopaywireTransactionListFieldItems)
+}
+
+func (c *CryptopaywireTransactionList) UnmarshalJSON(data []byte) error {
+	type unmarshaler CryptopaywireTransactionList
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = CryptopaywireTransactionList(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *CryptopaywireTransactionList) MarshalJSON() ([]byte, error) {
+	type embed CryptopaywireTransactionList
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (c *CryptopaywireTransactionList) String() string {
+	if c == nil {
+		return "<nil>"
+	}
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
 type GetV1PaymentsPaymentIDResponse struct {
 	CryptopayPaymentResponse       *CryptopayPaymentResponse
 	CryptopayPublicPaymentResponse *CryptopayPublicPaymentResponse
@@ -2127,6 +2320,28 @@ func (g *GetV1PaymentsPaymentIDResponse) Accept(visitor GetV1PaymentsPaymentIDRe
 		return visitor.VisitCryptopayPublicPaymentResponse(g.CryptopayPublicPaymentResponse)
 	}
 	return fmt.Errorf("type %T does not include a non-empty union type", g)
+}
+
+type GetV1PaymentsPaymentIDTransactionsRequestOrder string
+
+const (
+	GetV1PaymentsPaymentIDTransactionsRequestOrderAsc  GetV1PaymentsPaymentIDTransactionsRequestOrder = "asc"
+	GetV1PaymentsPaymentIDTransactionsRequestOrderDesc GetV1PaymentsPaymentIDTransactionsRequestOrder = "desc"
+)
+
+func NewGetV1PaymentsPaymentIDTransactionsRequestOrderFromString(s string) (GetV1PaymentsPaymentIDTransactionsRequestOrder, error) {
+	switch s {
+	case "asc":
+		return GetV1PaymentsPaymentIDTransactionsRequestOrderAsc, nil
+	case "desc":
+		return GetV1PaymentsPaymentIDTransactionsRequestOrderDesc, nil
+	}
+	var t GetV1PaymentsPaymentIDTransactionsRequestOrder
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (g GetV1PaymentsPaymentIDTransactionsRequestOrder) Ptr() *GetV1PaymentsPaymentIDTransactionsRequestOrder {
+	return &g
 }
 
 type GetV1PaymentsRequestOrder string
