@@ -632,19 +632,21 @@ var (
 	cryptopayPaymentResponseFieldID                    = big.NewInt(1 << 13)
 	cryptopayPaymentResponseFieldMetadata              = big.NewInt(1 << 14)
 	cryptopayPaymentResponseFieldNetworkFee            = big.NewInt(1 << 15)
-	cryptopayPaymentResponseFieldQuotedPrice           = big.NewInt(1 << 16)
-	cryptopayPaymentResponseFieldNetworkFeePayer       = big.NewInt(1 << 17)
-	cryptopayPaymentResponseFieldServiceFeePayer       = big.NewInt(1 << 18)
-	cryptopayPaymentResponseFieldPaymentWindowSeconds  = big.NewInt(1 << 19)
-	cryptopayPaymentResponseFieldProjectID             = big.NewInt(1 << 20)
-	cryptopayPaymentResponseFieldRedirectConfig        = big.NewInt(1 << 21)
-	cryptopayPaymentResponseFieldStatus                = big.NewInt(1 << 22)
-	cryptopayPaymentResponseFieldSubStatus             = big.NewInt(1 << 23)
-	cryptopayPaymentResponseFieldTransactions          = big.NewInt(1 << 24)
-	cryptopayPaymentResponseFieldUnderpaymentTolerance = big.NewInt(1 << 25)
-	cryptopayPaymentResponseFieldUpdatedAt             = big.NewInt(1 << 26)
-	cryptopayPaymentResponseFieldWebhookURL            = big.NewInt(1 << 27)
-	cryptopayPaymentResponseFieldPaymentPageURL        = big.NewInt(1 << 28)
+	cryptopayPaymentResponseFieldServiceFeeBps         = big.NewInt(1 << 16)
+	cryptopayPaymentResponseFieldServiceFeeMinUsd      = big.NewInt(1 << 17)
+	cryptopayPaymentResponseFieldQuotedPrice           = big.NewInt(1 << 18)
+	cryptopayPaymentResponseFieldNetworkFeePayer       = big.NewInt(1 << 19)
+	cryptopayPaymentResponseFieldServiceFeePayer       = big.NewInt(1 << 20)
+	cryptopayPaymentResponseFieldPaymentWindowSeconds  = big.NewInt(1 << 21)
+	cryptopayPaymentResponseFieldProjectID             = big.NewInt(1 << 22)
+	cryptopayPaymentResponseFieldRedirectConfig        = big.NewInt(1 << 23)
+	cryptopayPaymentResponseFieldStatus                = big.NewInt(1 << 24)
+	cryptopayPaymentResponseFieldSubStatus             = big.NewInt(1 << 25)
+	cryptopayPaymentResponseFieldTransactions          = big.NewInt(1 << 26)
+	cryptopayPaymentResponseFieldUnderpaymentTolerance = big.NewInt(1 << 27)
+	cryptopayPaymentResponseFieldUpdatedAt             = big.NewInt(1 << 28)
+	cryptopayPaymentResponseFieldWebhookURL            = big.NewInt(1 << 29)
+	cryptopayPaymentResponseFieldPaymentPageURL        = big.NewInt(1 << 30)
 )
 
 type CryptopayPaymentResponse struct {
@@ -680,6 +682,10 @@ type CryptopayPaymentResponse struct {
 	Metadata map[string]any `json:"metadata,omitempty" url:"metadata,omitempty"`
 	// Estimated on-chain (gas) cost, deducted from the received amount. Integer string in the asset's smallest unit.
 	NetworkFee *string `json:"networkFee,omitempty" url:"networkFee,omitempty"`
+	// The service-fee rate applied to this payment, in basis points (e.g. 40 = 0.4%).
+	ServiceFeeBps *int `json:"serviceFeeBps,omitempty" url:"serviceFeeBps,omitempty"`
+	// The minimum service-fee floor applied to this payment, as a USD decimal string (e.g. "1").
+	ServiceFeeMinUsd *string `json:"serviceFeeMinUsd,omitempty" url:"serviceFeeMinUsd,omitempty"`
 	// USD price of the asset locked at creation, decimal string. Fees are computed from this price at settlement, so the merchant's net is deterministic.
 	QuotedPrice *string `json:"quotedPrice,omitempty" url:"quotedPrice,omitempty"`
 	// Who bears the network (gas) fee, echoed from creation.
@@ -824,6 +830,20 @@ func (c *CryptopayPaymentResponse) GetNetworkFee() *string {
 		return nil
 	}
 	return c.NetworkFee
+}
+
+func (c *CryptopayPaymentResponse) GetServiceFeeBps() *int {
+	if c == nil {
+		return nil
+	}
+	return c.ServiceFeeBps
+}
+
+func (c *CryptopayPaymentResponse) GetServiceFeeMinUsd() *string {
+	if c == nil {
+		return nil
+	}
+	return c.ServiceFeeMinUsd
 }
 
 func (c *CryptopayPaymentResponse) GetQuotedPrice() *string {
@@ -1043,6 +1063,20 @@ func (c *CryptopayPaymentResponse) SetNetworkFee(networkFee *string) {
 	c.require(cryptopayPaymentResponseFieldNetworkFee)
 }
 
+// SetServiceFeeBps sets the ServiceFeeBps field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CryptopayPaymentResponse) SetServiceFeeBps(serviceFeeBps *int) {
+	c.ServiceFeeBps = serviceFeeBps
+	c.require(cryptopayPaymentResponseFieldServiceFeeBps)
+}
+
+// SetServiceFeeMinUsd sets the ServiceFeeMinUsd field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CryptopayPaymentResponse) SetServiceFeeMinUsd(serviceFeeMinUsd *string) {
+	c.ServiceFeeMinUsd = serviceFeeMinUsd
+	c.require(cryptopayPaymentResponseFieldServiceFeeMinUsd)
+}
+
 // SetQuotedPrice sets the QuotedPrice field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
 func (c *CryptopayPaymentResponse) SetQuotedPrice(quotedPrice *string) {
@@ -1205,20 +1239,22 @@ func (c CryptopayPaymentStatusEnum) Ptr() *CryptopayPaymentStatusEnum {
 	return &c
 }
 
-// overpaid / underpaid: more or less than the requested amount was received. partiallyPaid: payment expired with a partial payment that never reached acceptance.
+// overpaid / underpaid: more or less than the requested amount was received. partiallyPaid: payment expired with a partial payment that never reached acceptance. complianceHold: held (under pending) for compliance review. complianceRejected: rejected by compliance (terminal, under failed).
 type CryptopayPaymentSubStatusEnum string
 
 const (
-	CryptopayPaymentSubStatusEnumCreated         CryptopayPaymentSubStatusEnum = "created"
-	CryptopayPaymentSubStatusEnumActivated       CryptopayPaymentSubStatusEnum = "activated"
-	CryptopayPaymentSubStatusEnumAwaitingPayment CryptopayPaymentSubStatusEnum = "awaitingPayment"
-	CryptopayPaymentSubStatusEnumConfirming      CryptopayPaymentSubStatusEnum = "confirming"
-	CryptopayPaymentSubStatusEnumCompleted       CryptopayPaymentSubStatusEnum = "completed"
-	CryptopayPaymentSubStatusEnumOverpaid        CryptopayPaymentSubStatusEnum = "overpaid"
-	CryptopayPaymentSubStatusEnumUnderpaid       CryptopayPaymentSubStatusEnum = "underpaid"
-	CryptopayPaymentSubStatusEnumExpired         CryptopayPaymentSubStatusEnum = "expired"
-	CryptopayPaymentSubStatusEnumCancelled       CryptopayPaymentSubStatusEnum = "cancelled"
-	CryptopayPaymentSubStatusEnumPartiallyPaid   CryptopayPaymentSubStatusEnum = "partiallyPaid"
+	CryptopayPaymentSubStatusEnumCreated            CryptopayPaymentSubStatusEnum = "created"
+	CryptopayPaymentSubStatusEnumActivated          CryptopayPaymentSubStatusEnum = "activated"
+	CryptopayPaymentSubStatusEnumAwaitingPayment    CryptopayPaymentSubStatusEnum = "awaitingPayment"
+	CryptopayPaymentSubStatusEnumConfirming         CryptopayPaymentSubStatusEnum = "confirming"
+	CryptopayPaymentSubStatusEnumCompleted          CryptopayPaymentSubStatusEnum = "completed"
+	CryptopayPaymentSubStatusEnumOverpaid           CryptopayPaymentSubStatusEnum = "overpaid"
+	CryptopayPaymentSubStatusEnumUnderpaid          CryptopayPaymentSubStatusEnum = "underpaid"
+	CryptopayPaymentSubStatusEnumExpired            CryptopayPaymentSubStatusEnum = "expired"
+	CryptopayPaymentSubStatusEnumCancelled          CryptopayPaymentSubStatusEnum = "cancelled"
+	CryptopayPaymentSubStatusEnumPartiallyPaid      CryptopayPaymentSubStatusEnum = "partiallyPaid"
+	CryptopayPaymentSubStatusEnumComplianceHold     CryptopayPaymentSubStatusEnum = "complianceHold"
+	CryptopayPaymentSubStatusEnumComplianceRejected CryptopayPaymentSubStatusEnum = "complianceRejected"
 )
 
 func NewCryptopayPaymentSubStatusEnumFromString(s string) (CryptopayPaymentSubStatusEnum, error) {
@@ -1243,6 +1279,10 @@ func NewCryptopayPaymentSubStatusEnumFromString(s string) (CryptopayPaymentSubSt
 		return CryptopayPaymentSubStatusEnumCancelled, nil
 	case "partiallyPaid":
 		return CryptopayPaymentSubStatusEnumPartiallyPaid, nil
+	case "complianceHold":
+		return CryptopayPaymentSubStatusEnumComplianceHold, nil
+	case "complianceRejected":
+		return CryptopayPaymentSubStatusEnumComplianceRejected, nil
 	}
 	var t CryptopayPaymentSubStatusEnum
 	return "", fmt.Errorf("%s is not a valid %T", s, t)

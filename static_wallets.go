@@ -578,25 +578,27 @@ func (c *CryptopayListStaticWalletsResponse) String() string {
 }
 
 var (
-	cryptopayStaticDepositResponseFieldAcceptedAt     = big.NewInt(1 << 0)
-	cryptopayStaticDepositResponseFieldAddress        = big.NewInt(1 << 1)
-	cryptopayStaticDepositResponseFieldAmount         = big.NewInt(1 << 2)
-	cryptopayStaticDepositResponseFieldAsset          = big.NewInt(1 << 3)
-	cryptopayStaticDepositResponseFieldConfirmedAt    = big.NewInt(1 << 4)
-	cryptopayStaticDepositResponseFieldCreatedAt      = big.NewInt(1 << 5)
-	cryptopayStaticDepositResponseFieldDetectedAt     = big.NewInt(1 << 6)
-	cryptopayStaticDepositResponseFieldExternalID     = big.NewInt(1 << 7)
-	cryptopayStaticDepositResponseFieldFee            = big.NewInt(1 << 8)
-	cryptopayStaticDepositResponseFieldID             = big.NewInt(1 << 9)
-	cryptopayStaticDepositResponseFieldInvalidatedAt  = big.NewInt(1 << 10)
-	cryptopayStaticDepositResponseFieldNetAmount      = big.NewInt(1 << 11)
-	cryptopayStaticDepositResponseFieldNetworkFee     = big.NewInt(1 << 12)
-	cryptopayStaticDepositResponseFieldProjectID      = big.NewInt(1 << 13)
-	cryptopayStaticDepositResponseFieldStaticWalletID = big.NewInt(1 << 14)
-	cryptopayStaticDepositResponseFieldStatus         = big.NewInt(1 << 15)
-	cryptopayStaticDepositResponseFieldTransferIndex  = big.NewInt(1 << 16)
-	cryptopayStaticDepositResponseFieldTxHash         = big.NewInt(1 << 17)
-	cryptopayStaticDepositResponseFieldUpdatedAt      = big.NewInt(1 << 18)
+	cryptopayStaticDepositResponseFieldAcceptedAt       = big.NewInt(1 << 0)
+	cryptopayStaticDepositResponseFieldAddress          = big.NewInt(1 << 1)
+	cryptopayStaticDepositResponseFieldAmount           = big.NewInt(1 << 2)
+	cryptopayStaticDepositResponseFieldAsset            = big.NewInt(1 << 3)
+	cryptopayStaticDepositResponseFieldConfirmedAt      = big.NewInt(1 << 4)
+	cryptopayStaticDepositResponseFieldCreatedAt        = big.NewInt(1 << 5)
+	cryptopayStaticDepositResponseFieldDetectedAt       = big.NewInt(1 << 6)
+	cryptopayStaticDepositResponseFieldExternalID       = big.NewInt(1 << 7)
+	cryptopayStaticDepositResponseFieldFee              = big.NewInt(1 << 8)
+	cryptopayStaticDepositResponseFieldID               = big.NewInt(1 << 9)
+	cryptopayStaticDepositResponseFieldInvalidatedAt    = big.NewInt(1 << 10)
+	cryptopayStaticDepositResponseFieldNetAmount        = big.NewInt(1 << 11)
+	cryptopayStaticDepositResponseFieldNetworkFee       = big.NewInt(1 << 12)
+	cryptopayStaticDepositResponseFieldProjectID        = big.NewInt(1 << 13)
+	cryptopayStaticDepositResponseFieldServiceFeeBps    = big.NewInt(1 << 14)
+	cryptopayStaticDepositResponseFieldServiceFeeMinUsd = big.NewInt(1 << 15)
+	cryptopayStaticDepositResponseFieldStaticWalletID   = big.NewInt(1 << 16)
+	cryptopayStaticDepositResponseFieldStatus           = big.NewInt(1 << 17)
+	cryptopayStaticDepositResponseFieldTransferIndex    = big.NewInt(1 << 18)
+	cryptopayStaticDepositResponseFieldTxHash           = big.NewInt(1 << 19)
+	cryptopayStaticDepositResponseFieldUpdatedAt        = big.NewInt(1 << 20)
 )
 
 type CryptopayStaticDepositResponse struct {
@@ -628,9 +630,13 @@ type CryptopayStaticDepositResponse struct {
 	NetworkFee *string `json:"networkFee,omitempty" url:"networkFee,omitempty"`
 	// Identifier of the project that owns this deposit.
 	ProjectID *string `json:"projectId,omitempty" url:"projectId,omitempty"`
+	// The service-fee rate applied to this deposit, in basis points (e.g. 40 = 0.4%).
+	ServiceFeeBps *int `json:"serviceFeeBps,omitempty" url:"serviceFeeBps,omitempty"`
+	// The minimum service-fee floor applied to this deposit, as a USD decimal string (e.g. "1").
+	ServiceFeeMinUsd *string `json:"serviceFeeMinUsd,omitempty" url:"serviceFeeMinUsd,omitempty"`
 	// Identifier of the static wallet that received this deposit.
 	StaticWalletID *string `json:"staticWalletId,omitempty" url:"staticWalletId,omitempty"`
-	// Deposit lifecycle status. detected: seen on-chain, awaiting confirmations. accepted: safe confirmations reached, credited (non-final). confirmed: finalized (terminal). ignored: the asset is not on the wallet's allow-list, so the deposit is not credited. invalidated: dropped after detection, e.g. by a chain reorg.
+	// Deposit lifecycle status. detected: seen on-chain, awaiting confirmations. accepted: safe confirmations reached, credited (non-final). confirmed: finalized (terminal). ignored: the asset is not on the wallet's allow-list, so the deposit is not credited. invalidated: dropped after detection, e.g. by a chain reorg. complianceHold: held pending compliance review. complianceRejected: rejected by compliance, credit reversed (terminal).
 	Status *CryptopayStaticDepositResponseStatus `json:"status,omitempty" url:"status,omitempty"`
 	// Index of this transfer within its transaction, as a string-encoded integer. Distinguishes multiple transfers to the same address in one transaction.
 	TransferIndex *string `json:"transferIndex,omitempty" url:"transferIndex,omitempty"`
@@ -742,6 +748,20 @@ func (c *CryptopayStaticDepositResponse) GetProjectID() *string {
 		return nil
 	}
 	return c.ProjectID
+}
+
+func (c *CryptopayStaticDepositResponse) GetServiceFeeBps() *int {
+	if c == nil {
+		return nil
+	}
+	return c.ServiceFeeBps
+}
+
+func (c *CryptopayStaticDepositResponse) GetServiceFeeMinUsd() *string {
+	if c == nil {
+		return nil
+	}
+	return c.ServiceFeeMinUsd
 }
 
 func (c *CryptopayStaticDepositResponse) GetStaticWalletID() *string {
@@ -891,6 +911,20 @@ func (c *CryptopayStaticDepositResponse) SetProjectID(projectID *string) {
 	c.require(cryptopayStaticDepositResponseFieldProjectID)
 }
 
+// SetServiceFeeBps sets the ServiceFeeBps field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CryptopayStaticDepositResponse) SetServiceFeeBps(serviceFeeBps *int) {
+	c.ServiceFeeBps = serviceFeeBps
+	c.require(cryptopayStaticDepositResponseFieldServiceFeeBps)
+}
+
+// SetServiceFeeMinUsd sets the ServiceFeeMinUsd field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CryptopayStaticDepositResponse) SetServiceFeeMinUsd(serviceFeeMinUsd *string) {
+	c.ServiceFeeMinUsd = serviceFeeMinUsd
+	c.require(cryptopayStaticDepositResponseFieldServiceFeeMinUsd)
+}
+
 // SetStaticWalletID sets the StaticWalletID field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
 func (c *CryptopayStaticDepositResponse) SetStaticWalletID(staticWalletID *string) {
@@ -968,15 +1002,17 @@ func (c *CryptopayStaticDepositResponse) String() string {
 	return fmt.Sprintf("%#v", c)
 }
 
-// Deposit lifecycle status. detected: seen on-chain, awaiting confirmations. accepted: safe confirmations reached, credited (non-final). confirmed: finalized (terminal). ignored: the asset is not on the wallet's allow-list, so the deposit is not credited. invalidated: dropped after detection, e.g. by a chain reorg.
+// Deposit lifecycle status. detected: seen on-chain, awaiting confirmations. accepted: safe confirmations reached, credited (non-final). confirmed: finalized (terminal). ignored: the asset is not on the wallet's allow-list, so the deposit is not credited. invalidated: dropped after detection, e.g. by a chain reorg. complianceHold: held pending compliance review. complianceRejected: rejected by compliance, credit reversed (terminal).
 type CryptopayStaticDepositResponseStatus string
 
 const (
-	CryptopayStaticDepositResponseStatusDetected    CryptopayStaticDepositResponseStatus = "detected"
-	CryptopayStaticDepositResponseStatusAccepted    CryptopayStaticDepositResponseStatus = "accepted"
-	CryptopayStaticDepositResponseStatusConfirmed   CryptopayStaticDepositResponseStatus = "confirmed"
-	CryptopayStaticDepositResponseStatusIgnored     CryptopayStaticDepositResponseStatus = "ignored"
-	CryptopayStaticDepositResponseStatusInvalidated CryptopayStaticDepositResponseStatus = "invalidated"
+	CryptopayStaticDepositResponseStatusDetected           CryptopayStaticDepositResponseStatus = "detected"
+	CryptopayStaticDepositResponseStatusAccepted           CryptopayStaticDepositResponseStatus = "accepted"
+	CryptopayStaticDepositResponseStatusConfirmed          CryptopayStaticDepositResponseStatus = "confirmed"
+	CryptopayStaticDepositResponseStatusIgnored            CryptopayStaticDepositResponseStatus = "ignored"
+	CryptopayStaticDepositResponseStatusInvalidated        CryptopayStaticDepositResponseStatus = "invalidated"
+	CryptopayStaticDepositResponseStatusComplianceHold     CryptopayStaticDepositResponseStatus = "complianceHold"
+	CryptopayStaticDepositResponseStatusComplianceRejected CryptopayStaticDepositResponseStatus = "complianceRejected"
 )
 
 func NewCryptopayStaticDepositResponseStatusFromString(s string) (CryptopayStaticDepositResponseStatus, error) {
@@ -991,6 +1027,10 @@ func NewCryptopayStaticDepositResponseStatusFromString(s string) (CryptopayStati
 		return CryptopayStaticDepositResponseStatusIgnored, nil
 	case "invalidated":
 		return CryptopayStaticDepositResponseStatusInvalidated, nil
+	case "complianceHold":
+		return CryptopayStaticDepositResponseStatusComplianceHold, nil
+	case "complianceRejected":
+		return CryptopayStaticDepositResponseStatusComplianceRejected, nil
 	}
 	var t CryptopayStaticDepositResponseStatus
 	return "", fmt.Errorf("%s is not a valid %T", s, t)

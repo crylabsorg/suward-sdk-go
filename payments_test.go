@@ -1470,6 +1470,22 @@ func TestSettersCryptopayPaymentResponse(t *testing.T) {
 		assert.NotNil(t, obj.explicitFields)
 	})
 
+	t.Run("SetServiceFeeBps", func(t *testing.T) {
+		obj := &CryptopayPaymentResponse{}
+		var fernTestValueServiceFeeBps *int
+		obj.SetServiceFeeBps(fernTestValueServiceFeeBps)
+		assert.Equal(t, fernTestValueServiceFeeBps, obj.ServiceFeeBps)
+		assert.NotNil(t, obj.explicitFields)
+	})
+
+	t.Run("SetServiceFeeMinUsd", func(t *testing.T) {
+		obj := &CryptopayPaymentResponse{}
+		var fernTestValueServiceFeeMinUsd *string
+		obj.SetServiceFeeMinUsd(fernTestValueServiceFeeMinUsd)
+		assert.Equal(t, fernTestValueServiceFeeMinUsd, obj.ServiceFeeMinUsd)
+		assert.NotNil(t, obj.explicitFields)
+	})
+
 	t.Run("SetQuotedPrice", func(t *testing.T) {
 		obj := &CryptopayPaymentResponse{}
 		var fernTestValueQuotedPrice *string
@@ -2103,6 +2119,72 @@ func TestGettersCryptopayPaymentResponse(t *testing.T) {
 			}
 		}()
 		_ = obj.GetNetworkFee() // Should return zero value
+	})
+
+	t.Run("GetServiceFeeBps", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &CryptopayPaymentResponse{}
+		var expected *int
+		obj.ServiceFeeBps = expected
+
+		// Act & Assert
+		assert.Equal(t, expected, obj.GetServiceFeeBps(), "getter should return the property value")
+	})
+
+	t.Run("GetServiceFeeBps_NilValue", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &CryptopayPaymentResponse{}
+		obj.ServiceFeeBps = nil
+
+		// Act & Assert
+		assert.Nil(t, obj.GetServiceFeeBps(), "getter should return nil when property is nil")
+	})
+
+	t.Run("GetServiceFeeBps_NilReceiver", func(t *testing.T) {
+		t.Parallel()
+		var obj *CryptopayPaymentResponse
+		// Should not panic - getters should handle nil receiver gracefully
+		defer func() {
+			if r := recover(); r != nil {
+				t.Errorf("Getter panicked on nil receiver: %v", r)
+			}
+		}()
+		_ = obj.GetServiceFeeBps() // Should return zero value
+	})
+
+	t.Run("GetServiceFeeMinUsd", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &CryptopayPaymentResponse{}
+		var expected *string
+		obj.ServiceFeeMinUsd = expected
+
+		// Act & Assert
+		assert.Equal(t, expected, obj.GetServiceFeeMinUsd(), "getter should return the property value")
+	})
+
+	t.Run("GetServiceFeeMinUsd_NilValue", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &CryptopayPaymentResponse{}
+		obj.ServiceFeeMinUsd = nil
+
+		// Act & Assert
+		assert.Nil(t, obj.GetServiceFeeMinUsd(), "getter should return nil when property is nil")
+	})
+
+	t.Run("GetServiceFeeMinUsd_NilReceiver", func(t *testing.T) {
+		t.Parallel()
+		var obj *CryptopayPaymentResponse
+		// Should not panic - getters should handle nil receiver gracefully
+		defer func() {
+			if r := recover(); r != nil {
+				t.Errorf("Getter panicked on nil receiver: %v", r)
+			}
+		}()
+		_ = obj.GetServiceFeeMinUsd() // Should return zero value
 	})
 
 	t.Run("GetQuotedPrice", func(t *testing.T) {
@@ -3010,6 +3092,68 @@ func TestSettersMarkExplicitCryptopayPaymentResponse(t *testing.T) {
 
 		// Act
 		obj.SetNetworkFee(fernTestValueNetworkFee)
+
+		// Assert - object with explicitly set field can be marshaled/unmarshaled
+		bytes, err := json.Marshal(obj)
+		require.NoError(t, err, "marshaling should succeed for test setup")
+
+		// This test ensures JSON marshaling and unmarshaling succeed when the field has a zero/nil value
+		// Detect if marshaled JSON is an object or primitive to use correct unmarshal target
+		if len(bytes) > 0 && bytes[0] == '{' {
+			// JSON object - unmarshal into map
+			var unmarshaled map[string]interface{}
+			err = json.Unmarshal(bytes, &unmarshaled)
+			require.NoError(t, err, "unmarshaling should succeed for test verification")
+		} else {
+			// JSON primitive (string, number, boolean, null) - unmarshal into interface{}
+			var unmarshaled interface{}
+			err = json.Unmarshal(bytes, &unmarshaled)
+			require.NoError(t, err, "unmarshaling should succeed for test verification")
+		}
+
+		// Note: This does not explicitly assert the presence of a specific JSON field
+		// It verifies that setting a field via setter allows successful JSON round-trip
+	})
+
+	t.Run("SetServiceFeeBps_MarksExplicit", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &CryptopayPaymentResponse{}
+		var fernTestValueServiceFeeBps *int
+
+		// Act
+		obj.SetServiceFeeBps(fernTestValueServiceFeeBps)
+
+		// Assert - object with explicitly set field can be marshaled/unmarshaled
+		bytes, err := json.Marshal(obj)
+		require.NoError(t, err, "marshaling should succeed for test setup")
+
+		// This test ensures JSON marshaling and unmarshaling succeed when the field has a zero/nil value
+		// Detect if marshaled JSON is an object or primitive to use correct unmarshal target
+		if len(bytes) > 0 && bytes[0] == '{' {
+			// JSON object - unmarshal into map
+			var unmarshaled map[string]interface{}
+			err = json.Unmarshal(bytes, &unmarshaled)
+			require.NoError(t, err, "unmarshaling should succeed for test verification")
+		} else {
+			// JSON primitive (string, number, boolean, null) - unmarshal into interface{}
+			var unmarshaled interface{}
+			err = json.Unmarshal(bytes, &unmarshaled)
+			require.NoError(t, err, "unmarshaling should succeed for test verification")
+		}
+
+		// Note: This does not explicitly assert the presence of a specific JSON field
+		// It verifies that setting a field via setter allows successful JSON round-trip
+	})
+
+	t.Run("SetServiceFeeMinUsd_MarksExplicit", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &CryptopayPaymentResponse{}
+		var fernTestValueServiceFeeMinUsd *string
+
+		// Act
+		obj.SetServiceFeeMinUsd(fernTestValueServiceFeeMinUsd)
 
 		// Assert - object with explicitly set field can be marshaled/unmarshaled
 		bytes, err := json.Marshal(obj)
@@ -6542,6 +6686,20 @@ func TestEnumCryptopayPaymentSubStatusEnum(t *testing.T) {
 		val, err := NewCryptopayPaymentSubStatusEnumFromString("partiallyPaid")
 		assert.NoError(t, err, "valid enum value should not return error")
 		assert.Equal(t, CryptopayPaymentSubStatusEnum("partiallyPaid"), val, "enum value should match expected wire value")
+	})
+
+	t.Run("NewFromString_complianceHold", func(t *testing.T) {
+		t.Parallel()
+		val, err := NewCryptopayPaymentSubStatusEnumFromString("complianceHold")
+		assert.NoError(t, err, "valid enum value should not return error")
+		assert.Equal(t, CryptopayPaymentSubStatusEnum("complianceHold"), val, "enum value should match expected wire value")
+	})
+
+	t.Run("NewFromString_complianceRejected", func(t *testing.T) {
+		t.Parallel()
+		val, err := NewCryptopayPaymentSubStatusEnumFromString("complianceRejected")
+		assert.NoError(t, err, "valid enum value should not return error")
+		assert.Equal(t, CryptopayPaymentSubStatusEnum("complianceRejected"), val, "enum value should match expected wire value")
 	})
 
 	t.Run("NewFromString_Invalid", func(t *testing.T) {
