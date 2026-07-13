@@ -34,7 +34,7 @@ func NewClient(options *core.RequestOptions) *Client {
 	}
 }
 
-// List payments for a project
+// Return a paginated list of the project's payments, newest first. Page and sort the results with the order, limit, and lastId query parameters.
 func (c *Client) ListPayments(
 	ctx context.Context,
 	request *suwardsdkgo.GetV1PaymentsRequest,
@@ -51,7 +51,7 @@ func (c *Client) ListPayments(
 	return response.Body, nil
 }
 
-// Create a new payment
+// Create a payment request. Returns a unique, single-use deposit address and the amount to collect; the customer pays and you track progress via webhooks or polling. Pass externalId to make the call idempotent and dedupe retries.
 func (c *Client) CreatePayment(
 	ctx context.Context,
 	request *suwardsdkgo.CryptopayCreatePaymentRequest,
@@ -103,7 +103,7 @@ func (c *Client) ActivatePayment(
 	return response.Body, nil
 }
 
-// Cancel a payment
+// Cancel a payment that has not yet completed. It stops accepting funds and moves to a terminal Failed state. Only valid from early statuses (before finality).
 func (c *Client) CancelPayment(
 	ctx context.Context,
 	request *suwardsdkgo.PostV1PaymentsPaymentIDCancelRequest,
