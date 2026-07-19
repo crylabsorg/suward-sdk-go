@@ -604,9 +604,63 @@
         }
       },
       "postServeActions": []
+    },
+    {
+      "id": "44391586-d027-4096-b17d-5289c44e821b",
+      "name": "List asset groups - default",
+      "request": {
+        "urlPathTemplate": "/v1/assetGroups",
+        "method": "GET"
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"items\": [\n    {\n      \"id\": 1,\n      \"name\": \"name\"\n    }\n  ]\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "44391586-d027-4096-b17d-5289c44e821b",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      },
+      "postServeActions": []
+    },
+    {
+      "id": "d4ef282f-d60f-4509-9eb0-a50c098a994c",
+      "name": "Get withdrawal configuration - default",
+      "request": {
+        "urlPathTemplate": "/v1/withdrawalConfig",
+        "method": "GET"
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"withdrawalFeeUsd\": \"withdrawalFeeUsd\",\n  \"assets\": [\n    {\n      \"id\": \"USDT_ETHEREUM\",\n      \"blockchainId\": 1,\n      \"contractAddress\": \"contractAddress\",\n      \"decimals\": 1,\n      \"group\": \"group\",\n      \"name\": \"name\"\n    }\n  ]\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "d4ef282f-d60f-4509-9eb0-a50c098a994c",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      },
+      "postServeActions": []
     }
   ],
   "meta": {
-    "total": 18
+    "total": 20
   }
 }

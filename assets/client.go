@@ -63,3 +63,33 @@ func (c *Client) ListSupportedBlockchains(
 	}
 	return response.Body, nil
 }
+
+// Returns the asset groups (same-symbol assets pooled across chains, e.g. USDT, USDC, ETH). No authentication required.
+func (c *Client) ListAssetGroups(
+	ctx context.Context,
+	opts ...option.RequestOption,
+) (*suwardsdkgo.GetV1AssetGroupsResponse, error) {
+	response, err := c.WithRawResponse.ListAssetGroups(
+		ctx,
+		opts...,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return response.Body, nil
+}
+
+// Returns the asset/network pairs available for withdrawal and the flat withdrawal fee (USD). No authentication required.
+func (c *Client) GetWithdrawalConfiguration(
+	ctx context.Context,
+	opts ...option.RequestOption,
+) (*suwardsdkgo.CryptopayWithdrawalConfigResponse, error) {
+	response, err := c.WithRawResponse.GetWithdrawalConfiguration(
+		ctx,
+		opts...,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return response.Body, nil
+}
