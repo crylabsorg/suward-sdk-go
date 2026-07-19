@@ -10,6 +10,108 @@ import (
 )
 
 var (
+	cryptopayAssetGroupResponseFieldID   = big.NewInt(1 << 0)
+	cryptopayAssetGroupResponseFieldName = big.NewInt(1 << 1)
+)
+
+type CryptopayAssetGroupResponse struct {
+	// Numeric asset-group id.
+	ID *int `json:"id,omitempty" url:"id,omitempty"`
+	// Group symbol, e.g. USDT, USDC, ETH.
+	Name *string `json:"name,omitempty" url:"name,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *CryptopayAssetGroupResponse) GetID() *int {
+	if c == nil {
+		return nil
+	}
+	return c.ID
+}
+
+func (c *CryptopayAssetGroupResponse) GetName() *string {
+	if c == nil {
+		return nil
+	}
+	return c.Name
+}
+
+func (c *CryptopayAssetGroupResponse) GetExtraProperties() map[string]interface{} {
+	if c == nil {
+		return nil
+	}
+	return c.extraProperties
+}
+
+func (c *CryptopayAssetGroupResponse) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetID sets the ID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CryptopayAssetGroupResponse) SetID(id *int) {
+	c.ID = id
+	c.require(cryptopayAssetGroupResponseFieldID)
+}
+
+// SetName sets the Name field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CryptopayAssetGroupResponse) SetName(name *string) {
+	c.Name = name
+	c.require(cryptopayAssetGroupResponseFieldName)
+}
+
+func (c *CryptopayAssetGroupResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler CryptopayAssetGroupResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = CryptopayAssetGroupResponse(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *CryptopayAssetGroupResponse) MarshalJSON() ([]byte, error) {
+	type embed CryptopayAssetGroupResponse
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (c *CryptopayAssetGroupResponse) String() string {
+	if c == nil {
+		return "<nil>"
+	}
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
+var (
 	cryptopayAssetResponseFieldID              = big.NewInt(1 << 0)
 	cryptopayAssetResponseFieldBlockchainID    = big.NewInt(1 << 1)
 	cryptopayAssetResponseFieldContractAddress = big.NewInt(1 << 2)
@@ -347,6 +449,192 @@ func (c *CryptopayBlockchainResponse) String() string {
 		return value
 	}
 	return fmt.Sprintf("%#v", c)
+}
+
+var (
+	cryptopayWithdrawalConfigResponseFieldWithdrawalFeeUsd = big.NewInt(1 << 0)
+	cryptopayWithdrawalConfigResponseFieldAssets           = big.NewInt(1 << 1)
+)
+
+type CryptopayWithdrawalConfigResponse struct {
+	// Flat per-withdrawal fee in USD (decimal string).
+	WithdrawalFeeUsd *string `json:"withdrawalFeeUsd,omitempty" url:"withdrawalFeeUsd,omitempty"`
+	// Asset/network pairs available for withdrawal.
+	Assets []*CryptopayAssetResponse `json:"assets,omitempty" url:"assets,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *CryptopayWithdrawalConfigResponse) GetWithdrawalFeeUsd() *string {
+	if c == nil {
+		return nil
+	}
+	return c.WithdrawalFeeUsd
+}
+
+func (c *CryptopayWithdrawalConfigResponse) GetAssets() []*CryptopayAssetResponse {
+	if c == nil {
+		return nil
+	}
+	return c.Assets
+}
+
+func (c *CryptopayWithdrawalConfigResponse) GetExtraProperties() map[string]interface{} {
+	if c == nil {
+		return nil
+	}
+	return c.extraProperties
+}
+
+func (c *CryptopayWithdrawalConfigResponse) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetWithdrawalFeeUsd sets the WithdrawalFeeUsd field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CryptopayWithdrawalConfigResponse) SetWithdrawalFeeUsd(withdrawalFeeUsd *string) {
+	c.WithdrawalFeeUsd = withdrawalFeeUsd
+	c.require(cryptopayWithdrawalConfigResponseFieldWithdrawalFeeUsd)
+}
+
+// SetAssets sets the Assets field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CryptopayWithdrawalConfigResponse) SetAssets(assets []*CryptopayAssetResponse) {
+	c.Assets = assets
+	c.require(cryptopayWithdrawalConfigResponseFieldAssets)
+}
+
+func (c *CryptopayWithdrawalConfigResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler CryptopayWithdrawalConfigResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = CryptopayWithdrawalConfigResponse(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *CryptopayWithdrawalConfigResponse) MarshalJSON() ([]byte, error) {
+	type embed CryptopayWithdrawalConfigResponse
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (c *CryptopayWithdrawalConfigResponse) String() string {
+	if c == nil {
+		return "<nil>"
+	}
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
+var (
+	getV1AssetGroupsResponseFieldItems = big.NewInt(1 << 0)
+)
+
+type GetV1AssetGroupsResponse struct {
+	Items []*CryptopayAssetGroupResponse `json:"items,omitempty" url:"items,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (g *GetV1AssetGroupsResponse) GetItems() []*CryptopayAssetGroupResponse {
+	if g == nil {
+		return nil
+	}
+	return g.Items
+}
+
+func (g *GetV1AssetGroupsResponse) GetExtraProperties() map[string]interface{} {
+	if g == nil {
+		return nil
+	}
+	return g.extraProperties
+}
+
+func (g *GetV1AssetGroupsResponse) require(field *big.Int) {
+	if g.explicitFields == nil {
+		g.explicitFields = big.NewInt(0)
+	}
+	g.explicitFields.Or(g.explicitFields, field)
+}
+
+// SetItems sets the Items field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GetV1AssetGroupsResponse) SetItems(items []*CryptopayAssetGroupResponse) {
+	g.Items = items
+	g.require(getV1AssetGroupsResponseFieldItems)
+}
+
+func (g *GetV1AssetGroupsResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler GetV1AssetGroupsResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*g = GetV1AssetGroupsResponse(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *g)
+	if err != nil {
+		return err
+	}
+	g.extraProperties = extraProperties
+	g.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (g *GetV1AssetGroupsResponse) MarshalJSON() ([]byte, error) {
+	type embed GetV1AssetGroupsResponse
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*g),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, g.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (g *GetV1AssetGroupsResponse) String() string {
+	if g == nil {
+		return "<nil>"
+	}
+	if len(g.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(g.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(g); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", g)
 }
 
 var (

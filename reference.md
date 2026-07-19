@@ -1361,3 +1361,87 @@ client.Assets.ListSupportedBlockchains(
 </dl>
 </details>
 
+<details><summary><code>client.Assets.ListAssetGroups() -> *suwardsdkgo.GetV1AssetGroupsResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns the asset groups (same-symbol assets pooled across chains, e.g. USDT, USDC, ETH). No authentication required.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+client.Assets.ListAssetGroups(
+        context.TODO(),
+    )
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Assets.GetWithdrawalConfiguration() -> *suwardsdkgo.CryptopayWithdrawalConfigResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns the asset/network pairs available for withdrawal and the flat withdrawal fee (USD). No authentication required.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+client.Assets.GetWithdrawalConfiguration(
+        context.TODO(),
+    )
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
