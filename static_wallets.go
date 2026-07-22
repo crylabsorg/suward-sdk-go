@@ -289,11 +289,11 @@ type CryptopaySimulateStaticDepositRequest struct {
 	// Static wallet ID
 	StaticWalletID string `json:"-" url:"-"`
 	// Deposited amount to simulate, an integer string in the asset's smallest unit (see CreatePaymentRequest.amount).
-	Amount *string `json:"amount,omitempty" url:"-"`
+	Amount string `json:"amount" url:"-"`
 	// Asset id-string of the simulated deposit (see GET /v1/assets), e.g. USDT_ARBITRUM.
-	Asset *CryptopayAssetID `json:"asset,omitempty" url:"-"`
+	Asset CryptopayAssetID `json:"asset" url:"-"`
 	// Target lifecycle stage to drive the simulated deposit to.
-	Status *CryptopaySimulateStaticDepositRequestStatus `json:"status,omitempty" url:"-"`
+	Status CryptopaySimulateStaticDepositRequestStatus `json:"status" url:"-"`
 	// Optional index of the transfer within the transaction, as a string-encoded integer.
 	TransferIndex *string `json:"transferIndex,omitempty" url:"-"`
 	// Optional synthetic transaction hash; a random one is generated when omitted.
@@ -319,21 +319,21 @@ func (c *CryptopaySimulateStaticDepositRequest) SetStaticWalletID(staticWalletID
 
 // SetAmount sets the Amount field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopaySimulateStaticDepositRequest) SetAmount(amount *string) {
+func (c *CryptopaySimulateStaticDepositRequest) SetAmount(amount string) {
 	c.Amount = amount
 	c.require(cryptopaySimulateStaticDepositRequestFieldAmount)
 }
 
 // SetAsset sets the Asset field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopaySimulateStaticDepositRequest) SetAsset(asset *CryptopayAssetID) {
+func (c *CryptopaySimulateStaticDepositRequest) SetAsset(asset CryptopayAssetID) {
 	c.Asset = asset
 	c.require(cryptopaySimulateStaticDepositRequestFieldAsset)
 }
 
 // SetStatus sets the Status field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopaySimulateStaticDepositRequest) SetStatus(status *CryptopaySimulateStaticDepositRequestStatus) {
+func (c *CryptopaySimulateStaticDepositRequest) SetStatus(status CryptopaySimulateStaticDepositRequestStatus) {
 	c.Status = status
 	c.require(cryptopaySimulateStaticDepositRequestFieldStatus)
 }
@@ -380,9 +380,9 @@ var (
 
 type CryptopayListStaticDepositsResponse struct {
 	// True when more deposits exist beyond this page. To fetch the next page, pass the last item's id as the lastId query parameter.
-	HasMore *bool `json:"hasMore,omitempty" url:"hasMore,omitempty"`
+	HasMore bool `json:"hasMore" url:"hasMore"`
 	// Page of static-wallet deposits, ordered per the request's order parameter.
-	Items []*CryptopayStaticDepositResponse `json:"items,omitempty" url:"items,omitempty"`
+	Items []*CryptopayStaticDepositResponse `json:"items" url:"items"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -391,9 +391,9 @@ type CryptopayListStaticDepositsResponse struct {
 	rawJSON         json.RawMessage
 }
 
-func (c *CryptopayListStaticDepositsResponse) GetHasMore() *bool {
+func (c *CryptopayListStaticDepositsResponse) GetHasMore() bool {
 	if c == nil {
-		return nil
+		return false
 	}
 	return c.HasMore
 }
@@ -421,7 +421,7 @@ func (c *CryptopayListStaticDepositsResponse) require(field *big.Int) {
 
 // SetHasMore sets the HasMore field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayListStaticDepositsResponse) SetHasMore(hasMore *bool) {
+func (c *CryptopayListStaticDepositsResponse) SetHasMore(hasMore bool) {
 	c.HasMore = hasMore
 	c.require(cryptopayListStaticDepositsResponseFieldHasMore)
 }
@@ -482,9 +482,9 @@ var (
 
 type CryptopayListStaticWalletsResponse struct {
 	// True when more static wallets exist beyond this page. To fetch the next page, pass the last item's id as the lastId query parameter.
-	HasMore *bool `json:"hasMore,omitempty" url:"hasMore,omitempty"`
+	HasMore bool `json:"hasMore" url:"hasMore"`
 	// Page of static wallets, ordered per the request's order parameter.
-	Items []*CryptopayStaticWalletResponse `json:"items,omitempty" url:"items,omitempty"`
+	Items []*CryptopayStaticWalletResponse `json:"items" url:"items"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -493,9 +493,9 @@ type CryptopayListStaticWalletsResponse struct {
 	rawJSON         json.RawMessage
 }
 
-func (c *CryptopayListStaticWalletsResponse) GetHasMore() *bool {
+func (c *CryptopayListStaticWalletsResponse) GetHasMore() bool {
 	if c == nil {
-		return nil
+		return false
 	}
 	return c.HasMore
 }
@@ -523,7 +523,7 @@ func (c *CryptopayListStaticWalletsResponse) require(field *big.Int) {
 
 // SetHasMore sets the HasMore field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayListStaticWalletsResponse) SetHasMore(hasMore *bool) {
+func (c *CryptopayListStaticWalletsResponse) SetHasMore(hasMore bool) {
 	c.HasMore = hasMore
 	c.require(cryptopayListStaticWalletsResponseFieldHasMore)
 }
@@ -605,45 +605,45 @@ type CryptopayStaticDepositResponse struct {
 	// Unix-milliseconds timestamp when the deposit reached the accepted (safe confirmations) tier. Null before acceptance.
 	AcceptedAt *int `json:"acceptedAt,omitempty" url:"acceptedAt,omitempty"`
 	// On-chain address that received the deposit (the static wallet's address).
-	Address *string `json:"address,omitempty" url:"address,omitempty"`
+	Address string `json:"address" url:"address"`
 	// Gross deposited amount, an integer string in the asset's smallest unit (see CreatePaymentRequest.amount).
-	Amount *string `json:"amount,omitempty" url:"amount,omitempty"`
+	Amount string `json:"amount" url:"amount"`
 	// Asset of the deposit, as an asset id-string (see GET /v1/assets).
 	Asset *CryptopayAssetID `json:"asset,omitempty" url:"asset,omitempty"`
 	// Unix-milliseconds timestamp when the deposit reached finality (confirmed). Null before confirmation.
 	ConfirmedAt *int `json:"confirmedAt,omitempty" url:"confirmedAt,omitempty"`
 	// Unix-milliseconds timestamp when the deposit record was created.
-	CreatedAt *int `json:"createdAt,omitempty" url:"createdAt,omitempty"`
+	CreatedAt int `json:"createdAt" url:"createdAt"`
 	// Unix-milliseconds timestamp when the deposit was first detected on-chain.
-	DetectedAt *int `json:"detectedAt,omitempty" url:"detectedAt,omitempty"`
+	DetectedAt int `json:"detectedAt" url:"detectedAt"`
 	// ExternalID is the static wallet's externalId, denormalized onto the deposit.
 	ExternalID *string `json:"externalId,omitempty" url:"externalId,omitempty"`
-	// Platform fee on this deposit, integer string in the asset's smallest unit: max(0.4% of the amount, $1 equivalent). The $1 floor is 0 for assets without a published USD price.
-	Fee *string `json:"fee,omitempty" url:"fee,omitempty"`
+	// Platform fee on this deposit, integer string in the asset's smallest unit: max(0.4% of the amount, $0.45 equivalent). The floor is 0 for assets without a published USD price.
+	Fee string `json:"fee" url:"fee"`
 	// Unique Suward identifier of the deposit.
-	ID *string `json:"id,omitempty" url:"id,omitempty"`
+	ID string `json:"id" url:"id"`
 	// Unix-milliseconds timestamp when the deposit was invalidated (e.g. dropped by a chain reorg). Null unless invalidated.
 	InvalidatedAt *int `json:"invalidatedAt,omitempty" url:"invalidatedAt,omitempty"`
 	// Amount credited to the merchant after fees (amount - fee - networkFee), integer string in the asset's smallest unit.
-	NetAmount *string `json:"netAmount,omitempty" url:"netAmount,omitempty"`
+	NetAmount string `json:"netAmount" url:"netAmount"`
 	// Estimated on-chain (gas) cost deducted from the deposit, integer string in the asset's smallest unit.
-	NetworkFee *string `json:"networkFee,omitempty" url:"networkFee,omitempty"`
+	NetworkFee string `json:"networkFee" url:"networkFee"`
 	// Identifier of the project that owns this deposit.
-	ProjectID *string `json:"projectId,omitempty" url:"projectId,omitempty"`
+	ProjectID string `json:"projectId" url:"projectId"`
 	// The service-fee rate applied to this deposit, in basis points (e.g. 40 = 0.4%).
-	ServiceFeeBps *int `json:"serviceFeeBps,omitempty" url:"serviceFeeBps,omitempty"`
+	ServiceFeeBps int `json:"serviceFeeBps" url:"serviceFeeBps"`
 	// The minimum service-fee floor applied to this deposit, as a USD decimal string (e.g. "1").
-	ServiceFeeMinUsd *string `json:"serviceFeeMinUsd,omitempty" url:"serviceFeeMinUsd,omitempty"`
+	ServiceFeeMinUsd string `json:"serviceFeeMinUsd" url:"serviceFeeMinUsd"`
 	// Identifier of the static wallet that received this deposit.
-	StaticWalletID *string `json:"staticWalletId,omitempty" url:"staticWalletId,omitempty"`
+	StaticWalletID string `json:"staticWalletId" url:"staticWalletId"`
 	// Deposit lifecycle status. detected: seen on-chain, awaiting confirmations. accepted: safe confirmations reached, credited (non-final). confirmed: finalized (terminal). ignored: the asset is not on the wallet's allow-list, so the deposit is not credited. invalidated: dropped after detection, e.g. by a chain reorg. complianceHold: held pending compliance review. complianceRejected: rejected by compliance, credit reversed (terminal).
-	Status *CryptopayStaticDepositResponseStatus `json:"status,omitempty" url:"status,omitempty"`
+	Status CryptopayStaticDepositResponseStatus `json:"status" url:"status"`
 	// Index of this transfer within its transaction, as a string-encoded integer. Distinguishes multiple transfers to the same address in one transaction.
-	TransferIndex *string `json:"transferIndex,omitempty" url:"transferIndex,omitempty"`
+	TransferIndex string `json:"transferIndex" url:"transferIndex"`
 	// On-chain transaction hash of the deposit.
-	TxHash *string `json:"txHash,omitempty" url:"txHash,omitempty"`
+	TxHash string `json:"txHash" url:"txHash"`
 	// Unix-milliseconds timestamp when the deposit was last updated.
-	UpdatedAt *int `json:"updatedAt,omitempty" url:"updatedAt,omitempty"`
+	UpdatedAt int `json:"updatedAt" url:"updatedAt"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -659,16 +659,16 @@ func (c *CryptopayStaticDepositResponse) GetAcceptedAt() *int {
 	return c.AcceptedAt
 }
 
-func (c *CryptopayStaticDepositResponse) GetAddress() *string {
+func (c *CryptopayStaticDepositResponse) GetAddress() string {
 	if c == nil {
-		return nil
+		return ""
 	}
 	return c.Address
 }
 
-func (c *CryptopayStaticDepositResponse) GetAmount() *string {
+func (c *CryptopayStaticDepositResponse) GetAmount() string {
 	if c == nil {
-		return nil
+		return ""
 	}
 	return c.Amount
 }
@@ -687,16 +687,16 @@ func (c *CryptopayStaticDepositResponse) GetConfirmedAt() *int {
 	return c.ConfirmedAt
 }
 
-func (c *CryptopayStaticDepositResponse) GetCreatedAt() *int {
+func (c *CryptopayStaticDepositResponse) GetCreatedAt() int {
 	if c == nil {
-		return nil
+		return 0
 	}
 	return c.CreatedAt
 }
 
-func (c *CryptopayStaticDepositResponse) GetDetectedAt() *int {
+func (c *CryptopayStaticDepositResponse) GetDetectedAt() int {
 	if c == nil {
-		return nil
+		return 0
 	}
 	return c.DetectedAt
 }
@@ -708,16 +708,16 @@ func (c *CryptopayStaticDepositResponse) GetExternalID() *string {
 	return c.ExternalID
 }
 
-func (c *CryptopayStaticDepositResponse) GetFee() *string {
+func (c *CryptopayStaticDepositResponse) GetFee() string {
 	if c == nil {
-		return nil
+		return ""
 	}
 	return c.Fee
 }
 
-func (c *CryptopayStaticDepositResponse) GetID() *string {
+func (c *CryptopayStaticDepositResponse) GetID() string {
 	if c == nil {
-		return nil
+		return ""
 	}
 	return c.ID
 }
@@ -729,72 +729,72 @@ func (c *CryptopayStaticDepositResponse) GetInvalidatedAt() *int {
 	return c.InvalidatedAt
 }
 
-func (c *CryptopayStaticDepositResponse) GetNetAmount() *string {
+func (c *CryptopayStaticDepositResponse) GetNetAmount() string {
 	if c == nil {
-		return nil
+		return ""
 	}
 	return c.NetAmount
 }
 
-func (c *CryptopayStaticDepositResponse) GetNetworkFee() *string {
+func (c *CryptopayStaticDepositResponse) GetNetworkFee() string {
 	if c == nil {
-		return nil
+		return ""
 	}
 	return c.NetworkFee
 }
 
-func (c *CryptopayStaticDepositResponse) GetProjectID() *string {
+func (c *CryptopayStaticDepositResponse) GetProjectID() string {
 	if c == nil {
-		return nil
+		return ""
 	}
 	return c.ProjectID
 }
 
-func (c *CryptopayStaticDepositResponse) GetServiceFeeBps() *int {
+func (c *CryptopayStaticDepositResponse) GetServiceFeeBps() int {
 	if c == nil {
-		return nil
+		return 0
 	}
 	return c.ServiceFeeBps
 }
 
-func (c *CryptopayStaticDepositResponse) GetServiceFeeMinUsd() *string {
+func (c *CryptopayStaticDepositResponse) GetServiceFeeMinUsd() string {
 	if c == nil {
-		return nil
+		return ""
 	}
 	return c.ServiceFeeMinUsd
 }
 
-func (c *CryptopayStaticDepositResponse) GetStaticWalletID() *string {
+func (c *CryptopayStaticDepositResponse) GetStaticWalletID() string {
 	if c == nil {
-		return nil
+		return ""
 	}
 	return c.StaticWalletID
 }
 
-func (c *CryptopayStaticDepositResponse) GetStatus() *CryptopayStaticDepositResponseStatus {
+func (c *CryptopayStaticDepositResponse) GetStatus() CryptopayStaticDepositResponseStatus {
 	if c == nil {
-		return nil
+		return ""
 	}
 	return c.Status
 }
 
-func (c *CryptopayStaticDepositResponse) GetTransferIndex() *string {
+func (c *CryptopayStaticDepositResponse) GetTransferIndex() string {
 	if c == nil {
-		return nil
+		return ""
 	}
 	return c.TransferIndex
 }
 
-func (c *CryptopayStaticDepositResponse) GetTxHash() *string {
+func (c *CryptopayStaticDepositResponse) GetTxHash() string {
 	if c == nil {
-		return nil
+		return ""
 	}
 	return c.TxHash
 }
 
-func (c *CryptopayStaticDepositResponse) GetUpdatedAt() *int {
+func (c *CryptopayStaticDepositResponse) GetUpdatedAt() int {
 	if c == nil {
-		return nil
+		return 0
 	}
 	return c.UpdatedAt
 }
@@ -822,14 +822,14 @@ func (c *CryptopayStaticDepositResponse) SetAcceptedAt(acceptedAt *int) {
 
 // SetAddress sets the Address field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayStaticDepositResponse) SetAddress(address *string) {
+func (c *CryptopayStaticDepositResponse) SetAddress(address string) {
 	c.Address = address
 	c.require(cryptopayStaticDepositResponseFieldAddress)
 }
 
 // SetAmount sets the Amount field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayStaticDepositResponse) SetAmount(amount *string) {
+func (c *CryptopayStaticDepositResponse) SetAmount(amount string) {
 	c.Amount = amount
 	c.require(cryptopayStaticDepositResponseFieldAmount)
 }
@@ -850,14 +850,14 @@ func (c *CryptopayStaticDepositResponse) SetConfirmedAt(confirmedAt *int) {
 
 // SetCreatedAt sets the CreatedAt field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayStaticDepositResponse) SetCreatedAt(createdAt *int) {
+func (c *CryptopayStaticDepositResponse) SetCreatedAt(createdAt int) {
 	c.CreatedAt = createdAt
 	c.require(cryptopayStaticDepositResponseFieldCreatedAt)
 }
 
 // SetDetectedAt sets the DetectedAt field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayStaticDepositResponse) SetDetectedAt(detectedAt *int) {
+func (c *CryptopayStaticDepositResponse) SetDetectedAt(detectedAt int) {
 	c.DetectedAt = detectedAt
 	c.require(cryptopayStaticDepositResponseFieldDetectedAt)
 }
@@ -871,14 +871,14 @@ func (c *CryptopayStaticDepositResponse) SetExternalID(externalID *string) {
 
 // SetFee sets the Fee field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayStaticDepositResponse) SetFee(fee *string) {
+func (c *CryptopayStaticDepositResponse) SetFee(fee string) {
 	c.Fee = fee
 	c.require(cryptopayStaticDepositResponseFieldFee)
 }
 
 // SetID sets the ID field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayStaticDepositResponse) SetID(id *string) {
+func (c *CryptopayStaticDepositResponse) SetID(id string) {
 	c.ID = id
 	c.require(cryptopayStaticDepositResponseFieldID)
 }
@@ -892,70 +892,70 @@ func (c *CryptopayStaticDepositResponse) SetInvalidatedAt(invalidatedAt *int) {
 
 // SetNetAmount sets the NetAmount field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayStaticDepositResponse) SetNetAmount(netAmount *string) {
+func (c *CryptopayStaticDepositResponse) SetNetAmount(netAmount string) {
 	c.NetAmount = netAmount
 	c.require(cryptopayStaticDepositResponseFieldNetAmount)
 }
 
 // SetNetworkFee sets the NetworkFee field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayStaticDepositResponse) SetNetworkFee(networkFee *string) {
+func (c *CryptopayStaticDepositResponse) SetNetworkFee(networkFee string) {
 	c.NetworkFee = networkFee
 	c.require(cryptopayStaticDepositResponseFieldNetworkFee)
 }
 
 // SetProjectID sets the ProjectID field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayStaticDepositResponse) SetProjectID(projectID *string) {
+func (c *CryptopayStaticDepositResponse) SetProjectID(projectID string) {
 	c.ProjectID = projectID
 	c.require(cryptopayStaticDepositResponseFieldProjectID)
 }
 
 // SetServiceFeeBps sets the ServiceFeeBps field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayStaticDepositResponse) SetServiceFeeBps(serviceFeeBps *int) {
+func (c *CryptopayStaticDepositResponse) SetServiceFeeBps(serviceFeeBps int) {
 	c.ServiceFeeBps = serviceFeeBps
 	c.require(cryptopayStaticDepositResponseFieldServiceFeeBps)
 }
 
 // SetServiceFeeMinUsd sets the ServiceFeeMinUsd field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayStaticDepositResponse) SetServiceFeeMinUsd(serviceFeeMinUsd *string) {
+func (c *CryptopayStaticDepositResponse) SetServiceFeeMinUsd(serviceFeeMinUsd string) {
 	c.ServiceFeeMinUsd = serviceFeeMinUsd
 	c.require(cryptopayStaticDepositResponseFieldServiceFeeMinUsd)
 }
 
 // SetStaticWalletID sets the StaticWalletID field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayStaticDepositResponse) SetStaticWalletID(staticWalletID *string) {
+func (c *CryptopayStaticDepositResponse) SetStaticWalletID(staticWalletID string) {
 	c.StaticWalletID = staticWalletID
 	c.require(cryptopayStaticDepositResponseFieldStaticWalletID)
 }
 
 // SetStatus sets the Status field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayStaticDepositResponse) SetStatus(status *CryptopayStaticDepositResponseStatus) {
+func (c *CryptopayStaticDepositResponse) SetStatus(status CryptopayStaticDepositResponseStatus) {
 	c.Status = status
 	c.require(cryptopayStaticDepositResponseFieldStatus)
 }
 
 // SetTransferIndex sets the TransferIndex field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayStaticDepositResponse) SetTransferIndex(transferIndex *string) {
+func (c *CryptopayStaticDepositResponse) SetTransferIndex(transferIndex string) {
 	c.TransferIndex = transferIndex
 	c.require(cryptopayStaticDepositResponseFieldTransferIndex)
 }
 
 // SetTxHash sets the TxHash field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayStaticDepositResponse) SetTxHash(txHash *string) {
+func (c *CryptopayStaticDepositResponse) SetTxHash(txHash string) {
 	c.TxHash = txHash
 	c.require(cryptopayStaticDepositResponseFieldTxHash)
 }
 
 // SetUpdatedAt sets the UpdatedAt field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayStaticDepositResponse) SetUpdatedAt(updatedAt *int) {
+func (c *CryptopayStaticDepositResponse) SetUpdatedAt(updatedAt int) {
 	c.UpdatedAt = updatedAt
 	c.require(cryptopayStaticDepositResponseFieldUpdatedAt)
 }
@@ -1054,21 +1054,21 @@ var (
 
 type CryptopayStaticWalletResponse struct {
 	// Reusable on-chain deposit address of this static wallet. Customers may send accepted assets to it repeatedly; each incoming transfer becomes a deposit.
-	Address *string `json:"address,omitempty" url:"address,omitempty"`
+	Address string `json:"address" url:"address"`
 	// Accepted-asset allow-list, as asset id-strings (see GET /v1/assets). Deposits of assets outside this list are ignored and not credited.
-	AllowedAssets []CryptopayAssetID `json:"allowedAssets,omitempty" url:"allowedAssets,omitempty"`
+	AllowedAssets []CryptopayAssetID `json:"allowedAssets" url:"allowedAssets"`
 	// Unix-milliseconds timestamp when the static wallet was created.
-	CreatedAt *int `json:"createdAt,omitempty" url:"createdAt,omitempty"`
+	CreatedAt int `json:"createdAt" url:"createdAt"`
 	// Your own identifier for this static wallet, echoed from creation. Null when none was provided.
 	ExternalID *string `json:"externalId,omitempty" url:"externalId,omitempty"`
 	// Unique Suward identifier of the static wallet.
-	ID *string `json:"id,omitempty" url:"id,omitempty"`
+	ID string `json:"id" url:"id"`
 	// Arbitrary key/value data attached by the merchant, echoed back unchanged.
 	Metadata map[string]any `json:"metadata,omitempty" url:"metadata,omitempty"`
 	// Identifier of the project that owns this static wallet.
-	ProjectID *string `json:"projectId,omitempty" url:"projectId,omitempty"`
+	ProjectID string `json:"projectId" url:"projectId"`
 	// Unix-milliseconds timestamp when the static wallet was last updated.
-	UpdatedAt *int `json:"updatedAt,omitempty" url:"updatedAt,omitempty"`
+	UpdatedAt int `json:"updatedAt" url:"updatedAt"`
 	// Webhook URL that receives this wallet's deposit events. Null when the project default webhook is used.
 	WebhookURL *string `json:"webhookUrl,omitempty" url:"webhookUrl,omitempty"`
 
@@ -1079,9 +1079,9 @@ type CryptopayStaticWalletResponse struct {
 	rawJSON         json.RawMessage
 }
 
-func (c *CryptopayStaticWalletResponse) GetAddress() *string {
+func (c *CryptopayStaticWalletResponse) GetAddress() string {
 	if c == nil {
-		return nil
+		return ""
 	}
 	return c.Address
 }
@@ -1093,9 +1093,9 @@ func (c *CryptopayStaticWalletResponse) GetAllowedAssets() []CryptopayAssetID {
 	return c.AllowedAssets
 }
 
-func (c *CryptopayStaticWalletResponse) GetCreatedAt() *int {
+func (c *CryptopayStaticWalletResponse) GetCreatedAt() int {
 	if c == nil {
-		return nil
+		return 0
 	}
 	return c.CreatedAt
 }
@@ -1107,9 +1107,9 @@ func (c *CryptopayStaticWalletResponse) GetExternalID() *string {
 	return c.ExternalID
 }
 
-func (c *CryptopayStaticWalletResponse) GetID() *string {
+func (c *CryptopayStaticWalletResponse) GetID() string {
 	if c == nil {
-		return nil
+		return ""
 	}
 	return c.ID
 }
@@ -1121,16 +1121,16 @@ func (c *CryptopayStaticWalletResponse) GetMetadata() map[string]any {
 	return c.Metadata
 }
 
-func (c *CryptopayStaticWalletResponse) GetProjectID() *string {
+func (c *CryptopayStaticWalletResponse) GetProjectID() string {
 	if c == nil {
-		return nil
+		return ""
 	}
 	return c.ProjectID
 }
 
-func (c *CryptopayStaticWalletResponse) GetUpdatedAt() *int {
+func (c *CryptopayStaticWalletResponse) GetUpdatedAt() int {
 	if c == nil {
-		return nil
+		return 0
 	}
 	return c.UpdatedAt
 }
@@ -1158,7 +1158,7 @@ func (c *CryptopayStaticWalletResponse) require(field *big.Int) {
 
 // SetAddress sets the Address field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayStaticWalletResponse) SetAddress(address *string) {
+func (c *CryptopayStaticWalletResponse) SetAddress(address string) {
 	c.Address = address
 	c.require(cryptopayStaticWalletResponseFieldAddress)
 }
@@ -1172,7 +1172,7 @@ func (c *CryptopayStaticWalletResponse) SetAllowedAssets(allowedAssets []Cryptop
 
 // SetCreatedAt sets the CreatedAt field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayStaticWalletResponse) SetCreatedAt(createdAt *int) {
+func (c *CryptopayStaticWalletResponse) SetCreatedAt(createdAt int) {
 	c.CreatedAt = createdAt
 	c.require(cryptopayStaticWalletResponseFieldCreatedAt)
 }
@@ -1186,7 +1186,7 @@ func (c *CryptopayStaticWalletResponse) SetExternalID(externalID *string) {
 
 // SetID sets the ID field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayStaticWalletResponse) SetID(id *string) {
+func (c *CryptopayStaticWalletResponse) SetID(id string) {
 	c.ID = id
 	c.require(cryptopayStaticWalletResponseFieldID)
 }
@@ -1200,14 +1200,14 @@ func (c *CryptopayStaticWalletResponse) SetMetadata(metadata map[string]any) {
 
 // SetProjectID sets the ProjectID field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayStaticWalletResponse) SetProjectID(projectID *string) {
+func (c *CryptopayStaticWalletResponse) SetProjectID(projectID string) {
 	c.ProjectID = projectID
 	c.require(cryptopayStaticWalletResponseFieldProjectID)
 }
 
 // SetUpdatedAt sets the UpdatedAt field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayStaticWalletResponse) SetUpdatedAt(updatedAt *int) {
+func (c *CryptopayStaticWalletResponse) SetUpdatedAt(updatedAt int) {
 	c.UpdatedAt = updatedAt
 	c.require(cryptopayStaticWalletResponseFieldUpdatedAt)
 }

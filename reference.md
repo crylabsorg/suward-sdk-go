@@ -102,7 +102,9 @@ Create a payment request. Returns a unique, single-use deposit address and the a
 <dd>
 
 ```go
-request := &suwardsdkgo.CryptopayCreatePaymentRequest{}
+request := &suwardsdkgo.CryptopayCreatePaymentRequest{
+        Amount: "amount",
+    }
 client.Payments.CreatePayment(
         context.TODO(),
         request,
@@ -130,7 +132,7 @@ client.Payments.CreatePayment(
 <dl>
 <dd>
 
-**amount:** `*string` — Merchant base amount, integer string in the asset's smallest unit. When a fee payer is customer the customer is charged more than this (gross); when merchant (default) the fee is deducted from the merchant's proceeds.
+**amount:** `string` — Merchant base amount, integer string in the asset's smallest unit. When a fee payer is customer the customer is charged more than this (gross); when merchant (default) the fee is deducted from the merchant's proceeds.
     
 </dd>
 </dl>
@@ -155,6 +157,14 @@ client.Payments.CreatePayment(
 <dd>
 
 **serviceFeePayer:** `*suwardsdkgo.CryptopayFeePayer` — Who bears the platform (service) fee. Default merchant.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**complianceLevel:** `*suwardsdkgo.CryptopayComplianceLevel` — AML screening depth: basic (free, no minimum fee) or extended ($0.45 minimum fee). Omit to inherit the project/org default (extended).
     
 </dd>
 </dl>
@@ -427,6 +437,8 @@ Simulate a payment status transition. Available for test-coin assets only.
 ```go
 request := &suwardsdkgo.CryptopaySimulatePaymentRequest{
         PaymentID: "paymentId",
+        Status: suwardsdkgo.CryptopayPaymentStatusEnumPending,
+        SubStatus: suwardsdkgo.CryptopayPaymentSubStatusEnumCreated,
     }
 client.Payments.SimulatePayment(
         context.TODO(),
@@ -558,6 +570,14 @@ client.Payments.QuotePaymentFees(
 <dd>
 
 **serviceFeePayer:** `*suwardsdkgo.CryptopayFeePayer` — Who bears the platform (service) fee. Default merchant.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**complianceLevel:** `*suwardsdkgo.CryptopayComplianceLevel` — AML screening depth to quote: basic (free, no minimum fee) or extended ($0.45 minimum fee). Omit to inherit the project/org default (extended).
     
 </dd>
 </dl>
@@ -1204,6 +1224,9 @@ Drive a synthetic deposit through its lifecycle (no on-chain activity, no balanc
 ```go
 request := &suwardsdkgo.CryptopaySimulateStaticDepositRequest{
         StaticWalletID: "staticWalletId",
+        Amount: "amount",
+        Asset: suwardsdkgo.CryptopayAssetIDUsdtEthereum,
+        Status: suwardsdkgo.CryptopaySimulateStaticDepositRequestStatusDetected,
     }
 client.StaticWallets.SimulateStaticWalletDeposit(
         context.TODO(),
@@ -1232,7 +1255,7 @@ client.StaticWallets.SimulateStaticWalletDeposit(
 <dl>
 <dd>
 
-**amount:** `*string` — Deposited amount to simulate, an integer string in the asset's smallest unit (see CreatePaymentRequest.amount).
+**amount:** `string` — Deposited amount to simulate, an integer string in the asset's smallest unit (see CreatePaymentRequest.amount).
     
 </dd>
 </dl>

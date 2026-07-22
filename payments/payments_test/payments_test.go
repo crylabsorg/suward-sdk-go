@@ -112,7 +112,9 @@ func TestPaymentsCreatePaymentWithWireMock(
 		option.WithBaseURL(WireMockBaseURL),
 		option.WithAPIKey("test-value"),
 	)
-	request := &suwardsdkgo.CryptopayCreatePaymentRequest{}
+	request := &suwardsdkgo.CryptopayCreatePaymentRequest{
+		Amount: "amount",
+	}
 	_, invocationErr := client.Payments.CreatePayment(
 		context.TODO(),
 		request,
@@ -215,6 +217,8 @@ func TestPaymentsSimulatePaymentWithWireMock(
 	)
 	request := &suwardsdkgo.CryptopaySimulatePaymentRequest{
 		PaymentID: "paymentId",
+		Status:    suwardsdkgo.CryptopayPaymentStatusEnumPending,
+		SubStatus: suwardsdkgo.CryptopayPaymentSubStatusEnumCreated,
 	}
 	_, invocationErr := client.Payments.SimulatePayment(
 		context.TODO(),

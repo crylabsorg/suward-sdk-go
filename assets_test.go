@@ -12,7 +12,7 @@ import (
 func TestSettersCryptopayAssetGroupResponse(t *testing.T) {
 	t.Run("SetID", func(t *testing.T) {
 		obj := &CryptopayAssetGroupResponse{}
-		var fernTestValueID *int
+		var fernTestValueID int
 		obj.SetID(fernTestValueID)
 		assert.Equal(t, fernTestValueID, obj.ID)
 		assert.NotNil(t, obj.explicitFields)
@@ -20,7 +20,7 @@ func TestSettersCryptopayAssetGroupResponse(t *testing.T) {
 
 	t.Run("SetName", func(t *testing.T) {
 		obj := &CryptopayAssetGroupResponse{}
-		var fernTestValueName *string
+		var fernTestValueName string
 		obj.SetName(fernTestValueName)
 		assert.Equal(t, fernTestValueName, obj.Name)
 		assert.NotNil(t, obj.explicitFields)
@@ -33,21 +33,11 @@ func TestGettersCryptopayAssetGroupResponse(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &CryptopayAssetGroupResponse{}
-		var expected *int
+		var expected int
 		obj.ID = expected
 
 		// Act & Assert
 		assert.Equal(t, expected, obj.GetID(), "getter should return the property value")
-	})
-
-	t.Run("GetID_NilValue", func(t *testing.T) {
-		t.Parallel()
-		// Arrange
-		obj := &CryptopayAssetGroupResponse{}
-		obj.ID = nil
-
-		// Act & Assert
-		assert.Nil(t, obj.GetID(), "getter should return nil when property is nil")
 	})
 
 	t.Run("GetID_NilReceiver", func(t *testing.T) {
@@ -66,21 +56,11 @@ func TestGettersCryptopayAssetGroupResponse(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &CryptopayAssetGroupResponse{}
-		var expected *string
+		var expected string
 		obj.Name = expected
 
 		// Act & Assert
 		assert.Equal(t, expected, obj.GetName(), "getter should return the property value")
-	})
-
-	t.Run("GetName_NilValue", func(t *testing.T) {
-		t.Parallel()
-		// Arrange
-		obj := &CryptopayAssetGroupResponse{}
-		obj.Name = nil
-
-		// Act & Assert
-		assert.Nil(t, obj.GetName(), "getter should return nil when property is nil")
 	})
 
 	t.Run("GetName_NilReceiver", func(t *testing.T) {
@@ -102,7 +82,7 @@ func TestSettersMarkExplicitCryptopayAssetGroupResponse(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &CryptopayAssetGroupResponse{}
-		var fernTestValueID *int
+		var fernTestValueID int
 
 		// Act
 		obj.SetID(fernTestValueID)
@@ -133,7 +113,7 @@ func TestSettersMarkExplicitCryptopayAssetGroupResponse(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &CryptopayAssetGroupResponse{}
-		var fernTestValueName *string
+		var fernTestValueName string
 
 		// Act
 		obj.SetName(fernTestValueName)
@@ -165,7 +145,7 @@ func TestSettersMarkExplicitCryptopayAssetGroupResponse(t *testing.T) {
 func TestSettersCryptopayAssetResponse(t *testing.T) {
 	t.Run("SetID", func(t *testing.T) {
 		obj := &CryptopayAssetResponse{}
-		var fernTestValueID *CryptopayAssetID
+		var fernTestValueID CryptopayAssetID
 		obj.SetID(fernTestValueID)
 		assert.Equal(t, fernTestValueID, obj.ID)
 		assert.NotNil(t, obj.explicitFields)
@@ -173,7 +153,7 @@ func TestSettersCryptopayAssetResponse(t *testing.T) {
 
 	t.Run("SetBlockchainID", func(t *testing.T) {
 		obj := &CryptopayAssetResponse{}
-		var fernTestValueBlockchainID *int
+		var fernTestValueBlockchainID int
 		obj.SetBlockchainID(fernTestValueBlockchainID)
 		assert.Equal(t, fernTestValueBlockchainID, obj.BlockchainID)
 		assert.NotNil(t, obj.explicitFields)
@@ -189,7 +169,7 @@ func TestSettersCryptopayAssetResponse(t *testing.T) {
 
 	t.Run("SetDecimals", func(t *testing.T) {
 		obj := &CryptopayAssetResponse{}
-		var fernTestValueDecimals *int
+		var fernTestValueDecimals int
 		obj.SetDecimals(fernTestValueDecimals)
 		assert.Equal(t, fernTestValueDecimals, obj.Decimals)
 		assert.NotNil(t, obj.explicitFields)
@@ -197,7 +177,7 @@ func TestSettersCryptopayAssetResponse(t *testing.T) {
 
 	t.Run("SetGroup", func(t *testing.T) {
 		obj := &CryptopayAssetResponse{}
-		var fernTestValueGroup *string
+		var fernTestValueGroup string
 		obj.SetGroup(fernTestValueGroup)
 		assert.Equal(t, fernTestValueGroup, obj.Group)
 		assert.NotNil(t, obj.explicitFields)
@@ -205,7 +185,7 @@ func TestSettersCryptopayAssetResponse(t *testing.T) {
 
 	t.Run("SetName", func(t *testing.T) {
 		obj := &CryptopayAssetResponse{}
-		var fernTestValueName *string
+		var fernTestValueName string
 		obj.SetName(fernTestValueName)
 		assert.Equal(t, fernTestValueName, obj.Name)
 		assert.NotNil(t, obj.explicitFields)
@@ -218,21 +198,11 @@ func TestGettersCryptopayAssetResponse(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &CryptopayAssetResponse{}
-		var expected *CryptopayAssetID
+		var expected CryptopayAssetID
 		obj.ID = expected
 
 		// Act & Assert
 		assert.Equal(t, expected, obj.GetID(), "getter should return the property value")
-	})
-
-	t.Run("GetID_NilValue", func(t *testing.T) {
-		t.Parallel()
-		// Arrange
-		obj := &CryptopayAssetResponse{}
-		obj.ID = nil
-
-		// Act & Assert
-		assert.Nil(t, obj.GetID(), "getter should return nil when property is nil")
 	})
 
 	t.Run("GetID_NilReceiver", func(t *testing.T) {
@@ -251,21 +221,11 @@ func TestGettersCryptopayAssetResponse(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &CryptopayAssetResponse{}
-		var expected *int
+		var expected int
 		obj.BlockchainID = expected
 
 		// Act & Assert
 		assert.Equal(t, expected, obj.GetBlockchainID(), "getter should return the property value")
-	})
-
-	t.Run("GetBlockchainID_NilValue", func(t *testing.T) {
-		t.Parallel()
-		// Arrange
-		obj := &CryptopayAssetResponse{}
-		obj.BlockchainID = nil
-
-		// Act & Assert
-		assert.Nil(t, obj.GetBlockchainID(), "getter should return nil when property is nil")
 	})
 
 	t.Run("GetBlockchainID_NilReceiver", func(t *testing.T) {
@@ -317,21 +277,11 @@ func TestGettersCryptopayAssetResponse(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &CryptopayAssetResponse{}
-		var expected *int
+		var expected int
 		obj.Decimals = expected
 
 		// Act & Assert
 		assert.Equal(t, expected, obj.GetDecimals(), "getter should return the property value")
-	})
-
-	t.Run("GetDecimals_NilValue", func(t *testing.T) {
-		t.Parallel()
-		// Arrange
-		obj := &CryptopayAssetResponse{}
-		obj.Decimals = nil
-
-		// Act & Assert
-		assert.Nil(t, obj.GetDecimals(), "getter should return nil when property is nil")
 	})
 
 	t.Run("GetDecimals_NilReceiver", func(t *testing.T) {
@@ -350,21 +300,11 @@ func TestGettersCryptopayAssetResponse(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &CryptopayAssetResponse{}
-		var expected *string
+		var expected string
 		obj.Group = expected
 
 		// Act & Assert
 		assert.Equal(t, expected, obj.GetGroup(), "getter should return the property value")
-	})
-
-	t.Run("GetGroup_NilValue", func(t *testing.T) {
-		t.Parallel()
-		// Arrange
-		obj := &CryptopayAssetResponse{}
-		obj.Group = nil
-
-		// Act & Assert
-		assert.Nil(t, obj.GetGroup(), "getter should return nil when property is nil")
 	})
 
 	t.Run("GetGroup_NilReceiver", func(t *testing.T) {
@@ -383,21 +323,11 @@ func TestGettersCryptopayAssetResponse(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &CryptopayAssetResponse{}
-		var expected *string
+		var expected string
 		obj.Name = expected
 
 		// Act & Assert
 		assert.Equal(t, expected, obj.GetName(), "getter should return the property value")
-	})
-
-	t.Run("GetName_NilValue", func(t *testing.T) {
-		t.Parallel()
-		// Arrange
-		obj := &CryptopayAssetResponse{}
-		obj.Name = nil
-
-		// Act & Assert
-		assert.Nil(t, obj.GetName(), "getter should return nil when property is nil")
 	})
 
 	t.Run("GetName_NilReceiver", func(t *testing.T) {
@@ -419,7 +349,7 @@ func TestSettersMarkExplicitCryptopayAssetResponse(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &CryptopayAssetResponse{}
-		var fernTestValueID *CryptopayAssetID
+		var fernTestValueID CryptopayAssetID
 
 		// Act
 		obj.SetID(fernTestValueID)
@@ -450,7 +380,7 @@ func TestSettersMarkExplicitCryptopayAssetResponse(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &CryptopayAssetResponse{}
-		var fernTestValueBlockchainID *int
+		var fernTestValueBlockchainID int
 
 		// Act
 		obj.SetBlockchainID(fernTestValueBlockchainID)
@@ -512,7 +442,7 @@ func TestSettersMarkExplicitCryptopayAssetResponse(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &CryptopayAssetResponse{}
-		var fernTestValueDecimals *int
+		var fernTestValueDecimals int
 
 		// Act
 		obj.SetDecimals(fernTestValueDecimals)
@@ -543,7 +473,7 @@ func TestSettersMarkExplicitCryptopayAssetResponse(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &CryptopayAssetResponse{}
-		var fernTestValueGroup *string
+		var fernTestValueGroup string
 
 		// Act
 		obj.SetGroup(fernTestValueGroup)
@@ -574,7 +504,7 @@ func TestSettersMarkExplicitCryptopayAssetResponse(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &CryptopayAssetResponse{}
-		var fernTestValueName *string
+		var fernTestValueName string
 
 		// Act
 		obj.SetName(fernTestValueName)
@@ -606,7 +536,7 @@ func TestSettersMarkExplicitCryptopayAssetResponse(t *testing.T) {
 func TestSettersCryptopayBlockchainResponse(t *testing.T) {
 	t.Run("SetID", func(t *testing.T) {
 		obj := &CryptopayBlockchainResponse{}
-		var fernTestValueID *int
+		var fernTestValueID int
 		obj.SetID(fernTestValueID)
 		assert.Equal(t, fernTestValueID, obj.ID)
 		assert.NotNil(t, obj.explicitFields)
@@ -614,7 +544,7 @@ func TestSettersCryptopayBlockchainResponse(t *testing.T) {
 
 	t.Run("SetIDString", func(t *testing.T) {
 		obj := &CryptopayBlockchainResponse{}
-		var fernTestValueIDString *string
+		var fernTestValueIDString string
 		obj.SetIDString(fernTestValueIDString)
 		assert.Equal(t, fernTestValueIDString, obj.IDString)
 		assert.NotNil(t, obj.explicitFields)
@@ -630,7 +560,7 @@ func TestSettersCryptopayBlockchainResponse(t *testing.T) {
 
 	t.Run("SetChainName", func(t *testing.T) {
 		obj := &CryptopayBlockchainResponse{}
-		var fernTestValueChainName *string
+		var fernTestValueChainName string
 		obj.SetChainName(fernTestValueChainName)
 		assert.Equal(t, fernTestValueChainName, obj.ChainName)
 		assert.NotNil(t, obj.explicitFields)
@@ -638,7 +568,7 @@ func TestSettersCryptopayBlockchainResponse(t *testing.T) {
 
 	t.Run("SetRequiredConfirmations", func(t *testing.T) {
 		obj := &CryptopayBlockchainResponse{}
-		var fernTestValueRequiredConfirmations *int
+		var fernTestValueRequiredConfirmations int
 		obj.SetRequiredConfirmations(fernTestValueRequiredConfirmations)
 		assert.Equal(t, fernTestValueRequiredConfirmations, obj.RequiredConfirmations)
 		assert.NotNil(t, obj.explicitFields)
@@ -646,7 +576,7 @@ func TestSettersCryptopayBlockchainResponse(t *testing.T) {
 
 	t.Run("SetNetworkFeeUsd", func(t *testing.T) {
 		obj := &CryptopayBlockchainResponse{}
-		var fernTestValueNetworkFeeUsd *string
+		var fernTestValueNetworkFeeUsd string
 		obj.SetNetworkFeeUsd(fernTestValueNetworkFeeUsd)
 		assert.Equal(t, fernTestValueNetworkFeeUsd, obj.NetworkFeeUsd)
 		assert.NotNil(t, obj.explicitFields)
@@ -659,21 +589,11 @@ func TestGettersCryptopayBlockchainResponse(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &CryptopayBlockchainResponse{}
-		var expected *int
+		var expected int
 		obj.ID = expected
 
 		// Act & Assert
 		assert.Equal(t, expected, obj.GetID(), "getter should return the property value")
-	})
-
-	t.Run("GetID_NilValue", func(t *testing.T) {
-		t.Parallel()
-		// Arrange
-		obj := &CryptopayBlockchainResponse{}
-		obj.ID = nil
-
-		// Act & Assert
-		assert.Nil(t, obj.GetID(), "getter should return nil when property is nil")
 	})
 
 	t.Run("GetID_NilReceiver", func(t *testing.T) {
@@ -692,21 +612,11 @@ func TestGettersCryptopayBlockchainResponse(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &CryptopayBlockchainResponse{}
-		var expected *string
+		var expected string
 		obj.IDString = expected
 
 		// Act & Assert
 		assert.Equal(t, expected, obj.GetIDString(), "getter should return the property value")
-	})
-
-	t.Run("GetIDString_NilValue", func(t *testing.T) {
-		t.Parallel()
-		// Arrange
-		obj := &CryptopayBlockchainResponse{}
-		obj.IDString = nil
-
-		// Act & Assert
-		assert.Nil(t, obj.GetIDString(), "getter should return nil when property is nil")
 	})
 
 	t.Run("GetIDString_NilReceiver", func(t *testing.T) {
@@ -758,21 +668,11 @@ func TestGettersCryptopayBlockchainResponse(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &CryptopayBlockchainResponse{}
-		var expected *string
+		var expected string
 		obj.ChainName = expected
 
 		// Act & Assert
 		assert.Equal(t, expected, obj.GetChainName(), "getter should return the property value")
-	})
-
-	t.Run("GetChainName_NilValue", func(t *testing.T) {
-		t.Parallel()
-		// Arrange
-		obj := &CryptopayBlockchainResponse{}
-		obj.ChainName = nil
-
-		// Act & Assert
-		assert.Nil(t, obj.GetChainName(), "getter should return nil when property is nil")
 	})
 
 	t.Run("GetChainName_NilReceiver", func(t *testing.T) {
@@ -791,21 +691,11 @@ func TestGettersCryptopayBlockchainResponse(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &CryptopayBlockchainResponse{}
-		var expected *int
+		var expected int
 		obj.RequiredConfirmations = expected
 
 		// Act & Assert
 		assert.Equal(t, expected, obj.GetRequiredConfirmations(), "getter should return the property value")
-	})
-
-	t.Run("GetRequiredConfirmations_NilValue", func(t *testing.T) {
-		t.Parallel()
-		// Arrange
-		obj := &CryptopayBlockchainResponse{}
-		obj.RequiredConfirmations = nil
-
-		// Act & Assert
-		assert.Nil(t, obj.GetRequiredConfirmations(), "getter should return nil when property is nil")
 	})
 
 	t.Run("GetRequiredConfirmations_NilReceiver", func(t *testing.T) {
@@ -824,21 +714,11 @@ func TestGettersCryptopayBlockchainResponse(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &CryptopayBlockchainResponse{}
-		var expected *string
+		var expected string
 		obj.NetworkFeeUsd = expected
 
 		// Act & Assert
 		assert.Equal(t, expected, obj.GetNetworkFeeUsd(), "getter should return the property value")
-	})
-
-	t.Run("GetNetworkFeeUsd_NilValue", func(t *testing.T) {
-		t.Parallel()
-		// Arrange
-		obj := &CryptopayBlockchainResponse{}
-		obj.NetworkFeeUsd = nil
-
-		// Act & Assert
-		assert.Nil(t, obj.GetNetworkFeeUsd(), "getter should return nil when property is nil")
 	})
 
 	t.Run("GetNetworkFeeUsd_NilReceiver", func(t *testing.T) {
@@ -860,7 +740,7 @@ func TestSettersMarkExplicitCryptopayBlockchainResponse(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &CryptopayBlockchainResponse{}
-		var fernTestValueID *int
+		var fernTestValueID int
 
 		// Act
 		obj.SetID(fernTestValueID)
@@ -891,7 +771,7 @@ func TestSettersMarkExplicitCryptopayBlockchainResponse(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &CryptopayBlockchainResponse{}
-		var fernTestValueIDString *string
+		var fernTestValueIDString string
 
 		// Act
 		obj.SetIDString(fernTestValueIDString)
@@ -953,7 +833,7 @@ func TestSettersMarkExplicitCryptopayBlockchainResponse(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &CryptopayBlockchainResponse{}
-		var fernTestValueChainName *string
+		var fernTestValueChainName string
 
 		// Act
 		obj.SetChainName(fernTestValueChainName)
@@ -984,7 +864,7 @@ func TestSettersMarkExplicitCryptopayBlockchainResponse(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &CryptopayBlockchainResponse{}
-		var fernTestValueRequiredConfirmations *int
+		var fernTestValueRequiredConfirmations int
 
 		// Act
 		obj.SetRequiredConfirmations(fernTestValueRequiredConfirmations)
@@ -1015,7 +895,7 @@ func TestSettersMarkExplicitCryptopayBlockchainResponse(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &CryptopayBlockchainResponse{}
-		var fernTestValueNetworkFeeUsd *string
+		var fernTestValueNetworkFeeUsd string
 
 		// Act
 		obj.SetNetworkFeeUsd(fernTestValueNetworkFeeUsd)
@@ -1047,7 +927,7 @@ func TestSettersMarkExplicitCryptopayBlockchainResponse(t *testing.T) {
 func TestSettersCryptopayWithdrawalConfigResponse(t *testing.T) {
 	t.Run("SetWithdrawalFeeUsd", func(t *testing.T) {
 		obj := &CryptopayWithdrawalConfigResponse{}
-		var fernTestValueWithdrawalFeeUsd *string
+		var fernTestValueWithdrawalFeeUsd string
 		obj.SetWithdrawalFeeUsd(fernTestValueWithdrawalFeeUsd)
 		assert.Equal(t, fernTestValueWithdrawalFeeUsd, obj.WithdrawalFeeUsd)
 		assert.NotNil(t, obj.explicitFields)
@@ -1068,21 +948,11 @@ func TestGettersCryptopayWithdrawalConfigResponse(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &CryptopayWithdrawalConfigResponse{}
-		var expected *string
+		var expected string
 		obj.WithdrawalFeeUsd = expected
 
 		// Act & Assert
 		assert.Equal(t, expected, obj.GetWithdrawalFeeUsd(), "getter should return the property value")
-	})
-
-	t.Run("GetWithdrawalFeeUsd_NilValue", func(t *testing.T) {
-		t.Parallel()
-		// Arrange
-		obj := &CryptopayWithdrawalConfigResponse{}
-		obj.WithdrawalFeeUsd = nil
-
-		// Act & Assert
-		assert.Nil(t, obj.GetWithdrawalFeeUsd(), "getter should return nil when property is nil")
 	})
 
 	t.Run("GetWithdrawalFeeUsd_NilReceiver", func(t *testing.T) {
@@ -1137,7 +1007,7 @@ func TestSettersMarkExplicitCryptopayWithdrawalConfigResponse(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &CryptopayWithdrawalConfigResponse{}
-		var fernTestValueWithdrawalFeeUsd *string
+		var fernTestValueWithdrawalFeeUsd string
 
 		// Act
 		obj.SetWithdrawalFeeUsd(fernTestValueWithdrawalFeeUsd)

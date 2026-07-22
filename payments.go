@@ -67,25 +67,28 @@ var (
 	cryptopayCreatePaymentRequestFieldAsset                 = big.NewInt(1 << 2)
 	cryptopayCreatePaymentRequestFieldNetworkFeePayer       = big.NewInt(1 << 3)
 	cryptopayCreatePaymentRequestFieldServiceFeePayer       = big.NewInt(1 << 4)
-	cryptopayCreatePaymentRequestFieldExternalID            = big.NewInt(1 << 5)
-	cryptopayCreatePaymentRequestFieldMetadata              = big.NewInt(1 << 6)
-	cryptopayCreatePaymentRequestFieldPaymentWindowSeconds  = big.NewInt(1 << 7)
-	cryptopayCreatePaymentRequestFieldRedirectConfig        = big.NewInt(1 << 8)
-	cryptopayCreatePaymentRequestFieldUnderpaymentTolerance = big.NewInt(1 << 9)
-	cryptopayCreatePaymentRequestFieldWebhookURL            = big.NewInt(1 << 10)
+	cryptopayCreatePaymentRequestFieldComplianceLevel       = big.NewInt(1 << 5)
+	cryptopayCreatePaymentRequestFieldExternalID            = big.NewInt(1 << 6)
+	cryptopayCreatePaymentRequestFieldMetadata              = big.NewInt(1 << 7)
+	cryptopayCreatePaymentRequestFieldPaymentWindowSeconds  = big.NewInt(1 << 8)
+	cryptopayCreatePaymentRequestFieldRedirectConfig        = big.NewInt(1 << 9)
+	cryptopayCreatePaymentRequestFieldUnderpaymentTolerance = big.NewInt(1 << 10)
+	cryptopayCreatePaymentRequestFieldWebhookURL            = big.NewInt(1 << 11)
 )
 
 type CryptopayCreatePaymentRequest struct {
 	// Grace period in seconds before the payment window starts counting, giving the customer time to open the checkout before the timer runs. Optional; range 1 to 3600 (1 hour).
 	ActivationFlowSeconds *int `json:"activationFlowSeconds,omitempty" url:"-"`
 	// Merchant base amount, integer string in the asset's smallest unit. When a fee payer is customer the customer is charged more than this (gross); when merchant (default) the fee is deducted from the merchant's proceeds.
-	Amount *string `json:"amount,omitempty" url:"-"`
+	Amount string `json:"amount" url:"-"`
 	// Asset the customer will pay in, as an asset id-string (e.g. USDT_ARBITRUM). Required only when the project allows more than one asset; when the project has a single asset it may be omitted. The full set of accepted values is served live at GET /v1/assets.
 	Asset *CryptopayAssetID `json:"asset,omitempty" url:"-"`
 	// Who bears the network (gas) fee. Default merchant.
 	NetworkFeePayer *CryptopayFeePayer `json:"networkFeePayer,omitempty" url:"-"`
 	// Who bears the platform (service) fee. Default merchant.
 	ServiceFeePayer *CryptopayFeePayer `json:"serviceFeePayer,omitempty" url:"-"`
+	// AML screening depth: basic (free, no minimum fee) or extended ($0.45 minimum fee). Omit to inherit the project/org default (extended).
+	ComplianceLevel *CryptopayComplianceLevel `json:"complianceLevel,omitempty" url:"-"`
 	// Your own identifier for this payment. Echoed back on the payment and its webhooks, and can be appended to the return URL as a redirect parameter. Optional.
 	ExternalID *string `json:"externalId,omitempty" url:"-"`
 	// Arbitrary JSON key/value data to attach to the payment. Stored and echoed back unchanged on the payment and its webhooks; never sent on-chain. Use it to correlate the payment with your own records.
@@ -119,7 +122,7 @@ func (c *CryptopayCreatePaymentRequest) SetActivationFlowSeconds(activationFlowS
 
 // SetAmount sets the Amount field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayCreatePaymentRequest) SetAmount(amount *string) {
+func (c *CryptopayCreatePaymentRequest) SetAmount(amount string) {
 	c.Amount = amount
 	c.require(cryptopayCreatePaymentRequestFieldAmount)
 }
@@ -143,6 +146,13 @@ func (c *CryptopayCreatePaymentRequest) SetNetworkFeePayer(networkFeePayer *Cryp
 func (c *CryptopayCreatePaymentRequest) SetServiceFeePayer(serviceFeePayer *CryptopayFeePayer) {
 	c.ServiceFeePayer = serviceFeePayer
 	c.require(cryptopayCreatePaymentRequestFieldServiceFeePayer)
+}
+
+// SetComplianceLevel sets the ComplianceLevel field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CryptopayCreatePaymentRequest) SetComplianceLevel(complianceLevel *CryptopayComplianceLevel) {
+	c.ComplianceLevel = complianceLevel
+	c.require(cryptopayCreatePaymentRequestFieldComplianceLevel)
 }
 
 // SetExternalID sets the ExternalID field and marks it as non-optional;
@@ -341,6 +351,7 @@ var (
 	cryptopayQuotePaymentRequestFieldAmount          = big.NewInt(1 << 1)
 	cryptopayQuotePaymentRequestFieldNetworkFeePayer = big.NewInt(1 << 2)
 	cryptopayQuotePaymentRequestFieldServiceFeePayer = big.NewInt(1 << 3)
+	cryptopayQuotePaymentRequestFieldComplianceLevel = big.NewInt(1 << 4)
 )
 
 type CryptopayQuotePaymentRequest struct {
@@ -352,6 +363,8 @@ type CryptopayQuotePaymentRequest struct {
 	NetworkFeePayer *CryptopayFeePayer `json:"networkFeePayer,omitempty" url:"-"`
 	// Who bears the platform (service) fee. Default merchant.
 	ServiceFeePayer *CryptopayFeePayer `json:"serviceFeePayer,omitempty" url:"-"`
+	// AML screening depth to quote: basic (free, no minimum fee) or extended ($0.45 minimum fee). Omit to inherit the project/org default (extended).
+	ComplianceLevel *CryptopayComplianceLevel `json:"complianceLevel,omitempty" url:"-"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -392,6 +405,13 @@ func (c *CryptopayQuotePaymentRequest) SetServiceFeePayer(serviceFeePayer *Crypt
 	c.require(cryptopayQuotePaymentRequestFieldServiceFeePayer)
 }
 
+// SetComplianceLevel sets the ComplianceLevel field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CryptopayQuotePaymentRequest) SetComplianceLevel(complianceLevel *CryptopayComplianceLevel) {
+	c.ComplianceLevel = complianceLevel
+	c.require(cryptopayQuotePaymentRequestFieldComplianceLevel)
+}
+
 func (c *CryptopayQuotePaymentRequest) UnmarshalJSON(data []byte) error {
 	type unmarshaler CryptopayQuotePaymentRequest
 	var body unmarshaler
@@ -426,9 +446,9 @@ type CryptopaySimulatePaymentRequest struct {
 	// Optional simulated received amount, integer string in the asset's smallest unit (see CreatePaymentRequest.amount).
 	Amount *string `json:"amount,omitempty" url:"-"`
 	// Target main status. Required — status and subStatus are independent axes, both must be supplied.
-	Status *CryptopayPaymentStatusEnum `json:"status,omitempty" url:"-"`
+	Status CryptopayPaymentStatusEnum `json:"status" url:"-"`
 	// Target sub-status (amount/detail axis). Required — status and subStatus are independent axes, both must be supplied.
-	SubStatus *CryptopayPaymentSubStatusEnum `json:"subStatus,omitempty" url:"-"`
+	SubStatus CryptopayPaymentSubStatusEnum `json:"subStatus" url:"-"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -457,14 +477,14 @@ func (c *CryptopaySimulatePaymentRequest) SetAmount(amount *string) {
 
 // SetStatus sets the Status field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopaySimulatePaymentRequest) SetStatus(status *CryptopayPaymentStatusEnum) {
+func (c *CryptopaySimulatePaymentRequest) SetStatus(status CryptopayPaymentStatusEnum) {
 	c.Status = status
 	c.require(cryptopaySimulatePaymentRequestFieldStatus)
 }
 
 // SetSubStatus sets the SubStatus field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopaySimulatePaymentRequest) SetSubStatus(subStatus *CryptopayPaymentSubStatusEnum) {
+func (c *CryptopaySimulatePaymentRequest) SetSubStatus(subStatus CryptopayPaymentSubStatusEnum) {
 	c.SubStatus = subStatus
 	c.require(cryptopaySimulatePaymentRequestFieldSubStatus)
 }
@@ -488,6 +508,29 @@ func (c *CryptopaySimulatePaymentRequest) MarshalJSON() ([]byte, error) {
 	}
 	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
 	return json.Marshal(explicitMarshaler)
+}
+
+// AML screening depth for a payment. extended (default) runs paid providers and carries the $0.45 minimum service fee; basic runs only free checks and waives the minimum fee (0.4% only).
+type CryptopayComplianceLevel string
+
+const (
+	CryptopayComplianceLevelBasic    CryptopayComplianceLevel = "basic"
+	CryptopayComplianceLevelExtended CryptopayComplianceLevel = "extended"
+)
+
+func NewCryptopayComplianceLevelFromString(s string) (CryptopayComplianceLevel, error) {
+	switch s {
+	case "basic":
+		return CryptopayComplianceLevelBasic, nil
+	case "extended":
+		return CryptopayComplianceLevelExtended, nil
+	}
+	var t CryptopayComplianceLevel
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (c CryptopayComplianceLevel) Ptr() *CryptopayComplianceLevel {
+	return &c
 }
 
 // Who bears a fee: merchant = deducted from the merchant's proceeds (default); customer = added on top of the customer charge.
@@ -520,9 +563,9 @@ var (
 
 type CryptopayListPaymentsResponse struct {
 	// True when more payments exist beyond this page. To fetch the next page, pass the last item's id as the lastId query parameter.
-	HasMore *bool `json:"hasMore,omitempty" url:"hasMore,omitempty"`
+	HasMore bool `json:"hasMore" url:"hasMore"`
 	// Page of payments, ordered per the request's order parameter.
-	Items []*CryptopayPaymentResponse `json:"items,omitempty" url:"items,omitempty"`
+	Items []*CryptopayPaymentResponse `json:"items" url:"items"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -531,9 +574,9 @@ type CryptopayListPaymentsResponse struct {
 	rawJSON         json.RawMessage
 }
 
-func (c *CryptopayListPaymentsResponse) GetHasMore() *bool {
+func (c *CryptopayListPaymentsResponse) GetHasMore() bool {
 	if c == nil {
-		return nil
+		return false
 	}
 	return c.HasMore
 }
@@ -561,7 +604,7 @@ func (c *CryptopayListPaymentsResponse) require(field *big.Int) {
 
 // SetHasMore sets the HasMore field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayListPaymentsResponse) SetHasMore(hasMore *bool) {
+func (c *CryptopayListPaymentsResponse) SetHasMore(hasMore bool) {
 	c.HasMore = hasMore
 	c.require(cryptopayListPaymentsResponseFieldHasMore)
 }
@@ -628,25 +671,26 @@ var (
 	cryptopayPaymentResponseFieldCreatedAt             = big.NewInt(1 << 9)
 	cryptopayPaymentResponseFieldExpiresAt             = big.NewInt(1 << 10)
 	cryptopayPaymentResponseFieldExternalID            = big.NewInt(1 << 11)
-	cryptopayPaymentResponseFieldFee                   = big.NewInt(1 << 12)
-	cryptopayPaymentResponseFieldID                    = big.NewInt(1 << 13)
-	cryptopayPaymentResponseFieldMetadata              = big.NewInt(1 << 14)
-	cryptopayPaymentResponseFieldNetworkFee            = big.NewInt(1 << 15)
-	cryptopayPaymentResponseFieldServiceFeeBps         = big.NewInt(1 << 16)
-	cryptopayPaymentResponseFieldServiceFeeMinUsd      = big.NewInt(1 << 17)
-	cryptopayPaymentResponseFieldQuotedPrice           = big.NewInt(1 << 18)
-	cryptopayPaymentResponseFieldNetworkFeePayer       = big.NewInt(1 << 19)
-	cryptopayPaymentResponseFieldServiceFeePayer       = big.NewInt(1 << 20)
-	cryptopayPaymentResponseFieldPaymentWindowSeconds  = big.NewInt(1 << 21)
-	cryptopayPaymentResponseFieldProjectID             = big.NewInt(1 << 22)
-	cryptopayPaymentResponseFieldRedirectConfig        = big.NewInt(1 << 23)
-	cryptopayPaymentResponseFieldStatus                = big.NewInt(1 << 24)
-	cryptopayPaymentResponseFieldSubStatus             = big.NewInt(1 << 25)
-	cryptopayPaymentResponseFieldTransactions          = big.NewInt(1 << 26)
-	cryptopayPaymentResponseFieldUnderpaymentTolerance = big.NewInt(1 << 27)
-	cryptopayPaymentResponseFieldUpdatedAt             = big.NewInt(1 << 28)
-	cryptopayPaymentResponseFieldWebhookURL            = big.NewInt(1 << 29)
-	cryptopayPaymentResponseFieldPaymentPageURL        = big.NewInt(1 << 30)
+	cryptopayPaymentResponseFieldComplianceLevel       = big.NewInt(1 << 12)
+	cryptopayPaymentResponseFieldFee                   = big.NewInt(1 << 13)
+	cryptopayPaymentResponseFieldID                    = big.NewInt(1 << 14)
+	cryptopayPaymentResponseFieldMetadata              = big.NewInt(1 << 15)
+	cryptopayPaymentResponseFieldNetworkFee            = big.NewInt(1 << 16)
+	cryptopayPaymentResponseFieldServiceFeeBps         = big.NewInt(1 << 17)
+	cryptopayPaymentResponseFieldServiceFeeMinUsd      = big.NewInt(1 << 18)
+	cryptopayPaymentResponseFieldQuotedPrice           = big.NewInt(1 << 19)
+	cryptopayPaymentResponseFieldNetworkFeePayer       = big.NewInt(1 << 20)
+	cryptopayPaymentResponseFieldServiceFeePayer       = big.NewInt(1 << 21)
+	cryptopayPaymentResponseFieldPaymentWindowSeconds  = big.NewInt(1 << 22)
+	cryptopayPaymentResponseFieldProjectID             = big.NewInt(1 << 23)
+	cryptopayPaymentResponseFieldRedirectConfig        = big.NewInt(1 << 24)
+	cryptopayPaymentResponseFieldStatus                = big.NewInt(1 << 25)
+	cryptopayPaymentResponseFieldSubStatus             = big.NewInt(1 << 26)
+	cryptopayPaymentResponseFieldTransactions          = big.NewInt(1 << 27)
+	cryptopayPaymentResponseFieldUnderpaymentTolerance = big.NewInt(1 << 28)
+	cryptopayPaymentResponseFieldUpdatedAt             = big.NewInt(1 << 29)
+	cryptopayPaymentResponseFieldWebhookURL            = big.NewInt(1 << 30)
+	cryptopayPaymentResponseFieldPaymentPageURL        = big.NewInt(1 << 31)
 )
 
 type CryptopayPaymentResponse struct {
@@ -659,59 +703,61 @@ type CryptopayPaymentResponse struct {
 	// On-chain deposit address the customer must send funds to. Null until the payment is activated and an address is assigned.
 	Address *string `json:"address,omitempty" url:"address,omitempty"`
 	// Integer string in the asset's smallest unit.
-	Amount *string `json:"amount,omitempty" url:"amount,omitempty"`
+	Amount string `json:"amount" url:"amount"`
 	// Integer string in the asset's smallest unit.
-	AmountConfirmed *string `json:"amountConfirmed,omitempty" url:"amountConfirmed,omitempty"`
+	AmountConfirmed string `json:"amountConfirmed" url:"amountConfirmed"`
 	// Integer string in the asset's smallest unit.
-	AmountReceived *string `json:"amountReceived,omitempty" url:"amountReceived,omitempty"`
+	AmountReceived string `json:"amountReceived" url:"amountReceived"`
 	// Asset the payment is denominated in, as an asset id-string (see GET /v1/assets). Null until an asset is selected for the payment.
 	Asset *CryptopayAssetID `json:"asset,omitempty" url:"asset,omitempty"`
 	// Unix-milliseconds timestamp when the payment reached finalization (confirmed). Null until confirmed; may revert if a chain reorg undoes the confirmation.
 	ConfirmedAt *int `json:"confirmedAt,omitempty" url:"confirmedAt,omitempty"`
 	// Unix-milliseconds timestamp when the payment was created.
-	CreatedAt *int `json:"createdAt,omitempty" url:"createdAt,omitempty"`
+	CreatedAt int `json:"createdAt" url:"createdAt"`
 	// Unix-milliseconds timestamp when the payment window closes; the payment expires (fails) if it has not been paid by then.
-	ExpiresAt *int `json:"expiresAt,omitempty" url:"expiresAt,omitempty"`
+	ExpiresAt int `json:"expiresAt" url:"expiresAt"`
 	// Merchant's own identifier for this payment, echoed from creation. Null when none was provided.
 	ExternalID *string `json:"externalId,omitempty" url:"externalId,omitempty"`
-	// Platform fee: 0.4% of the amount, minimum $1 equivalent. Integer string in the asset's smallest unit.
-	Fee *string `json:"fee,omitempty" url:"fee,omitempty"`
+	// AML screening depth applied to this payment: basic (free, no fee floor) or extended ($0.45 floor).
+	ComplianceLevel *CryptopayComplianceLevel `json:"complianceLevel,omitempty" url:"complianceLevel,omitempty"`
+	// Platform fee, integer string in the asset's smallest unit. For extended compliance: max(0.4% of the amount, $0.45 equivalent); for basic: 0.4% with no floor.
+	Fee string `json:"fee" url:"fee"`
 	// Unique Suward identifier of the payment. Use it in the payment endpoints (get, cancel, transactions) and as the checkout page path.
-	ID *string `json:"id,omitempty" url:"id,omitempty"`
+	ID string `json:"id" url:"id"`
 	// Arbitrary key/value data attached by the merchant at creation, echoed back unchanged.
 	Metadata map[string]any `json:"metadata,omitempty" url:"metadata,omitempty"`
 	// Estimated on-chain (gas) cost, deducted from the received amount. Integer string in the asset's smallest unit.
-	NetworkFee *string `json:"networkFee,omitempty" url:"networkFee,omitempty"`
+	NetworkFee string `json:"networkFee" url:"networkFee"`
 	// The service-fee rate applied to this payment, in basis points (e.g. 40 = 0.4%).
-	ServiceFeeBps *int `json:"serviceFeeBps,omitempty" url:"serviceFeeBps,omitempty"`
-	// The minimum service-fee floor applied to this payment, as a USD decimal string (e.g. "1").
-	ServiceFeeMinUsd *string `json:"serviceFeeMinUsd,omitempty" url:"serviceFeeMinUsd,omitempty"`
+	ServiceFeeBps int `json:"serviceFeeBps" url:"serviceFeeBps"`
+	// The minimum service-fee floor applied to this payment, as a USD decimal string (e.g. "0.45" for extended, "0" for basic).
+	ServiceFeeMinUsd string `json:"serviceFeeMinUsd" url:"serviceFeeMinUsd"`
 	// USD price of the asset locked at creation, decimal string. Fees are computed from this price at settlement, so the merchant's net is deterministic.
-	QuotedPrice *string `json:"quotedPrice,omitempty" url:"quotedPrice,omitempty"`
+	QuotedPrice string `json:"quotedPrice" url:"quotedPrice"`
 	// Who bears the network (gas) fee, echoed from creation.
-	NetworkFeePayer *CryptopayFeePayer `json:"networkFeePayer,omitempty" url:"networkFeePayer,omitempty"`
+	NetworkFeePayer CryptopayFeePayer `json:"networkFeePayer" url:"networkFeePayer"`
 	// Who bears the platform (service) fee, echoed from creation.
-	ServiceFeePayer *CryptopayFeePayer `json:"serviceFeePayer,omitempty" url:"serviceFeePayer,omitempty"`
+	ServiceFeePayer CryptopayFeePayer `json:"serviceFeePayer" url:"serviceFeePayer"`
 	// Resolved length of the payment window, in seconds.
-	PaymentWindowSeconds *int `json:"paymentWindowSeconds,omitempty" url:"paymentWindowSeconds,omitempty"`
+	PaymentWindowSeconds int `json:"paymentWindowSeconds" url:"paymentWindowSeconds"`
 	// Identifier of the project that owns this payment.
-	ProjectID *string `json:"projectId,omitempty" url:"projectId,omitempty"`
+	ProjectID string `json:"projectId" url:"projectId"`
 	// Return-to-store redirect configuration echoed from creation. Null when none was configured.
 	RedirectConfig *CryptopayRedirectConfigDto `json:"redirectConfig,omitempty" url:"redirectConfig,omitempty"`
 	// Main payment lifecycle status. See the status enum for the full meaning of each value.
-	Status *CryptopayPaymentStatusEnum `json:"status,omitempty" url:"status,omitempty"`
+	Status CryptopayPaymentStatusEnum `json:"status" url:"status"`
 	// Fine-grained payment sub-status describing the current step or amount condition. See the sub-status enum for the full meaning of each value.
-	SubStatus *CryptopayPaymentSubStatusEnum `json:"subStatus,omitempty" url:"subStatus,omitempty"`
+	SubStatus CryptopayPaymentSubStatusEnum `json:"subStatus" url:"subStatus"`
 	// Preview page of the on-chain transactions detected for this payment (newest first). Use GET /v1/payments/{paymentId}/transactions for the full paginated list.
-	Transactions *CryptopaywireTransactionList `json:"transactions,omitempty" url:"transactions,omitempty"`
+	Transactions *CryptopaywireTransactionList `json:"transactions" url:"transactions"`
 	// Integer string in the asset's smallest unit.
 	UnderpaymentTolerance *string `json:"underpaymentTolerance,omitempty" url:"underpaymentTolerance,omitempty"`
 	// Unix-milliseconds timestamp when the payment was last updated.
-	UpdatedAt *int `json:"updatedAt,omitempty" url:"updatedAt,omitempty"`
+	UpdatedAt int `json:"updatedAt" url:"updatedAt"`
 	// Webhook URL that receives this payment's events, echoed from creation. Null when the project default webhook is used.
 	WebhookURL *string `json:"webhookUrl,omitempty" url:"webhookUrl,omitempty"`
 	// Absolute URL of the Suward-hosted checkout page where the customer pays this payment.
-	PaymentPageURL *string `json:"paymentPageUrl,omitempty" url:"paymentPageUrl,omitempty"`
+	PaymentPageURL string `json:"paymentPageUrl" url:"paymentPageUrl"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -748,23 +794,23 @@ func (c *CryptopayPaymentResponse) GetAddress() *string {
 	return c.Address
 }
 
-func (c *CryptopayPaymentResponse) GetAmount() *string {
+func (c *CryptopayPaymentResponse) GetAmount() string {
 	if c == nil {
-		return nil
+		return ""
 	}
 	return c.Amount
 }
 
-func (c *CryptopayPaymentResponse) GetAmountConfirmed() *string {
+func (c *CryptopayPaymentResponse) GetAmountConfirmed() string {
 	if c == nil {
-		return nil
+		return ""
 	}
 	return c.AmountConfirmed
 }
 
-func (c *CryptopayPaymentResponse) GetAmountReceived() *string {
+func (c *CryptopayPaymentResponse) GetAmountReceived() string {
 	if c == nil {
-		return nil
+		return ""
 	}
 	return c.AmountReceived
 }
@@ -783,16 +829,16 @@ func (c *CryptopayPaymentResponse) GetConfirmedAt() *int {
 	return c.ConfirmedAt
 }
 
-func (c *CryptopayPaymentResponse) GetCreatedAt() *int {
+func (c *CryptopayPaymentResponse) GetCreatedAt() int {
 	if c == nil {
-		return nil
+		return 0
 	}
 	return c.CreatedAt
 }
 
-func (c *CryptopayPaymentResponse) GetExpiresAt() *int {
+func (c *CryptopayPaymentResponse) GetExpiresAt() int {
 	if c == nil {
-		return nil
+		return 0
 	}
 	return c.ExpiresAt
 }
@@ -804,16 +850,23 @@ func (c *CryptopayPaymentResponse) GetExternalID() *string {
 	return c.ExternalID
 }
 
-func (c *CryptopayPaymentResponse) GetFee() *string {
+func (c *CryptopayPaymentResponse) GetComplianceLevel() *CryptopayComplianceLevel {
 	if c == nil {
 		return nil
+	}
+	return c.ComplianceLevel
+}
+
+func (c *CryptopayPaymentResponse) GetFee() string {
+	if c == nil {
+		return ""
 	}
 	return c.Fee
 }
 
-func (c *CryptopayPaymentResponse) GetID() *string {
+func (c *CryptopayPaymentResponse) GetID() string {
 	if c == nil {
-		return nil
+		return ""
 	}
 	return c.ID
 }
@@ -825,58 +878,58 @@ func (c *CryptopayPaymentResponse) GetMetadata() map[string]any {
 	return c.Metadata
 }
 
-func (c *CryptopayPaymentResponse) GetNetworkFee() *string {
+func (c *CryptopayPaymentResponse) GetNetworkFee() string {
 	if c == nil {
-		return nil
+		return ""
 	}
 	return c.NetworkFee
 }
 
-func (c *CryptopayPaymentResponse) GetServiceFeeBps() *int {
+func (c *CryptopayPaymentResponse) GetServiceFeeBps() int {
 	if c == nil {
-		return nil
+		return 0
 	}
 	return c.ServiceFeeBps
 }
 
-func (c *CryptopayPaymentResponse) GetServiceFeeMinUsd() *string {
+func (c *CryptopayPaymentResponse) GetServiceFeeMinUsd() string {
 	if c == nil {
-		return nil
+		return ""
 	}
 	return c.ServiceFeeMinUsd
 }
 
-func (c *CryptopayPaymentResponse) GetQuotedPrice() *string {
+func (c *CryptopayPaymentResponse) GetQuotedPrice() string {
 	if c == nil {
-		return nil
+		return ""
 	}
 	return c.QuotedPrice
 }
 
-func (c *CryptopayPaymentResponse) GetNetworkFeePayer() *CryptopayFeePayer {
+func (c *CryptopayPaymentResponse) GetNetworkFeePayer() CryptopayFeePayer {
 	if c == nil {
-		return nil
+		return ""
 	}
 	return c.NetworkFeePayer
 }
 
-func (c *CryptopayPaymentResponse) GetServiceFeePayer() *CryptopayFeePayer {
+func (c *CryptopayPaymentResponse) GetServiceFeePayer() CryptopayFeePayer {
 	if c == nil {
-		return nil
+		return ""
 	}
 	return c.ServiceFeePayer
 }
 
-func (c *CryptopayPaymentResponse) GetPaymentWindowSeconds() *int {
+func (c *CryptopayPaymentResponse) GetPaymentWindowSeconds() int {
 	if c == nil {
-		return nil
+		return 0
 	}
 	return c.PaymentWindowSeconds
 }
 
-func (c *CryptopayPaymentResponse) GetProjectID() *string {
+func (c *CryptopayPaymentResponse) GetProjectID() string {
 	if c == nil {
-		return nil
+		return ""
 	}
 	return c.ProjectID
 }
@@ -888,16 +941,16 @@ func (c *CryptopayPaymentResponse) GetRedirectConfig() *CryptopayRedirectConfigD
 	return c.RedirectConfig
 }
 
-func (c *CryptopayPaymentResponse) GetStatus() *CryptopayPaymentStatusEnum {
+func (c *CryptopayPaymentResponse) GetStatus() CryptopayPaymentStatusEnum {
 	if c == nil {
-		return nil
+		return ""
 	}
 	return c.Status
 }
 
-func (c *CryptopayPaymentResponse) GetSubStatus() *CryptopayPaymentSubStatusEnum {
+func (c *CryptopayPaymentResponse) GetSubStatus() CryptopayPaymentSubStatusEnum {
 	if c == nil {
-		return nil
+		return ""
 	}
 	return c.SubStatus
 }
@@ -916,9 +969,9 @@ func (c *CryptopayPaymentResponse) GetUnderpaymentTolerance() *string {
 	return c.UnderpaymentTolerance
 }
 
-func (c *CryptopayPaymentResponse) GetUpdatedAt() *int {
+func (c *CryptopayPaymentResponse) GetUpdatedAt() int {
 	if c == nil {
-		return nil
+		return 0
 	}
 	return c.UpdatedAt
 }
@@ -930,9 +983,9 @@ func (c *CryptopayPaymentResponse) GetWebhookURL() *string {
 	return c.WebhookURL
 }
 
-func (c *CryptopayPaymentResponse) GetPaymentPageURL() *string {
+func (c *CryptopayPaymentResponse) GetPaymentPageURL() string {
 	if c == nil {
-		return nil
+		return ""
 	}
 	return c.PaymentPageURL
 }
@@ -981,21 +1034,21 @@ func (c *CryptopayPaymentResponse) SetAddress(address *string) {
 
 // SetAmount sets the Amount field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayPaymentResponse) SetAmount(amount *string) {
+func (c *CryptopayPaymentResponse) SetAmount(amount string) {
 	c.Amount = amount
 	c.require(cryptopayPaymentResponseFieldAmount)
 }
 
 // SetAmountConfirmed sets the AmountConfirmed field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayPaymentResponse) SetAmountConfirmed(amountConfirmed *string) {
+func (c *CryptopayPaymentResponse) SetAmountConfirmed(amountConfirmed string) {
 	c.AmountConfirmed = amountConfirmed
 	c.require(cryptopayPaymentResponseFieldAmountConfirmed)
 }
 
 // SetAmountReceived sets the AmountReceived field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayPaymentResponse) SetAmountReceived(amountReceived *string) {
+func (c *CryptopayPaymentResponse) SetAmountReceived(amountReceived string) {
 	c.AmountReceived = amountReceived
 	c.require(cryptopayPaymentResponseFieldAmountReceived)
 }
@@ -1016,14 +1069,14 @@ func (c *CryptopayPaymentResponse) SetConfirmedAt(confirmedAt *int) {
 
 // SetCreatedAt sets the CreatedAt field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayPaymentResponse) SetCreatedAt(createdAt *int) {
+func (c *CryptopayPaymentResponse) SetCreatedAt(createdAt int) {
 	c.CreatedAt = createdAt
 	c.require(cryptopayPaymentResponseFieldCreatedAt)
 }
 
 // SetExpiresAt sets the ExpiresAt field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayPaymentResponse) SetExpiresAt(expiresAt *int) {
+func (c *CryptopayPaymentResponse) SetExpiresAt(expiresAt int) {
 	c.ExpiresAt = expiresAt
 	c.require(cryptopayPaymentResponseFieldExpiresAt)
 }
@@ -1035,16 +1088,23 @@ func (c *CryptopayPaymentResponse) SetExternalID(externalID *string) {
 	c.require(cryptopayPaymentResponseFieldExternalID)
 }
 
+// SetComplianceLevel sets the ComplianceLevel field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CryptopayPaymentResponse) SetComplianceLevel(complianceLevel *CryptopayComplianceLevel) {
+	c.ComplianceLevel = complianceLevel
+	c.require(cryptopayPaymentResponseFieldComplianceLevel)
+}
+
 // SetFee sets the Fee field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayPaymentResponse) SetFee(fee *string) {
+func (c *CryptopayPaymentResponse) SetFee(fee string) {
 	c.Fee = fee
 	c.require(cryptopayPaymentResponseFieldFee)
 }
 
 // SetID sets the ID field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayPaymentResponse) SetID(id *string) {
+func (c *CryptopayPaymentResponse) SetID(id string) {
 	c.ID = id
 	c.require(cryptopayPaymentResponseFieldID)
 }
@@ -1058,56 +1118,56 @@ func (c *CryptopayPaymentResponse) SetMetadata(metadata map[string]any) {
 
 // SetNetworkFee sets the NetworkFee field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayPaymentResponse) SetNetworkFee(networkFee *string) {
+func (c *CryptopayPaymentResponse) SetNetworkFee(networkFee string) {
 	c.NetworkFee = networkFee
 	c.require(cryptopayPaymentResponseFieldNetworkFee)
 }
 
 // SetServiceFeeBps sets the ServiceFeeBps field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayPaymentResponse) SetServiceFeeBps(serviceFeeBps *int) {
+func (c *CryptopayPaymentResponse) SetServiceFeeBps(serviceFeeBps int) {
 	c.ServiceFeeBps = serviceFeeBps
 	c.require(cryptopayPaymentResponseFieldServiceFeeBps)
 }
 
 // SetServiceFeeMinUsd sets the ServiceFeeMinUsd field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayPaymentResponse) SetServiceFeeMinUsd(serviceFeeMinUsd *string) {
+func (c *CryptopayPaymentResponse) SetServiceFeeMinUsd(serviceFeeMinUsd string) {
 	c.ServiceFeeMinUsd = serviceFeeMinUsd
 	c.require(cryptopayPaymentResponseFieldServiceFeeMinUsd)
 }
 
 // SetQuotedPrice sets the QuotedPrice field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayPaymentResponse) SetQuotedPrice(quotedPrice *string) {
+func (c *CryptopayPaymentResponse) SetQuotedPrice(quotedPrice string) {
 	c.QuotedPrice = quotedPrice
 	c.require(cryptopayPaymentResponseFieldQuotedPrice)
 }
 
 // SetNetworkFeePayer sets the NetworkFeePayer field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayPaymentResponse) SetNetworkFeePayer(networkFeePayer *CryptopayFeePayer) {
+func (c *CryptopayPaymentResponse) SetNetworkFeePayer(networkFeePayer CryptopayFeePayer) {
 	c.NetworkFeePayer = networkFeePayer
 	c.require(cryptopayPaymentResponseFieldNetworkFeePayer)
 }
 
 // SetServiceFeePayer sets the ServiceFeePayer field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayPaymentResponse) SetServiceFeePayer(serviceFeePayer *CryptopayFeePayer) {
+func (c *CryptopayPaymentResponse) SetServiceFeePayer(serviceFeePayer CryptopayFeePayer) {
 	c.ServiceFeePayer = serviceFeePayer
 	c.require(cryptopayPaymentResponseFieldServiceFeePayer)
 }
 
 // SetPaymentWindowSeconds sets the PaymentWindowSeconds field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayPaymentResponse) SetPaymentWindowSeconds(paymentWindowSeconds *int) {
+func (c *CryptopayPaymentResponse) SetPaymentWindowSeconds(paymentWindowSeconds int) {
 	c.PaymentWindowSeconds = paymentWindowSeconds
 	c.require(cryptopayPaymentResponseFieldPaymentWindowSeconds)
 }
 
 // SetProjectID sets the ProjectID field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayPaymentResponse) SetProjectID(projectID *string) {
+func (c *CryptopayPaymentResponse) SetProjectID(projectID string) {
 	c.ProjectID = projectID
 	c.require(cryptopayPaymentResponseFieldProjectID)
 }
@@ -1121,14 +1181,14 @@ func (c *CryptopayPaymentResponse) SetRedirectConfig(redirectConfig *CryptopayRe
 
 // SetStatus sets the Status field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayPaymentResponse) SetStatus(status *CryptopayPaymentStatusEnum) {
+func (c *CryptopayPaymentResponse) SetStatus(status CryptopayPaymentStatusEnum) {
 	c.Status = status
 	c.require(cryptopayPaymentResponseFieldStatus)
 }
 
 // SetSubStatus sets the SubStatus field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayPaymentResponse) SetSubStatus(subStatus *CryptopayPaymentSubStatusEnum) {
+func (c *CryptopayPaymentResponse) SetSubStatus(subStatus CryptopayPaymentSubStatusEnum) {
 	c.SubStatus = subStatus
 	c.require(cryptopayPaymentResponseFieldSubStatus)
 }
@@ -1149,7 +1209,7 @@ func (c *CryptopayPaymentResponse) SetUnderpaymentTolerance(underpaymentToleranc
 
 // SetUpdatedAt sets the UpdatedAt field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayPaymentResponse) SetUpdatedAt(updatedAt *int) {
+func (c *CryptopayPaymentResponse) SetUpdatedAt(updatedAt int) {
 	c.UpdatedAt = updatedAt
 	c.require(cryptopayPaymentResponseFieldUpdatedAt)
 }
@@ -1163,7 +1223,7 @@ func (c *CryptopayPaymentResponse) SetWebhookURL(webhookURL *string) {
 
 // SetPaymentPageURL sets the PaymentPageURL field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayPaymentResponse) SetPaymentPageURL(paymentPageURL *string) {
+func (c *CryptopayPaymentResponse) SetPaymentPageURL(paymentPageURL string) {
 	c.PaymentPageURL = paymentPageURL
 	c.require(cryptopayPaymentResponseFieldPaymentPageURL)
 }
@@ -1319,31 +1379,31 @@ type CryptopayPublicPaymentResponse struct {
 	// On-chain deposit address the customer must send funds to. Null until the payment is activated and an address is assigned.
 	Address *string `json:"address,omitempty" url:"address,omitempty"`
 	// Integer string in the asset's smallest unit.
-	Amount *string `json:"amount,omitempty" url:"amount,omitempty"`
+	Amount string `json:"amount" url:"amount"`
 	// Integer string in the asset's smallest unit.
-	AmountReceived *string `json:"amountReceived,omitempty" url:"amountReceived,omitempty"`
+	AmountReceived string `json:"amountReceived" url:"amountReceived"`
 	// Asset the payment is denominated in, as an asset id-string (see GET /v1/assets). Null until an asset is selected.
 	Asset *CryptopayAssetID `json:"asset,omitempty" url:"asset,omitempty"`
 	// Unix-milliseconds timestamp when the payment was created.
-	CreatedAt *int `json:"createdAt,omitempty" url:"createdAt,omitempty"`
+	CreatedAt int `json:"createdAt" url:"createdAt"`
 	// Unix-milliseconds timestamp when the payment window closes; the payment expires if unpaid by then.
-	ExpiresAt *int `json:"expiresAt,omitempty" url:"expiresAt,omitempty"`
+	ExpiresAt int `json:"expiresAt" url:"expiresAt"`
 	// Unique Suward identifier of the payment.
-	ID *string `json:"id,omitempty" url:"id,omitempty"`
+	ID string `json:"id" url:"id"`
 	// Length of the payment window in seconds — how long the payment stays open for funding once activated.
-	PaymentWindowSeconds *int `json:"paymentWindowSeconds,omitempty" url:"paymentWindowSeconds,omitempty"`
+	PaymentWindowSeconds int `json:"paymentWindowSeconds" url:"paymentWindowSeconds"`
 	// Resolved "return to store" redirect (base URL plus the query parameters to append) used to send the customer back after payment. Null when none was configured.
 	Redirect *CryptopayPublicRedirect `json:"redirect,omitempty" url:"redirect,omitempty"`
 	// Main payment lifecycle status. See the status enum for the full meaning of each value.
-	Status *CryptopayPaymentStatusEnum `json:"status,omitempty" url:"status,omitempty"`
+	Status CryptopayPaymentStatusEnum `json:"status" url:"status"`
 	// Fine-grained payment sub-status. See the sub-status enum for the full meaning of each value.
-	SubStatus *CryptopayPaymentSubStatusEnum `json:"subStatus,omitempty" url:"subStatus,omitempty"`
+	SubStatus CryptopayPaymentSubStatusEnum `json:"subStatus" url:"subStatus"`
 	// Integer string in the asset's smallest unit.
 	UnderpaymentTolerance *string `json:"underpaymentTolerance,omitempty" url:"underpaymentTolerance,omitempty"`
 	// Unix-milliseconds timestamp when the payment was last updated.
-	UpdatedAt *int `json:"updatedAt,omitempty" url:"updatedAt,omitempty"`
+	UpdatedAt int `json:"updatedAt" url:"updatedAt"`
 	// Absolute URL of the Suward-hosted checkout page where the customer pays this payment.
-	PaymentPageURL *string `json:"paymentPageUrl,omitempty" url:"paymentPageUrl,omitempty"`
+	PaymentPageURL string `json:"paymentPageUrl" url:"paymentPageUrl"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -1373,16 +1433,16 @@ func (c *CryptopayPublicPaymentResponse) GetAddress() *string {
 	return c.Address
 }
 
-func (c *CryptopayPublicPaymentResponse) GetAmount() *string {
+func (c *CryptopayPublicPaymentResponse) GetAmount() string {
 	if c == nil {
-		return nil
+		return ""
 	}
 	return c.Amount
 }
 
-func (c *CryptopayPublicPaymentResponse) GetAmountReceived() *string {
+func (c *CryptopayPublicPaymentResponse) GetAmountReceived() string {
 	if c == nil {
-		return nil
+		return ""
 	}
 	return c.AmountReceived
 }
@@ -1394,30 +1454,30 @@ func (c *CryptopayPublicPaymentResponse) GetAsset() *CryptopayAssetID {
 	return c.Asset
 }
 
-func (c *CryptopayPublicPaymentResponse) GetCreatedAt() *int {
+func (c *CryptopayPublicPaymentResponse) GetCreatedAt() int {
 	if c == nil {
-		return nil
+		return 0
 	}
 	return c.CreatedAt
 }
 
-func (c *CryptopayPublicPaymentResponse) GetExpiresAt() *int {
+func (c *CryptopayPublicPaymentResponse) GetExpiresAt() int {
 	if c == nil {
-		return nil
+		return 0
 	}
 	return c.ExpiresAt
 }
 
-func (c *CryptopayPublicPaymentResponse) GetID() *string {
+func (c *CryptopayPublicPaymentResponse) GetID() string {
 	if c == nil {
-		return nil
+		return ""
 	}
 	return c.ID
 }
 
-func (c *CryptopayPublicPaymentResponse) GetPaymentWindowSeconds() *int {
+func (c *CryptopayPublicPaymentResponse) GetPaymentWindowSeconds() int {
 	if c == nil {
-		return nil
+		return 0
 	}
 	return c.PaymentWindowSeconds
 }
@@ -1429,16 +1489,16 @@ func (c *CryptopayPublicPaymentResponse) GetRedirect() *CryptopayPublicRedirect 
 	return c.Redirect
 }
 
-func (c *CryptopayPublicPaymentResponse) GetStatus() *CryptopayPaymentStatusEnum {
+func (c *CryptopayPublicPaymentResponse) GetStatus() CryptopayPaymentStatusEnum {
 	if c == nil {
-		return nil
+		return ""
 	}
 	return c.Status
 }
 
-func (c *CryptopayPublicPaymentResponse) GetSubStatus() *CryptopayPaymentSubStatusEnum {
+func (c *CryptopayPublicPaymentResponse) GetSubStatus() CryptopayPaymentSubStatusEnum {
 	if c == nil {
-		return nil
+		return ""
 	}
 	return c.SubStatus
 }
@@ -1450,16 +1510,16 @@ func (c *CryptopayPublicPaymentResponse) GetUnderpaymentTolerance() *string {
 	return c.UnderpaymentTolerance
 }
 
-func (c *CryptopayPublicPaymentResponse) GetUpdatedAt() *int {
+func (c *CryptopayPublicPaymentResponse) GetUpdatedAt() int {
 	if c == nil {
-		return nil
+		return 0
 	}
 	return c.UpdatedAt
 }
 
-func (c *CryptopayPublicPaymentResponse) GetPaymentPageURL() *string {
+func (c *CryptopayPublicPaymentResponse) GetPaymentPageURL() string {
 	if c == nil {
-		return nil
+		return ""
 	}
 	return c.PaymentPageURL
 }
@@ -1501,14 +1561,14 @@ func (c *CryptopayPublicPaymentResponse) SetAddress(address *string) {
 
 // SetAmount sets the Amount field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayPublicPaymentResponse) SetAmount(amount *string) {
+func (c *CryptopayPublicPaymentResponse) SetAmount(amount string) {
 	c.Amount = amount
 	c.require(cryptopayPublicPaymentResponseFieldAmount)
 }
 
 // SetAmountReceived sets the AmountReceived field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayPublicPaymentResponse) SetAmountReceived(amountReceived *string) {
+func (c *CryptopayPublicPaymentResponse) SetAmountReceived(amountReceived string) {
 	c.AmountReceived = amountReceived
 	c.require(cryptopayPublicPaymentResponseFieldAmountReceived)
 }
@@ -1522,28 +1582,28 @@ func (c *CryptopayPublicPaymentResponse) SetAsset(asset *CryptopayAssetID) {
 
 // SetCreatedAt sets the CreatedAt field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayPublicPaymentResponse) SetCreatedAt(createdAt *int) {
+func (c *CryptopayPublicPaymentResponse) SetCreatedAt(createdAt int) {
 	c.CreatedAt = createdAt
 	c.require(cryptopayPublicPaymentResponseFieldCreatedAt)
 }
 
 // SetExpiresAt sets the ExpiresAt field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayPublicPaymentResponse) SetExpiresAt(expiresAt *int) {
+func (c *CryptopayPublicPaymentResponse) SetExpiresAt(expiresAt int) {
 	c.ExpiresAt = expiresAt
 	c.require(cryptopayPublicPaymentResponseFieldExpiresAt)
 }
 
 // SetID sets the ID field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayPublicPaymentResponse) SetID(id *string) {
+func (c *CryptopayPublicPaymentResponse) SetID(id string) {
 	c.ID = id
 	c.require(cryptopayPublicPaymentResponseFieldID)
 }
 
 // SetPaymentWindowSeconds sets the PaymentWindowSeconds field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayPublicPaymentResponse) SetPaymentWindowSeconds(paymentWindowSeconds *int) {
+func (c *CryptopayPublicPaymentResponse) SetPaymentWindowSeconds(paymentWindowSeconds int) {
 	c.PaymentWindowSeconds = paymentWindowSeconds
 	c.require(cryptopayPublicPaymentResponseFieldPaymentWindowSeconds)
 }
@@ -1557,14 +1617,14 @@ func (c *CryptopayPublicPaymentResponse) SetRedirect(redirect *CryptopayPublicRe
 
 // SetStatus sets the Status field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayPublicPaymentResponse) SetStatus(status *CryptopayPaymentStatusEnum) {
+func (c *CryptopayPublicPaymentResponse) SetStatus(status CryptopayPaymentStatusEnum) {
 	c.Status = status
 	c.require(cryptopayPublicPaymentResponseFieldStatus)
 }
 
 // SetSubStatus sets the SubStatus field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayPublicPaymentResponse) SetSubStatus(subStatus *CryptopayPaymentSubStatusEnum) {
+func (c *CryptopayPublicPaymentResponse) SetSubStatus(subStatus CryptopayPaymentSubStatusEnum) {
 	c.SubStatus = subStatus
 	c.require(cryptopayPublicPaymentResponseFieldSubStatus)
 }
@@ -1578,14 +1638,14 @@ func (c *CryptopayPublicPaymentResponse) SetUnderpaymentTolerance(underpaymentTo
 
 // SetUpdatedAt sets the UpdatedAt field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayPublicPaymentResponse) SetUpdatedAt(updatedAt *int) {
+func (c *CryptopayPublicPaymentResponse) SetUpdatedAt(updatedAt int) {
 	c.UpdatedAt = updatedAt
 	c.require(cryptopayPublicPaymentResponseFieldUpdatedAt)
 }
 
 // SetPaymentPageURL sets the PaymentPageURL field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayPublicPaymentResponse) SetPaymentPageURL(paymentPageURL *string) {
+func (c *CryptopayPublicPaymentResponse) SetPaymentPageURL(paymentPageURL string) {
 	c.PaymentPageURL = paymentPageURL
 	c.require(cryptopayPublicPaymentResponseFieldPaymentPageURL)
 }
@@ -1639,9 +1699,9 @@ var (
 
 type CryptopayPublicRedirect struct {
 	// Query parameters to append to the URL when redirecting the customer back, e.g. id, externalId, data. Empty when the redirect has no parameters.
-	Query map[string]string `json:"query,omitempty" url:"query,omitempty"`
+	Query map[string]string `json:"query" url:"query"`
 	// Base "return to store" URL the customer is sent back to after paying.
-	URL *string `json:"url,omitempty" url:"url,omitempty"`
+	URL string `json:"url" url:"url"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -1657,9 +1717,9 @@ func (c *CryptopayPublicRedirect) GetQuery() map[string]string {
 	return c.Query
 }
 
-func (c *CryptopayPublicRedirect) GetURL() *string {
+func (c *CryptopayPublicRedirect) GetURL() string {
 	if c == nil {
-		return nil
+		return ""
 	}
 	return c.URL
 }
@@ -1687,7 +1747,7 @@ func (c *CryptopayPublicRedirect) SetQuery(query map[string]string) {
 
 // SetURL sets the URL field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayPublicRedirect) SetURL(url *string) {
+func (c *CryptopayPublicRedirect) SetURL(url string) {
 	c.URL = url
 	c.require(cryptopayPublicRedirectFieldURL)
 }
@@ -1735,30 +1795,33 @@ func (c *CryptopayPublicRedirect) String() string {
 }
 
 var (
-	cryptopayQuotePaymentResponseFieldAsset       = big.NewInt(1 << 0)
-	cryptopayQuotePaymentResponseFieldAmount      = big.NewInt(1 << 1)
-	cryptopayQuotePaymentResponseFieldFee         = big.NewInt(1 << 2)
-	cryptopayQuotePaymentResponseFieldNetworkFee  = big.NewInt(1 << 3)
-	cryptopayQuotePaymentResponseFieldNetAmount   = big.NewInt(1 << 4)
-	cryptopayQuotePaymentResponseFieldGross       = big.NewInt(1 << 5)
-	cryptopayQuotePaymentResponseFieldQuotedPrice = big.NewInt(1 << 6)
+	cryptopayQuotePaymentResponseFieldAsset           = big.NewInt(1 << 0)
+	cryptopayQuotePaymentResponseFieldAmount          = big.NewInt(1 << 1)
+	cryptopayQuotePaymentResponseFieldFee             = big.NewInt(1 << 2)
+	cryptopayQuotePaymentResponseFieldComplianceLevel = big.NewInt(1 << 3)
+	cryptopayQuotePaymentResponseFieldNetworkFee      = big.NewInt(1 << 4)
+	cryptopayQuotePaymentResponseFieldNetAmount       = big.NewInt(1 << 5)
+	cryptopayQuotePaymentResponseFieldGross           = big.NewInt(1 << 6)
+	cryptopayQuotePaymentResponseFieldQuotedPrice     = big.NewInt(1 << 7)
 )
 
 type CryptopayQuotePaymentResponse struct {
 	// Asset the quote is denominated in, echoed from the request.
-	Asset *CryptopayAssetID `json:"asset,omitempty" url:"asset,omitempty"`
+	Asset CryptopayAssetID `json:"asset" url:"asset"`
 	// Gross amount, integer string in the asset's smallest unit.
-	Amount *string `json:"amount,omitempty" url:"amount,omitempty"`
-	// Platform fee: 0.4% of the amount, minimum $1 equivalent. Integer string in the asset's smallest unit.
-	Fee *string `json:"fee,omitempty" url:"fee,omitempty"`
+	Amount string `json:"amount" url:"amount"`
+	// Platform fee, integer string in the asset's smallest unit. For extended compliance: max(0.4% of the amount, $0.45 equivalent); for basic: 0.4% with no floor.
+	Fee string `json:"fee" url:"fee"`
+	// AML screening depth used for this quote: basic or extended.
+	ComplianceLevel *CryptopayComplianceLevel `json:"complianceLevel,omitempty" url:"complianceLevel,omitempty"`
 	// Estimated on-chain (gas) cost, deducted from the received amount. Integer string in the asset's smallest unit.
-	NetworkFee *string `json:"networkFee,omitempty" url:"networkFee,omitempty"`
+	NetworkFee string `json:"networkFee" url:"networkFee"`
 	// Amount the merchant receives after all fees. Integer string in the asset's smallest unit.
-	NetAmount *string `json:"netAmount,omitempty" url:"netAmount,omitempty"`
+	NetAmount string `json:"netAmount" url:"netAmount"`
 	// Amount the customer pays: base plus any customer-paid fees. Integer string in the asset's smallest unit.
-	Gross *string `json:"gross,omitempty" url:"gross,omitempty"`
+	Gross string `json:"gross" url:"gross"`
 	// USD price used for this quote, decimal string. Not locked — the binding price is captured when the payment is created.
-	QuotedPrice *string `json:"quotedPrice,omitempty" url:"quotedPrice,omitempty"`
+	QuotedPrice string `json:"quotedPrice" url:"quotedPrice"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -1767,51 +1830,58 @@ type CryptopayQuotePaymentResponse struct {
 	rawJSON         json.RawMessage
 }
 
-func (c *CryptopayQuotePaymentResponse) GetAsset() *CryptopayAssetID {
+func (c *CryptopayQuotePaymentResponse) GetAsset() CryptopayAssetID {
 	if c == nil {
-		return nil
+		return ""
 	}
 	return c.Asset
 }
 
-func (c *CryptopayQuotePaymentResponse) GetAmount() *string {
+func (c *CryptopayQuotePaymentResponse) GetAmount() string {
 	if c == nil {
-		return nil
+		return ""
 	}
 	return c.Amount
 }
 
-func (c *CryptopayQuotePaymentResponse) GetFee() *string {
+func (c *CryptopayQuotePaymentResponse) GetFee() string {
 	if c == nil {
-		return nil
+		return ""
 	}
 	return c.Fee
 }
 
-func (c *CryptopayQuotePaymentResponse) GetNetworkFee() *string {
+func (c *CryptopayQuotePaymentResponse) GetComplianceLevel() *CryptopayComplianceLevel {
 	if c == nil {
 		return nil
+	}
+	return c.ComplianceLevel
+}
+
+func (c *CryptopayQuotePaymentResponse) GetNetworkFee() string {
+	if c == nil {
+		return ""
 	}
 	return c.NetworkFee
 }
 
-func (c *CryptopayQuotePaymentResponse) GetNetAmount() *string {
+func (c *CryptopayQuotePaymentResponse) GetNetAmount() string {
 	if c == nil {
-		return nil
+		return ""
 	}
 	return c.NetAmount
 }
 
-func (c *CryptopayQuotePaymentResponse) GetGross() *string {
+func (c *CryptopayQuotePaymentResponse) GetGross() string {
 	if c == nil {
-		return nil
+		return ""
 	}
 	return c.Gross
 }
 
-func (c *CryptopayQuotePaymentResponse) GetQuotedPrice() *string {
+func (c *CryptopayQuotePaymentResponse) GetQuotedPrice() string {
 	if c == nil {
-		return nil
+		return ""
 	}
 	return c.QuotedPrice
 }
@@ -1832,49 +1902,56 @@ func (c *CryptopayQuotePaymentResponse) require(field *big.Int) {
 
 // SetAsset sets the Asset field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayQuotePaymentResponse) SetAsset(asset *CryptopayAssetID) {
+func (c *CryptopayQuotePaymentResponse) SetAsset(asset CryptopayAssetID) {
 	c.Asset = asset
 	c.require(cryptopayQuotePaymentResponseFieldAsset)
 }
 
 // SetAmount sets the Amount field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayQuotePaymentResponse) SetAmount(amount *string) {
+func (c *CryptopayQuotePaymentResponse) SetAmount(amount string) {
 	c.Amount = amount
 	c.require(cryptopayQuotePaymentResponseFieldAmount)
 }
 
 // SetFee sets the Fee field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayQuotePaymentResponse) SetFee(fee *string) {
+func (c *CryptopayQuotePaymentResponse) SetFee(fee string) {
 	c.Fee = fee
 	c.require(cryptopayQuotePaymentResponseFieldFee)
 }
 
+// SetComplianceLevel sets the ComplianceLevel field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CryptopayQuotePaymentResponse) SetComplianceLevel(complianceLevel *CryptopayComplianceLevel) {
+	c.ComplianceLevel = complianceLevel
+	c.require(cryptopayQuotePaymentResponseFieldComplianceLevel)
+}
+
 // SetNetworkFee sets the NetworkFee field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayQuotePaymentResponse) SetNetworkFee(networkFee *string) {
+func (c *CryptopayQuotePaymentResponse) SetNetworkFee(networkFee string) {
 	c.NetworkFee = networkFee
 	c.require(cryptopayQuotePaymentResponseFieldNetworkFee)
 }
 
 // SetNetAmount sets the NetAmount field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayQuotePaymentResponse) SetNetAmount(netAmount *string) {
+func (c *CryptopayQuotePaymentResponse) SetNetAmount(netAmount string) {
 	c.NetAmount = netAmount
 	c.require(cryptopayQuotePaymentResponseFieldNetAmount)
 }
 
 // SetGross sets the Gross field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayQuotePaymentResponse) SetGross(gross *string) {
+func (c *CryptopayQuotePaymentResponse) SetGross(gross string) {
 	c.Gross = gross
 	c.require(cryptopayQuotePaymentResponseFieldGross)
 }
 
 // SetQuotedPrice sets the QuotedPrice field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayQuotePaymentResponse) SetQuotedPrice(quotedPrice *string) {
+func (c *CryptopayQuotePaymentResponse) SetQuotedPrice(quotedPrice string) {
 	c.QuotedPrice = quotedPrice
 	c.require(cryptopayQuotePaymentResponseFieldQuotedPrice)
 }
@@ -1933,7 +2010,7 @@ type CryptopayRedirectConfigDto struct {
 	// Which payment identifiers to append to the return URL as query parameters. Allowed values: "id" (the Suward payment id) and "externalId" (your identifier).
 	Params []CryptopayRedirectConfigDtoParamsItem `json:"params,omitempty" url:"params,omitempty"`
 	// Base "return to store" URL the customer is sent back to after paying.
-	URL *string `json:"url,omitempty" url:"url,omitempty"`
+	URL string `json:"url" url:"url"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -1956,9 +2033,9 @@ func (c *CryptopayRedirectConfigDto) GetParams() []CryptopayRedirectConfigDtoPar
 	return c.Params
 }
 
-func (c *CryptopayRedirectConfigDto) GetURL() *string {
+func (c *CryptopayRedirectConfigDto) GetURL() string {
 	if c == nil {
-		return nil
+		return ""
 	}
 	return c.URL
 }
@@ -1993,7 +2070,7 @@ func (c *CryptopayRedirectConfigDto) SetParams(params []CryptopayRedirectConfigD
 
 // SetURL sets the URL field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayRedirectConfigDto) SetURL(url *string) {
+func (c *CryptopayRedirectConfigDto) SetURL(url string) {
 	c.URL = url
 	c.require(cryptopayRedirectConfigDtoFieldURL)
 }
@@ -2073,11 +2150,11 @@ type CryptopayTransactionResponse struct {
 	// Unix-milliseconds timestamp when the transfer reached the accepted (safe) confirmation tier. Null before acceptance.
 	AcceptedAt *int `json:"acceptedAt,omitempty" url:"acceptedAt,omitempty"`
 	// On-chain transfer amount, an integer string in the asset's smallest unit (see CreatePaymentRequest.amount).
-	Amount *string `json:"amount,omitempty" url:"amount,omitempty"`
+	Amount string `json:"amount" url:"amount"`
 	// Unix-milliseconds timestamp when the transfer was first seen on-chain.
-	DetectedAt *int `json:"detectedAt,omitempty" url:"detectedAt,omitempty"`
+	DetectedAt int `json:"detectedAt" url:"detectedAt"`
 	// On-chain transaction hash of the transfer.
-	TxHash *string `json:"txHash,omitempty" url:"txHash,omitempty"`
+	TxHash string `json:"txHash" url:"txHash"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -2093,23 +2170,23 @@ func (c *CryptopayTransactionResponse) GetAcceptedAt() *int {
 	return c.AcceptedAt
 }
 
-func (c *CryptopayTransactionResponse) GetAmount() *string {
+func (c *CryptopayTransactionResponse) GetAmount() string {
 	if c == nil {
-		return nil
+		return ""
 	}
 	return c.Amount
 }
 
-func (c *CryptopayTransactionResponse) GetDetectedAt() *int {
+func (c *CryptopayTransactionResponse) GetDetectedAt() int {
 	if c == nil {
-		return nil
+		return 0
 	}
 	return c.DetectedAt
 }
 
-func (c *CryptopayTransactionResponse) GetTxHash() *string {
+func (c *CryptopayTransactionResponse) GetTxHash() string {
 	if c == nil {
-		return nil
+		return ""
 	}
 	return c.TxHash
 }
@@ -2137,21 +2214,21 @@ func (c *CryptopayTransactionResponse) SetAcceptedAt(acceptedAt *int) {
 
 // SetAmount sets the Amount field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayTransactionResponse) SetAmount(amount *string) {
+func (c *CryptopayTransactionResponse) SetAmount(amount string) {
 	c.Amount = amount
 	c.require(cryptopayTransactionResponseFieldAmount)
 }
 
 // SetDetectedAt sets the DetectedAt field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayTransactionResponse) SetDetectedAt(detectedAt *int) {
+func (c *CryptopayTransactionResponse) SetDetectedAt(detectedAt int) {
 	c.DetectedAt = detectedAt
 	c.require(cryptopayTransactionResponseFieldDetectedAt)
 }
 
 // SetTxHash sets the TxHash field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayTransactionResponse) SetTxHash(txHash *string) {
+func (c *CryptopayTransactionResponse) SetTxHash(txHash string) {
 	c.TxHash = txHash
 	c.require(cryptopayTransactionResponseFieldTxHash)
 }
@@ -2205,9 +2282,9 @@ var (
 
 type CryptopaywireTransactionList struct {
 	// True when more transactions exist beyond this page. To fetch the next page, pass the last item's id as the lastId query parameter.
-	HasMore *bool `json:"hasMore,omitempty" url:"hasMore,omitempty"`
+	HasMore bool `json:"hasMore" url:"hasMore"`
 	// Page of transactions, ordered per the request's order parameter.
-	Items []*CryptopayTransactionResponse `json:"items,omitempty" url:"items,omitempty"`
+	Items []*CryptopayTransactionResponse `json:"items" url:"items"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -2216,9 +2293,9 @@ type CryptopaywireTransactionList struct {
 	rawJSON         json.RawMessage
 }
 
-func (c *CryptopaywireTransactionList) GetHasMore() *bool {
+func (c *CryptopaywireTransactionList) GetHasMore() bool {
 	if c == nil {
-		return nil
+		return false
 	}
 	return c.HasMore
 }
@@ -2246,7 +2323,7 @@ func (c *CryptopaywireTransactionList) require(field *big.Int) {
 
 // SetHasMore sets the HasMore field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopaywireTransactionList) SetHasMore(hasMore *bool) {
+func (c *CryptopaywireTransactionList) SetHasMore(hasMore bool) {
 	c.HasMore = hasMore
 	c.require(cryptopaywireTransactionListFieldHasMore)
 }
