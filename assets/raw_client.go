@@ -152,6 +152,46 @@ func (r *RawClient) ListAssetGroups(
 	}, nil
 }
 
+func (r *RawClient) ListAssetPrices(
+	ctx context.Context,
+	opts ...option.RequestOption,
+) (*core.Response[*suwardsdkgo.GetV1PricesResponse], error) {
+	options := core.NewRequestOptions(opts...)
+	baseURL := internal.ResolveBaseURL(
+		options.BaseURL,
+		r.baseURL,
+		"https://api.suward.com",
+	)
+	endpointURL := baseURL + "/v1/prices"
+	headers := internal.MergeHeaders(
+		r.options.ToHeader(),
+		options.ToHeader(),
+	)
+	var response *suwardsdkgo.GetV1PricesResponse
+	raw, err := r.caller.Call(
+		ctx,
+		&internal.CallParams{
+			URL:             endpointURL,
+			Method:          http.MethodGet,
+			Headers:         headers,
+			MaxAttempts:     options.MaxAttempts,
+			DisableRetries:  options.DisableRetries,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			Response:        &response,
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &core.Response[*suwardsdkgo.GetV1PricesResponse]{
+		StatusCode: raw.StatusCode,
+		Header:     raw.Header,
+		Body:       response,
+	}, nil
+}
+
 func (r *RawClient) GetWithdrawalConfiguration(
 	ctx context.Context,
 	opts ...option.RequestOption,

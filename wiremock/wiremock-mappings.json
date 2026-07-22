@@ -633,6 +633,33 @@
       "postServeActions": []
     },
     {
+      "id": "476ba288-755b-43b0-8040-cf6541c46bfe",
+      "name": "List asset prices - default",
+      "request": {
+        "urlPathTemplate": "/v1/prices",
+        "method": "GET"
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"items\": [\n    {\n      \"group\": \"group\",\n      \"priceUsd\": \"priceUsd\",\n      \"updatedAtUnixMs\": 1000000\n    }\n  ]\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "476ba288-755b-43b0-8040-cf6541c46bfe",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      },
+      "postServeActions": []
+    },
+    {
       "id": "d4ef282f-d60f-4509-9eb0-a50c098a994c",
       "name": "Get withdrawal configuration - default",
       "request": {
@@ -661,6 +688,6 @@
     }
   ],
   "meta": {
-    "total": 20
+    "total": 21
   }
 }

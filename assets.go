@@ -720,3 +720,206 @@ func (g *GetV1AssetsResponse) String() string {
 	}
 	return fmt.Sprintf("%#v", g)
 }
+
+var (
+	getV1PricesResponseFieldItems = big.NewInt(1 << 0)
+)
+
+type GetV1PricesResponse struct {
+	Items []*GetV1PricesResponseItemsItem `json:"items,omitempty" url:"items,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (g *GetV1PricesResponse) GetItems() []*GetV1PricesResponseItemsItem {
+	if g == nil {
+		return nil
+	}
+	return g.Items
+}
+
+func (g *GetV1PricesResponse) GetExtraProperties() map[string]interface{} {
+	if g == nil {
+		return nil
+	}
+	return g.extraProperties
+}
+
+func (g *GetV1PricesResponse) require(field *big.Int) {
+	if g.explicitFields == nil {
+		g.explicitFields = big.NewInt(0)
+	}
+	g.explicitFields.Or(g.explicitFields, field)
+}
+
+// SetItems sets the Items field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GetV1PricesResponse) SetItems(items []*GetV1PricesResponseItemsItem) {
+	g.Items = items
+	g.require(getV1PricesResponseFieldItems)
+}
+
+func (g *GetV1PricesResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler GetV1PricesResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*g = GetV1PricesResponse(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *g)
+	if err != nil {
+		return err
+	}
+	g.extraProperties = extraProperties
+	g.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (g *GetV1PricesResponse) MarshalJSON() ([]byte, error) {
+	type embed GetV1PricesResponse
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*g),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, g.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (g *GetV1PricesResponse) String() string {
+	if g == nil {
+		return "<nil>"
+	}
+	if len(g.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(g.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(g); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", g)
+}
+
+var (
+	getV1PricesResponseItemsItemFieldGroup           = big.NewInt(1 << 0)
+	getV1PricesResponseItemsItemFieldPriceUsd        = big.NewInt(1 << 1)
+	getV1PricesResponseItemsItemFieldUpdatedAtUnixMs = big.NewInt(1 << 2)
+)
+
+type GetV1PricesResponseItemsItem struct {
+	// Asset group symbol, e.g. USDT, USDC, ETH.
+	Group *string `json:"group,omitempty" url:"group,omitempty"`
+	// USD price of one whole unit of the asset group.
+	PriceUsd *string `json:"priceUsd,omitempty" url:"priceUsd,omitempty"`
+	// Unix timestamp (ms) when this price was last refreshed.
+	UpdatedAtUnixMs *int64 `json:"updatedAtUnixMs,omitempty" url:"updatedAtUnixMs,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (g *GetV1PricesResponseItemsItem) GetGroup() *string {
+	if g == nil {
+		return nil
+	}
+	return g.Group
+}
+
+func (g *GetV1PricesResponseItemsItem) GetPriceUsd() *string {
+	if g == nil {
+		return nil
+	}
+	return g.PriceUsd
+}
+
+func (g *GetV1PricesResponseItemsItem) GetUpdatedAtUnixMs() *int64 {
+	if g == nil {
+		return nil
+	}
+	return g.UpdatedAtUnixMs
+}
+
+func (g *GetV1PricesResponseItemsItem) GetExtraProperties() map[string]interface{} {
+	if g == nil {
+		return nil
+	}
+	return g.extraProperties
+}
+
+func (g *GetV1PricesResponseItemsItem) require(field *big.Int) {
+	if g.explicitFields == nil {
+		g.explicitFields = big.NewInt(0)
+	}
+	g.explicitFields.Or(g.explicitFields, field)
+}
+
+// SetGroup sets the Group field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GetV1PricesResponseItemsItem) SetGroup(group *string) {
+	g.Group = group
+	g.require(getV1PricesResponseItemsItemFieldGroup)
+}
+
+// SetPriceUsd sets the PriceUsd field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GetV1PricesResponseItemsItem) SetPriceUsd(priceUsd *string) {
+	g.PriceUsd = priceUsd
+	g.require(getV1PricesResponseItemsItemFieldPriceUsd)
+}
+
+// SetUpdatedAtUnixMs sets the UpdatedAtUnixMs field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GetV1PricesResponseItemsItem) SetUpdatedAtUnixMs(updatedAtUnixMs *int64) {
+	g.UpdatedAtUnixMs = updatedAtUnixMs
+	g.require(getV1PricesResponseItemsItemFieldUpdatedAtUnixMs)
+}
+
+func (g *GetV1PricesResponseItemsItem) UnmarshalJSON(data []byte) error {
+	type unmarshaler GetV1PricesResponseItemsItem
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*g = GetV1PricesResponseItemsItem(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *g)
+	if err != nil {
+		return err
+	}
+	g.extraProperties = extraProperties
+	g.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (g *GetV1PricesResponseItemsItem) MarshalJSON() ([]byte, error) {
+	type embed GetV1PricesResponseItemsItem
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*g),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, g.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (g *GetV1PricesResponseItemsItem) String() string {
+	if g == nil {
+		return "<nil>"
+	}
+	if len(g.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(g.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(g); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", g)
+}
