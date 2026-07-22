@@ -139,6 +139,27 @@ func TestAssetsListAssetGroupsWithWireMock(
 	VerifyRequestCount(t, "TestAssetsListAssetGroupsWithWireMock", "GET", "/v1/assetGroups", nil, 1)
 }
 
+func TestAssetsListAssetPricesWithWireMock(
+	t *testing.T,
+) {
+	WireMockBaseURL := os.Getenv("WIREMOCK_URL")
+	if WireMockBaseURL == "" {
+		WireMockBaseURL = "http://localhost:8080"
+	}
+	client := client.NewClient(
+		option.WithBaseURL(WireMockBaseURL),
+	)
+	_, invocationErr := client.Assets.ListAssetPrices(
+		context.TODO(),
+		option.WithHTTPHeader(
+			http.Header{"X-Test-Id": []string{"TestAssetsListAssetPricesWithWireMock"}},
+		),
+	)
+
+	require.NoError(t, invocationErr, "Client method call should succeed")
+	VerifyRequestCount(t, "TestAssetsListAssetPricesWithWireMock", "GET", "/v1/prices", nil, 1)
+}
+
 func TestAssetsGetWithdrawalConfigurationWithWireMock(
 	t *testing.T,
 ) {

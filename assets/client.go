@@ -79,6 +79,21 @@ func (c *Client) ListAssetGroups(
 	return response.Body, nil
 }
 
+// Returns the current USD price for every asset group, served from cache and refreshed in the background. No authentication required.
+func (c *Client) ListAssetPrices(
+	ctx context.Context,
+	opts ...option.RequestOption,
+) (*suwardsdkgo.GetV1PricesResponse, error) {
+	response, err := c.WithRawResponse.ListAssetPrices(
+		ctx,
+		opts...,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return response.Body, nil
+}
+
 // Returns the asset/network pairs available for withdrawal and the flat withdrawal fee (USD). No authentication required.
 func (c *Client) GetWithdrawalConfiguration(
 	ctx context.Context,

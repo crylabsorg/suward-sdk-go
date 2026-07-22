@@ -1403,6 +1403,48 @@ client.Assets.ListAssetGroups(
 </dl>
 </details>
 
+<details><summary><code>client.Assets.ListAssetPrices() -> *suwardsdkgo.GetV1PricesResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns the current USD price for every asset group, served from cache and refreshed in the background. No authentication required.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+client.Assets.ListAssetPrices(
+        context.TODO(),
+    )
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.Assets.GetWithdrawalConfiguration() -> *suwardsdkgo.CryptopayWithdrawalConfigResponse</code></summary>
 <dl>
 <dd>
