@@ -16,9 +16,9 @@ var (
 
 type CryptopayAssetGroupResponse struct {
 	// Numeric asset-group id.
-	ID *int `json:"id,omitempty" url:"id,omitempty"`
+	ID int `json:"id" url:"id"`
 	// Group symbol, e.g. USDT, USDC, ETH.
-	Name *string `json:"name,omitempty" url:"name,omitempty"`
+	Name string `json:"name" url:"name"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -27,16 +27,16 @@ type CryptopayAssetGroupResponse struct {
 	rawJSON         json.RawMessage
 }
 
-func (c *CryptopayAssetGroupResponse) GetID() *int {
+func (c *CryptopayAssetGroupResponse) GetID() int {
 	if c == nil {
-		return nil
+		return 0
 	}
 	return c.ID
 }
 
-func (c *CryptopayAssetGroupResponse) GetName() *string {
+func (c *CryptopayAssetGroupResponse) GetName() string {
 	if c == nil {
-		return nil
+		return ""
 	}
 	return c.Name
 }
@@ -57,14 +57,14 @@ func (c *CryptopayAssetGroupResponse) require(field *big.Int) {
 
 // SetID sets the ID field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayAssetGroupResponse) SetID(id *int) {
+func (c *CryptopayAssetGroupResponse) SetID(id int) {
 	c.ID = id
 	c.require(cryptopayAssetGroupResponseFieldID)
 }
 
 // SetName sets the Name field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayAssetGroupResponse) SetName(name *string) {
+func (c *CryptopayAssetGroupResponse) SetName(name string) {
 	c.Name = name
 	c.require(cryptopayAssetGroupResponseFieldName)
 }
@@ -122,17 +122,17 @@ var (
 
 type CryptopayAssetResponse struct {
 	// Asset id-string used everywhere else in the API, e.g. USDT_ARBITRUM.
-	ID *CryptopayAssetID `json:"id,omitempty" url:"id,omitempty"`
+	ID CryptopayAssetID `json:"id" url:"id"`
 	// Internal blockchain ID (corresponds to GET /v1/blockchains[].id).
-	BlockchainID *int `json:"blockchainId,omitempty" url:"blockchainId,omitempty"`
+	BlockchainID int `json:"blockchainId" url:"blockchainId"`
 	// ERC20 contract address; null for native coins (ETH, BNB, POL, XPL).
 	ContractAddress *string `json:"contractAddress,omitempty" url:"contractAddress,omitempty"`
 	// Number of decimal places: smallest-unit amounts are whole tokens * 10^decimals.
-	Decimals *int `json:"decimals,omitempty" url:"decimals,omitempty"`
+	Decimals int `json:"decimals" url:"decimals"`
 	// Asset group, e.g. USDT, USDC, ETH.
-	Group *string `json:"group,omitempty" url:"group,omitempty"`
+	Group string `json:"group" url:"group"`
 	// Human-readable asset name.
-	Name *string `json:"name,omitempty" url:"name,omitempty"`
+	Name string `json:"name" url:"name"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -141,16 +141,16 @@ type CryptopayAssetResponse struct {
 	rawJSON         json.RawMessage
 }
 
-func (c *CryptopayAssetResponse) GetID() *CryptopayAssetID {
+func (c *CryptopayAssetResponse) GetID() CryptopayAssetID {
 	if c == nil {
-		return nil
+		return ""
 	}
 	return c.ID
 }
 
-func (c *CryptopayAssetResponse) GetBlockchainID() *int {
+func (c *CryptopayAssetResponse) GetBlockchainID() int {
 	if c == nil {
-		return nil
+		return 0
 	}
 	return c.BlockchainID
 }
@@ -162,23 +162,23 @@ func (c *CryptopayAssetResponse) GetContractAddress() *string {
 	return c.ContractAddress
 }
 
-func (c *CryptopayAssetResponse) GetDecimals() *int {
+func (c *CryptopayAssetResponse) GetDecimals() int {
 	if c == nil {
-		return nil
+		return 0
 	}
 	return c.Decimals
 }
 
-func (c *CryptopayAssetResponse) GetGroup() *string {
+func (c *CryptopayAssetResponse) GetGroup() string {
 	if c == nil {
-		return nil
+		return ""
 	}
 	return c.Group
 }
 
-func (c *CryptopayAssetResponse) GetName() *string {
+func (c *CryptopayAssetResponse) GetName() string {
 	if c == nil {
-		return nil
+		return ""
 	}
 	return c.Name
 }
@@ -199,14 +199,14 @@ func (c *CryptopayAssetResponse) require(field *big.Int) {
 
 // SetID sets the ID field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayAssetResponse) SetID(id *CryptopayAssetID) {
+func (c *CryptopayAssetResponse) SetID(id CryptopayAssetID) {
 	c.ID = id
 	c.require(cryptopayAssetResponseFieldID)
 }
 
 // SetBlockchainID sets the BlockchainID field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayAssetResponse) SetBlockchainID(blockchainID *int) {
+func (c *CryptopayAssetResponse) SetBlockchainID(blockchainID int) {
 	c.BlockchainID = blockchainID
 	c.require(cryptopayAssetResponseFieldBlockchainID)
 }
@@ -220,21 +220,21 @@ func (c *CryptopayAssetResponse) SetContractAddress(contractAddress *string) {
 
 // SetDecimals sets the Decimals field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayAssetResponse) SetDecimals(decimals *int) {
+func (c *CryptopayAssetResponse) SetDecimals(decimals int) {
 	c.Decimals = decimals
 	c.require(cryptopayAssetResponseFieldDecimals)
 }
 
 // SetGroup sets the Group field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayAssetResponse) SetGroup(group *string) {
+func (c *CryptopayAssetResponse) SetGroup(group string) {
 	c.Group = group
 	c.require(cryptopayAssetResponseFieldGroup)
 }
 
 // SetName sets the Name field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayAssetResponse) SetName(name *string) {
+func (c *CryptopayAssetResponse) SetName(name string) {
 	c.Name = name
 	c.require(cryptopayAssetResponseFieldName)
 }
@@ -292,17 +292,17 @@ var (
 
 type CryptopayBlockchainResponse struct {
 	// Internal blockchain ID.
-	ID *int `json:"id,omitempty" url:"id,omitempty"`
+	ID int `json:"id" url:"id"`
 	// Network id-string, e.g. ETHEREUM, ARBITRUM (the suffix of an asset id-string).
-	IDString *string `json:"idString,omitempty" url:"idString,omitempty"`
+	IDString string `json:"idString" url:"idString"`
 	// EIP-155 chain ID; null for non-EVM chains.
 	EvmChainID *int `json:"evmChainId,omitempty" url:"evmChainId,omitempty"`
 	// Human-readable chain name.
-	ChainName *string `json:"chainName,omitempty" url:"chainName,omitempty"`
+	ChainName string `json:"chainName" url:"chainName"`
 	// Block confirmations required for a payment to reach finality.
-	RequiredConfirmations *int `json:"requiredConfirmations,omitempty" url:"requiredConfirmations,omitempty"`
+	RequiredConfirmations int `json:"requiredConfirmations" url:"requiredConfirmations"`
 	// Flat network-fee estimate in USD (decimal string).
-	NetworkFeeUsd *string `json:"networkFeeUsd,omitempty" url:"networkFeeUsd,omitempty"`
+	NetworkFeeUsd string `json:"networkFeeUsd" url:"networkFeeUsd"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -311,16 +311,16 @@ type CryptopayBlockchainResponse struct {
 	rawJSON         json.RawMessage
 }
 
-func (c *CryptopayBlockchainResponse) GetID() *int {
+func (c *CryptopayBlockchainResponse) GetID() int {
 	if c == nil {
-		return nil
+		return 0
 	}
 	return c.ID
 }
 
-func (c *CryptopayBlockchainResponse) GetIDString() *string {
+func (c *CryptopayBlockchainResponse) GetIDString() string {
 	if c == nil {
-		return nil
+		return ""
 	}
 	return c.IDString
 }
@@ -332,23 +332,23 @@ func (c *CryptopayBlockchainResponse) GetEvmChainID() *int {
 	return c.EvmChainID
 }
 
-func (c *CryptopayBlockchainResponse) GetChainName() *string {
+func (c *CryptopayBlockchainResponse) GetChainName() string {
 	if c == nil {
-		return nil
+		return ""
 	}
 	return c.ChainName
 }
 
-func (c *CryptopayBlockchainResponse) GetRequiredConfirmations() *int {
+func (c *CryptopayBlockchainResponse) GetRequiredConfirmations() int {
 	if c == nil {
-		return nil
+		return 0
 	}
 	return c.RequiredConfirmations
 }
 
-func (c *CryptopayBlockchainResponse) GetNetworkFeeUsd() *string {
+func (c *CryptopayBlockchainResponse) GetNetworkFeeUsd() string {
 	if c == nil {
-		return nil
+		return ""
 	}
 	return c.NetworkFeeUsd
 }
@@ -369,14 +369,14 @@ func (c *CryptopayBlockchainResponse) require(field *big.Int) {
 
 // SetID sets the ID field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayBlockchainResponse) SetID(id *int) {
+func (c *CryptopayBlockchainResponse) SetID(id int) {
 	c.ID = id
 	c.require(cryptopayBlockchainResponseFieldID)
 }
 
 // SetIDString sets the IDString field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayBlockchainResponse) SetIDString(idString *string) {
+func (c *CryptopayBlockchainResponse) SetIDString(idString string) {
 	c.IDString = idString
 	c.require(cryptopayBlockchainResponseFieldIDString)
 }
@@ -390,21 +390,21 @@ func (c *CryptopayBlockchainResponse) SetEvmChainID(evmChainID *int) {
 
 // SetChainName sets the ChainName field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayBlockchainResponse) SetChainName(chainName *string) {
+func (c *CryptopayBlockchainResponse) SetChainName(chainName string) {
 	c.ChainName = chainName
 	c.require(cryptopayBlockchainResponseFieldChainName)
 }
 
 // SetRequiredConfirmations sets the RequiredConfirmations field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayBlockchainResponse) SetRequiredConfirmations(requiredConfirmations *int) {
+func (c *CryptopayBlockchainResponse) SetRequiredConfirmations(requiredConfirmations int) {
 	c.RequiredConfirmations = requiredConfirmations
 	c.require(cryptopayBlockchainResponseFieldRequiredConfirmations)
 }
 
 // SetNetworkFeeUsd sets the NetworkFeeUsd field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayBlockchainResponse) SetNetworkFeeUsd(networkFeeUsd *string) {
+func (c *CryptopayBlockchainResponse) SetNetworkFeeUsd(networkFeeUsd string) {
 	c.NetworkFeeUsd = networkFeeUsd
 	c.require(cryptopayBlockchainResponseFieldNetworkFeeUsd)
 }
@@ -458,9 +458,9 @@ var (
 
 type CryptopayWithdrawalConfigResponse struct {
 	// Flat per-withdrawal fee in USD (decimal string).
-	WithdrawalFeeUsd *string `json:"withdrawalFeeUsd,omitempty" url:"withdrawalFeeUsd,omitempty"`
+	WithdrawalFeeUsd string `json:"withdrawalFeeUsd" url:"withdrawalFeeUsd"`
 	// Asset/network pairs available for withdrawal.
-	Assets []*CryptopayAssetResponse `json:"assets,omitempty" url:"assets,omitempty"`
+	Assets []*CryptopayAssetResponse `json:"assets" url:"assets"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -469,9 +469,9 @@ type CryptopayWithdrawalConfigResponse struct {
 	rawJSON         json.RawMessage
 }
 
-func (c *CryptopayWithdrawalConfigResponse) GetWithdrawalFeeUsd() *string {
+func (c *CryptopayWithdrawalConfigResponse) GetWithdrawalFeeUsd() string {
 	if c == nil {
-		return nil
+		return ""
 	}
 	return c.WithdrawalFeeUsd
 }
@@ -499,7 +499,7 @@ func (c *CryptopayWithdrawalConfigResponse) require(field *big.Int) {
 
 // SetWithdrawalFeeUsd sets the WithdrawalFeeUsd field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *CryptopayWithdrawalConfigResponse) SetWithdrawalFeeUsd(withdrawalFeeUsd *string) {
+func (c *CryptopayWithdrawalConfigResponse) SetWithdrawalFeeUsd(withdrawalFeeUsd string) {
 	c.WithdrawalFeeUsd = withdrawalFeeUsd
 	c.require(cryptopayWithdrawalConfigResponseFieldWithdrawalFeeUsd)
 }

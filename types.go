@@ -19,9 +19,9 @@ type ControllerErrorResponse struct {
 	// Optional list of values interpolated into the error message template (e.g. field names or limits). Order matches the placeholders in the message.
 	Args []any `json:"args,omitempty" url:"args,omitempty"`
 	// Stable numeric application error code identifying the error type. Use it for programmatic handling; it does not change across locales or message wording.
-	ErrorCode *int `json:"errorCode,omitempty" url:"errorCode,omitempty"`
+	ErrorCode int `json:"errorCode" url:"errorCode"`
 	// Human-readable description of what went wrong. Intended for logging and debugging, not for programmatic branching (use errorCode for that).
-	Message *string `json:"message,omitempty" url:"message,omitempty"`
+	Message string `json:"message" url:"message"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -37,16 +37,16 @@ func (c *ControllerErrorResponse) GetArgs() []any {
 	return c.Args
 }
 
-func (c *ControllerErrorResponse) GetErrorCode() *int {
+func (c *ControllerErrorResponse) GetErrorCode() int {
 	if c == nil {
-		return nil
+		return 0
 	}
 	return c.ErrorCode
 }
 
-func (c *ControllerErrorResponse) GetMessage() *string {
+func (c *ControllerErrorResponse) GetMessage() string {
 	if c == nil {
-		return nil
+		return ""
 	}
 	return c.Message
 }
@@ -74,14 +74,14 @@ func (c *ControllerErrorResponse) SetArgs(args []any) {
 
 // SetErrorCode sets the ErrorCode field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *ControllerErrorResponse) SetErrorCode(errorCode *int) {
+func (c *ControllerErrorResponse) SetErrorCode(errorCode int) {
 	c.ErrorCode = errorCode
 	c.require(controllerErrorResponseFieldErrorCode)
 }
 
 // SetMessage sets the Message field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (c *ControllerErrorResponse) SetMessage(message *string) {
+func (c *ControllerErrorResponse) SetMessage(message string) {
 	c.Message = message
 	c.require(controllerErrorResponseFieldMessage)
 }

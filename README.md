@@ -43,7 +43,9 @@ func do() {
             "<value>",
         ),
     )
-    request := &suwardsdkgo.CryptopayCreatePaymentRequest{}
+    request := &suwardsdkgo.CryptopayCreatePaymentRequest{
+        Amount: "amount",
+    }
     client.Payments.CreatePayment(
         context.TODO(),
         request,

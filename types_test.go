@@ -20,7 +20,7 @@ func TestSettersControllerErrorResponse(t *testing.T) {
 
 	t.Run("SetErrorCode", func(t *testing.T) {
 		obj := &ControllerErrorResponse{}
-		var fernTestValueErrorCode *int
+		var fernTestValueErrorCode int
 		obj.SetErrorCode(fernTestValueErrorCode)
 		assert.Equal(t, fernTestValueErrorCode, obj.ErrorCode)
 		assert.NotNil(t, obj.explicitFields)
@@ -28,7 +28,7 @@ func TestSettersControllerErrorResponse(t *testing.T) {
 
 	t.Run("SetMessage", func(t *testing.T) {
 		obj := &ControllerErrorResponse{}
-		var fernTestValueMessage *string
+		var fernTestValueMessage string
 		obj.SetMessage(fernTestValueMessage)
 		assert.Equal(t, fernTestValueMessage, obj.Message)
 		assert.NotNil(t, obj.explicitFields)
@@ -74,21 +74,11 @@ func TestGettersControllerErrorResponse(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &ControllerErrorResponse{}
-		var expected *int
+		var expected int
 		obj.ErrorCode = expected
 
 		// Act & Assert
 		assert.Equal(t, expected, obj.GetErrorCode(), "getter should return the property value")
-	})
-
-	t.Run("GetErrorCode_NilValue", func(t *testing.T) {
-		t.Parallel()
-		// Arrange
-		obj := &ControllerErrorResponse{}
-		obj.ErrorCode = nil
-
-		// Act & Assert
-		assert.Nil(t, obj.GetErrorCode(), "getter should return nil when property is nil")
 	})
 
 	t.Run("GetErrorCode_NilReceiver", func(t *testing.T) {
@@ -107,21 +97,11 @@ func TestGettersControllerErrorResponse(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &ControllerErrorResponse{}
-		var expected *string
+		var expected string
 		obj.Message = expected
 
 		// Act & Assert
 		assert.Equal(t, expected, obj.GetMessage(), "getter should return the property value")
-	})
-
-	t.Run("GetMessage_NilValue", func(t *testing.T) {
-		t.Parallel()
-		// Arrange
-		obj := &ControllerErrorResponse{}
-		obj.Message = nil
-
-		// Act & Assert
-		assert.Nil(t, obj.GetMessage(), "getter should return nil when property is nil")
 	})
 
 	t.Run("GetMessage_NilReceiver", func(t *testing.T) {
@@ -174,7 +154,7 @@ func TestSettersMarkExplicitControllerErrorResponse(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &ControllerErrorResponse{}
-		var fernTestValueErrorCode *int
+		var fernTestValueErrorCode int
 
 		// Act
 		obj.SetErrorCode(fernTestValueErrorCode)
@@ -205,7 +185,7 @@ func TestSettersMarkExplicitControllerErrorResponse(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &ControllerErrorResponse{}
-		var fernTestValueMessage *string
+		var fernTestValueMessage string
 
 		// Act
 		obj.SetMessage(fernTestValueMessage)

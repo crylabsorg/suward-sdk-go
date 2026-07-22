@@ -269,6 +269,9 @@ func TestStaticWalletsSimulateStaticWalletDepositWithWireMock(
 	)
 	request := &suwardsdkgo.CryptopaySimulateStaticDepositRequest{
 		StaticWalletID: "staticWalletId",
+		Amount:         "amount",
+		Asset:          suwardsdkgo.CryptopayAssetIDUsdtEthereum,
+		Status:         suwardsdkgo.CryptopaySimulateStaticDepositRequestStatusDetected,
 	}
 	_, invocationErr := client.StaticWallets.SimulateStaticWalletDeposit(
 		context.TODO(),
