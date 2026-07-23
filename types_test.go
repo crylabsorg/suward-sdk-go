@@ -1107,6 +1107,13 @@ func TestEnumCryptopayAssetID(t *testing.T) {
 }
 
 func TestEnumWebhookPaymentEventType(t *testing.T) {
+	t.Run("NewFromString_payment_detected", func(t *testing.T) {
+		t.Parallel()
+		val, err := NewWebhookPaymentEventTypeFromString("payment.detected")
+		assert.NoError(t, err, "valid enum value should not return error")
+		assert.Equal(t, WebhookPaymentEventType("payment.detected"), val, "enum value should match expected wire value")
+	})
+
 	t.Run("NewFromString_payment_accepted", func(t *testing.T) {
 		t.Parallel()
 		val, err := NewWebhookPaymentEventTypeFromString("payment.accepted")
@@ -1134,7 +1141,7 @@ func TestEnumWebhookPaymentEventType(t *testing.T) {
 	})
 
 	t.Run("Ptr", func(t *testing.T) {
-		val, err := NewWebhookPaymentEventTypeFromString("payment.accepted")
+		val, err := NewWebhookPaymentEventTypeFromString("payment.detected")
 		assert.NoError(t, err)
 		ptr := val.Ptr()
 		assert.NotNil(t, ptr)

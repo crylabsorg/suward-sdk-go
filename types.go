@@ -238,7 +238,7 @@ var (
 )
 
 type WebhookPaymentEvent struct {
-	// Event type. payment.accepted: safe confirmations reached and the balance was credited (non-final). payment.success: the payment finalized (terminal). payment.failed: the payment failed or expired without a valid payment (terminal).
+	// Event type. payment.detected: an incoming transfer was seen on-chain and the payment is now confirming, awaiting safe confirmations (non-final, not yet credited). payment.accepted: safe confirmations reached and the balance was credited (non-final). payment.success: the payment finalized (terminal). payment.failed: the payment failed or expired without a valid payment (terminal).
 	Type WebhookPaymentEventType `json:"type" url:"type"`
 	// Unique identifier of this event. The same event may be redelivered on retry; use eventId to deduplicate.
 	EventID string `json:"eventId" url:"eventId"`
@@ -366,10 +366,11 @@ func (w *WebhookPaymentEvent) String() string {
 	return fmt.Sprintf("%#v", w)
 }
 
-// Event type. payment.accepted: safe confirmations reached and the balance was credited (non-final). payment.success: the payment finalized (terminal). payment.failed: the payment failed or expired without a valid payment (terminal).
+// Event type. payment.detected: an incoming transfer was seen on-chain and the payment is now confirming, awaiting safe confirmations (non-final, not yet credited). payment.accepted: safe confirmations reached and the balance was credited (non-final). payment.success: the payment finalized (terminal). payment.failed: the payment failed or expired without a valid payment (terminal).
 type WebhookPaymentEventType string
 
 const (
+	WebhookPaymentEventTypePaymentDetected WebhookPaymentEventType = "payment.detected"
 	WebhookPaymentEventTypePaymentAccepted WebhookPaymentEventType = "payment.accepted"
 	WebhookPaymentEventTypePaymentSuccess  WebhookPaymentEventType = "payment.success"
 	WebhookPaymentEventTypePaymentFailed   WebhookPaymentEventType = "payment.failed"
@@ -377,6 +378,8 @@ const (
 
 func NewWebhookPaymentEventTypeFromString(s string) (WebhookPaymentEventType, error) {
 	switch s {
+	case "payment.detected":
+		return WebhookPaymentEventTypePaymentDetected, nil
 	case "payment.accepted":
 		return WebhookPaymentEventTypePaymentAccepted, nil
 	case "payment.success":
